@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Matkul;
 use App\Models\Periode;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -145,15 +146,65 @@ class AdminController extends Controller
     // matkul
     public function matkul()
     {
-        return view('admin.master.matkul.index');
+        $matkul = Matkul::all();
+        return view('admin.master.matkul.index', compact('matkul'));
     }
     public function tambahmatkul()
     {
         return view('admin.master.matkul.tambah');
     }
-    public function detailmatkul()
+    public function editmatkul($id)
     {
-        return view('admin.master.matkul.detail');
+        $matkul = Matkul::findOrFail($id);
+        return view('admin.master.matkul.tambah', compact('matkul'));
+    }
+    public function detailmatkul($id)
+    {
+        $matkul = Matkul::findOrFail($id);
+        return view('admin.master.matkul.detail', compact('matkul'));
+    }
+    public function postmatkul(Request $request)
+    {
+        $request->validate([
+            'kode' => 'required',
+            'nama' => 'required',
+        ]);
+
+        // Pengecekan apakah STB/NIDN sudah ada di database
+        $cekstb = Matkul::where('kode', $request->kode)->first();
+        if ($cekstb && !$request->id) {
+            return redirect()->back()->withErrors([
+                'kode' => 'KODE sudah terdaftar'
+            ])->withInput();
+        }
+
+        // proses edit
+        if ($request->id) {
+            $user = Matkul::findOrFail($request->id);
+            $user->kode = $request->kode;
+            $user->nama = $request->nama;
+            $user->save();
+            return redirect()->route('matkul')->with('success', 'Matkul berhasil diperbaharui');
+        }
+
+        // proses tambah akun
+        $user = new Matkul();
+        $user->kode = $request->kode;
+        $user->nama = $request->nama;
+        $user->save();
+
+        return redirect()->route('matkul')->with('success', 'Matkul berhasil dibuat');
+    }
+    public function hapusmatkul($id)
+    {
+        $matkul = Matkul::findOrFail($id);
+        if ($matkul) {
+            $matkul->delete(); // Hapus data
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+
+        // Jika data tidak ditemukan
+        return response()->json(['message' => 'User not found.'], 404);
     }
 
 
@@ -176,7 +227,7 @@ class AdminController extends Controller
     public function detailperiode($id)
     {
         $periode = Periode::findOrFail($id);
-        return view('admin.master.periode.detail',compact('periode'));
+        return view('admin.master.periode.detail', compact('periode'));
     }
     public function postperiode(Request $request)
     {

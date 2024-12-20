@@ -52,7 +52,10 @@ Route::get('admin/dosen/detail', [AdminController::class, 'detaildosen'])->name(
 // matkul
 Route::get('admin/matkul', [AdminController::class, 'matkul'])->name('matkul');
 Route::get('admin/matkul/tambah', [AdminController::class, 'tambahmatkul'])->name('tambahmatkul');
-Route::get('admin/matkul/detail', [AdminController::class, 'detailmatkul'])->name('detailmatkul');
+Route::get('admin/matkul/detail/{id}', [AdminController::class, 'detailmatkul'])->name('detailmatkul');
+Route::post('admin/matkul/tambah', [AdminController::class, 'postmatkul'])->name('postmatkul');
+Route::get('admin/matkul/edit/{id}', [AdminController::class, 'editmatkul'])->name('editmatkul');
+Route::delete('admin/matkul/hapus/{id}', [AdminController::class, 'hapusmatkul'])->name('hapusmatkul');
 
 
 // periode
