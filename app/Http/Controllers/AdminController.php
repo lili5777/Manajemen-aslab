@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dosen;
 use App\Models\Matkul;
 use App\Models\Periode;
 use App\Models\User;
@@ -130,15 +131,91 @@ class AdminController extends Controller
     // dosen
     public function dosen()
     {
-        return view('admin.master.dosen.index');
+        $dosen = Dosen::all();
+        return view('admin.master.dosen.index', compact('dosen'));
     }
     public function tambahdosen()
     {
         return view('admin.master.dosen.tambah');
     }
-    public function detaildosen()
+    public function editdosen($id)
+    {
+        $dosen = Dosen::findOrFail($id);
+        return view('admin.master.dosen.tambah', compact('dosen'));
+    }
+    public function detaildosen($id)
     {
         return view('admin.master.dosen.detail');
+    }
+    public function hapusdosen($id)
+    {
+        $dosen = Dosen::findOrFail($id);
+        if ($dosen) {
+            $dosen->delete(); // Hapus data
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+
+        // Jika data tidak ditemukan
+        return response()->json(['message' => 'User not found.'], 404);
+    }
+    public function postdosen(Request $request)
+    {
+        $request->validate([
+            'nidn' => 'required',
+            'nama' => 'required',
+            'foto' => 'nullable|image|max:10240',
+        ]);
+
+        // Pengecekan apakah STB/NIDN sudah ada di database
+        $cekstb = Dosen::where('nidn', $request->nidn)->first();
+        if ($cekstb && !$request->id) {
+            return redirect()->back()->withErrors([
+                'nidn' => 'NIDN sudah terdaftar'
+            ])->withInput();
+        }
+
+        // Proses unggah foto
+        $namaFoto = null;
+        if ($request->hasFile('foto')) {
+            $namaFoto = 'foto_dosen_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->foto->getClientOriginalExtension();
+            $request->foto->move(public_path('img/dosen'), $namaFoto);
+        }
+        // dd([
+        //     'namaFoto' => $namaFoto,
+        //     'hasFile' => $request->hasFile('foto'),
+        //     'file' => $request->file('foto'),
+        //     'allRequest' => $request->all()
+        // ]);
+
+        // proses edit
+        if ($request->id) {
+            $user = Dosen::findOrFail($request->id);
+            $user->email = $request->email;
+            $user->nama = $request->nama;
+            $user->nidn = $request->nidn;
+            $user->no_wa = $request->no_wa;
+            // Jika ada foto baru, ganti foto lama
+            if ($namaFoto) {
+                // Hapus foto lama jika ada
+                if ($user->foto && file_exists(public_path('img/dosen/' . $user->foto))) {
+                    unlink(public_path('img/dosen/' . $user->foto));
+                }
+                $user->foto = $namaFoto;
+            }
+            $user->save();
+            return redirect()->route('dosen')->with('success', 'Matkul berhasil diperbaharui');
+        }
+
+        // proses tambah akun
+        $user = new Dosen();
+        $user->email = $request->email;
+        $user->nama = $request->nama;
+        $user->nidn = $request->nidn;
+        $user->no_wa = $request->no_wa;
+        $user->foto = $namaFoto;
+        $user->save();
+
+        return redirect()->route('dosen')->with('success', 'Matkul berhasil dibuat');
     }
 
 

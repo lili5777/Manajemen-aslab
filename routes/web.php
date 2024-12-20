@@ -46,6 +46,7 @@ Route::get('admin/asdos/detail', [AdminController::class, 'detailasdos'])->name(
 // dosen
 Route::get('admin/dosen', [AdminController::class, 'dosen'])->name('dosen');
 Route::get('admin/dosen/tambah', [AdminController::class, 'tambahdosen'])->name('tambahdosen');
+Route::post('admin/dosen/tambah', [AdminController::class, 'postdosen'])->name('postdosen');
 Route::get('admin/dosen/detail', [AdminController::class, 'detaildosen'])->name('detaildosen');
 
 

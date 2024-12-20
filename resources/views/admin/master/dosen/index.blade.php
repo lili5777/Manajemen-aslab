@@ -115,50 +115,52 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Product Name</th>
-                                    <th>SKU</th>
-                                    <th>Category </th>
-                                    <th>Brand</th>
-                                    <th>price</th>
-                                    <th>Unit</th>
-                                    <th>Qty</th>
-                                    <th>Created By</th>
+                                    <th>Foto</th>
+                                    <th>Nama</th>
+                                    <th>Email </th>
+                                    <th>NIDN</th>
+                                    <th>No</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ asset('img/product/product1.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Macbook pro</a>
-                                    </td>
-                                    <td>PT001</td>
-                                    <td>Computers</td>
-                                    <td>N/D</td>
-                                    <td>1500.00</td>
-                                    <td>pc</td>
-                                    <td>100.00</td>
-                                    <td>Admin</td>
-                                    <td>
-                                        <a class="me-3" href="{{ route('detaildosen') }}">
-                                            <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                        </a>
-                                        <a class="me-3" href="{{ route('tambahdosen') }}">
-                                            <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                        </a>
-                                        <a class="confirm-text" href="javascript:void(0);">
-                                            <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
-                                        </a>
-                                    </td>
-                                </tr>
+                                @foreach ($dosen as $d)
+                                    <tr>
+                                        <td>
+                                            <label class="checkboxs">
+                                                <input type="checkbox">
+                                                <span class="checkmarks"></span>
+                                            </label>
+                                        </td>
+                                        <td class="productimgname">
+                                            @if ($d->foto)
+                                                <a href="javascript:void(0);" class="product-img">
+                                                    <img src="{{ asset('img/dosen/' . $d->foto) }}" alt="foto">
+                                                </a>
+                                            @else
+                                                <a href="javascript:void(0);" class="product-img">
+                                                    <img src="{{ asset('img/dosen/pf.webp') }}" alt="foto">
+                                                </a>
+                                            @endif
+
+                                        </td>
+                                        <td>{{ $d->nama }}</td>
+                                        <td>{{ $d->email }}</td>
+                                        <td>{{ $d->nidn }}</td>
+                                        <td>{{ $d->no_wa }}</td>
+                                        <td>
+                                            <a class="me-3" href="{{ route('detaildosen') }}">
+                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
+                                            </a>
+                                            <a class="me-3" href="{{ route('tambahdosen') }}">
+                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
+                                            </a>
+                                            <a class="confirm-text" href="javascript:void(0);">
+                                                <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
