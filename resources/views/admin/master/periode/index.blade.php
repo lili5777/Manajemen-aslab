@@ -140,10 +140,10 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detailperiode') }}">
+                                            <a class="me-3" href="{{ route('detailperiode', $p->id) }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
                                             </a>
-                                            <a class="me-3" href="{{ route('tambahperiode') }}">
+                                            <a class="me-3" href="{{ route('editperiode', $p->id) }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
                                             <a class="confirm-text" href="javascript:void(0);"

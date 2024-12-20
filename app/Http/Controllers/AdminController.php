@@ -168,9 +168,15 @@ class AdminController extends Controller
     {
         return view('admin.master.periode.tambah');
     }
-    public function detailperiode()
+    public function editperiode($id)
     {
-        return view('admin.master.periode.detail');
+        $periode = Periode::findOrFail($id);
+        return view('admin.master.periode.tambah', compact('periode'));
+    }
+    public function detailperiode($id)
+    {
+        $periode = Periode::findOrFail($id);
+        return view('admin.master.periode.detail',compact('periode'));
     }
     public function postperiode(Request $request)
     {

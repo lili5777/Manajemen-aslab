@@ -13,11 +13,16 @@
                 <div class="card-body">
                     <form action="{{ route('postperiode') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="id" value="{{ isset($periode) ? $periode->id : '' }}">
                         <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Periode</label>
-                                    <input type="text" name="tahun">
+                                    <input type="text" name="tahun" required
+                                        value="{{ isset($periode) ? $periode->tahun : '' }}">
+                                    @error('tahun')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="col-lg-12">

@@ -59,6 +59,7 @@ Route::get('admin/matkul/detail', [AdminController::class, 'detailmatkul'])->nam
 Route::get('admin/periode', [AdminController::class, 'periode'])->name('periode');
 Route::get('admin/periode/tambah', [AdminController::class, 'tambahperiode'])->name('tambahperiode');
 Route::post('admin/periode/tambah', [AdminController::class, 'postperiode'])->name('postperiode');
+Route::get('admin/periode/edit/{id}', [AdminController::class, 'editperiode'])->name('editperiode');
 Route::post('admin/periode/update', [AdminController::class, 'updateperiode'])->name('updateperiode');
-Route::get('admin/periode/detail', [AdminController::class, 'detailperiode'])->name('detailperiode');
+Route::get('admin/periode/detail/{id}', [AdminController::class, 'detailperiode'])->name('detailperiode');
 Route::delete('admin/periode/hapus/{id}', [AdminController::class, 'hapusperiode'])->name('hapusperiode');
