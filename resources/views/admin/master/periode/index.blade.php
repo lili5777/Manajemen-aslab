@@ -115,50 +115,46 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Product Name</th>
-                                    <th>SKU</th>
-                                    <th>Category </th>
-                                    <th>Brand</th>
-                                    <th>price</th>
-                                    <th>Unit</th>
-                                    <th>Qty</th>
-                                    <th>Created By</th>
+                                    <th>Periode</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ asset('img/product/product1.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Macbook pro</a>
-                                    </td>
-                                    <td>PT001</td>
-                                    <td>Computers</td>
-                                    <td>N/D</td>
-                                    <td>1500.00</td>
-                                    <td>pc</td>
-                                    <td>100.00</td>
-                                    <td>Admin</td>
-                                    <td>
-                                        <a class="me-3" href="{{ route('detailperiode') }}">
-                                            <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                        </a>
-                                        <a class="me-3" href="{{ route('tambahperiode') }}">
-                                            <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                        </a>
-                                        <a class="confirm-text" href="javascript:void(0);">
-                                            <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
-                                        </a>
-                                    </td>
-                                </tr>
+                                @forelse ($periode as $p)
+                                    <tr>
+                                        <td>
+                                            <label class="checkboxs">
+                                                <input type="checkbox">
+                                                <span class="checkmarks"></span>
+                                            </label>
+                                        </td>
+                                        <td>{{ $p->tahun }}</td>
+                                        <td>
+                                            <div class="form-check form-switch">
+                                                <input type="checkbox" class="form-check-input status-toggle"
+                                                    data-id="{{ $p->id }}"
+                                                    {{ $p->status == 'aktif' ? 'checked' : '' }} role="switch">
+                                                <label
+                                                    class="form-check-label">{{ $p->status == 'aktif' ? 'Aktif' : 'Nonaktif' }}</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a class="me-3" href="{{ route('detailperiode') }}">
+                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
+                                            </a>
+                                            <a class="me-3" href="{{ route('tambahperiode') }}">
+                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
+                                            </a>
+                                            <a class="confirm-text" href="javascript:void(0);"
+                                                data-url="{{ route('hapusperiode', $p->id) }}">
+                                                <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                @endforelse
+
                             </tbody>
                         </table>
                     </div>
@@ -167,4 +163,66 @@
 
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggles = document.querySelectorAll('.status-toggle');
+
+            toggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const id = this.dataset.id;
+                    const isChecked = this.checked;
+                    const status = isChecked ? 'aktif' : 'nonaktif';
+                    const label = this.nextElementSibling;
+
+                    // If trying to set to nonaktif when it's the only active one, prevent it
+                    if (!isChecked && document.querySelectorAll('.status-toggle:checked').length ===
+                        0) {
+                        this.checked = true;
+                        alert('Harus ada minimal satu periode yang aktif!');
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('id', id);
+                    formData.append('status', status);
+                    formData.append('_token', "{{ csrf_token() }}");
+
+                    fetch("{{ route('updateperiode') }}", {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                            },
+                            body: formData
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Update all other toggles to nonaktif if this one is being activated
+                                if (isChecked) {
+                                    toggles.forEach(otherToggle => {
+                                        if (otherToggle !== this) {
+                                            otherToggle.checked = false;
+                                            otherToggle.nextElementSibling.textContent =
+                                                'Nonaktif';
+                                        }
+                                    });
+                                }
+                                // Update this toggle's label
+                                label.textContent = status.charAt(0).toUpperCase() + status
+                                    .slice(1);
+
+                            } else {
+                                this.checked = !isChecked;
+                                alert(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            this.checked = !isChecked;
+                            alert('Terjadi kesalahan pada server');
+                        });
+                });
+            });
+        });
+    </script>
 @endsection

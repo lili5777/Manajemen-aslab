@@ -34,7 +34,7 @@ Route::get('admin/akun/tambah', [AdminController::class, 'tambahakun'])->name('t
 Route::post('admin/akun/tambah', [AdminController::class, 'postakun'])->name('postakun');
 Route::get('admin/akun/edit/{id}', [AdminController::class, 'editakun'])->name('editakun');
 Route::delete('admin/akun/hapus/{id}', [AdminController::class, 'hapusakun'])->name('hapusakun');
-Route::get('admin/akun/detail', [AdminController::class, 'detailakun'])->name('detailakun');
+Route::get('admin/akun/detail/{id}', [AdminController::class, 'detailakun'])->name('detailakun');
 
 
 // asdos
@@ -58,4 +58,7 @@ Route::get('admin/matkul/detail', [AdminController::class, 'detailmatkul'])->nam
 // periode
 Route::get('admin/periode', [AdminController::class, 'periode'])->name('periode');
 Route::get('admin/periode/tambah', [AdminController::class, 'tambahperiode'])->name('tambahperiode');
+Route::post('admin/periode/tambah', [AdminController::class, 'postperiode'])->name('postperiode');
+Route::post('admin/periode/update', [AdminController::class, 'updateperiode'])->name('updateperiode');
 Route::get('admin/periode/detail', [AdminController::class, 'detailperiode'])->name('detailperiode');
+Route::delete('admin/periode/hapus/{id}', [AdminController::class, 'hapusperiode'])->name('hapusperiode');

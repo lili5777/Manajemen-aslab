@@ -96,8 +96,7 @@
                                         <div class="col-lg-1 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <a class="btn btn-filters ms-auto"><img
-                                                        src="{{ asset('img/icons/search-whites.svg') }}"
-                                                        alt="img"></a>
+                                                        src="{{ asset('img/icons/search-whites.svg') }}" alt="img"></a>
                                             </div>
                                         </div>
                                     </div>
@@ -137,7 +136,7 @@
                                         <td>{{ $a->email }}</td>
                                         <td>{{ $a->role }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detailakun') }}">
+                                            <a class="me-3" href="{{ route('detailakun', $a->id) }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
                                             </a>
                                             <a class="me-3" href="{{ route('editakun', $a->id) }}">
@@ -160,5 +159,4 @@
 
         </div>
     </div>
-    
 @endsection

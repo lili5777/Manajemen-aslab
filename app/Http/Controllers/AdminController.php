@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Periode;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -41,9 +42,10 @@ class AdminController extends Controller
     {
         return view('admin.master.akun.tambah');
     }
-    public function detailakun()
+    public function detailakun($id)
     {
-        return view('admin.master.akun.detail');
+        $user = User::findOrFail($id);
+        return view('admin.master.akun.detail', compact('user'));
     }
     public function editakun($id)
     {
@@ -91,7 +93,7 @@ class AdminController extends Controller
                 $user->password = Hash::make($request->password);
             }
             $user->save();
-            return response()->json(['success' => 'Akun berhasil dibuat.'], 200);
+            return redirect()->route('akun')->with('success', 'Akun berhasil diperbaharui');
         }
 
         // proses tambah akun
@@ -159,7 +161,8 @@ class AdminController extends Controller
     // periode
     public function periode()
     {
-        return view('admin.master.periode.index');
+        $periode = Periode::all();
+        return view('admin.master.periode.index', compact('periode'));
     }
     public function tambahperiode()
     {
@@ -168,5 +171,84 @@ class AdminController extends Controller
     public function detailperiode()
     {
         return view('admin.master.periode.detail');
+    }
+    public function postperiode(Request $request)
+    {
+        $request->validate([
+            'tahun' => 'required',
+        ]);
+
+        // Pengecekan apakah STB/NIDN sudah ada di database
+        $cektahun = Periode::where('tahun', $request->tahun)->first();
+        if ($cektahun && !$request->id) {
+            return redirect()->back()->withErrors([
+                'tahun' => 'Periode sudah terdaftar'
+            ])->withInput();
+        }
+
+        // proses edit
+        if ($request->id) {
+            $user = Periode::findOrFail($request->id);
+            $user->tahun = $request->tahun;
+            $user->save();
+            return redirect()->route('periode')->with('success', 'Akun berhasil diperbaharui');
+        }
+
+        // proses tambah akun
+        $user = new Periode();
+        $user->tahun = $request->tahun;
+        $user->save();
+
+        return redirect()->route('periode')->with('success', 'Akun berhasil dibuat');
+    }
+
+    public function updateperiode(Request $request)
+    {
+        try {
+            $periode = Periode::findOrFail($request->id);
+
+            if ($request->status === 'aktif') {
+                // Set all other periods to nonaktif
+                Periode::where('id', '!=', $request->id)
+                    ->update(['status' => 'nonaktif']);
+
+                // Set this period to aktif
+                $periode->status = 'aktif';
+            } else {
+                // Check if this is the only active period
+                $activeCount = Periode::where('status', 'aktif')->count();
+                if ($activeCount <= 1 && $periode->status === 'aktif') {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Harus ada minimal satu periode yang aktif!'
+                    ]);
+                }
+                $periode->status = 'nonaktif';
+            }
+
+            $periode->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status berhasil diperbarui'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui status'
+            ], 500);
+        }
+    }
+    public function hapusperiode($id)
+    {
+        $user = Periode::find($id);
+
+        if ($user) {
+            $user->delete(); // Hapus data
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+
+        // Jika data tidak ditemukan
+        return response()->json(['message' => 'User not found.'], 404);
     }
 }
