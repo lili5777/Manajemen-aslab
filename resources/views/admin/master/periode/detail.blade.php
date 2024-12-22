@@ -21,6 +21,10 @@
                                         <h6>{{ $periode->tahun }}</h6>
                                     </li>
                                     <li>
+                                        <h4 class="fw-bold">Semester</h4>
+                                        <h6>{{ $periode->semester }}</h6>
+                                    </li>
+                                    <li>
                                         <h4 class="fw-bold">Status</h4>
                                         <h6>{{ $periode->status }}</h6>
                                     </li>

@@ -116,6 +116,7 @@
                                         </label>
                                     </th>
                                     <th>Periode</th>
+                                    <th>Semester</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -130,6 +131,7 @@
                                             </label>
                                         </td>
                                         <td>{{ $p->tahun }}</td>
+                                        <td>{{ $p->semester }}</td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input type="checkbox" class="form-check-input status-toggle"

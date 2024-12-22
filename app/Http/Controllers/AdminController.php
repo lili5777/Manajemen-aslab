@@ -305,13 +305,19 @@ class AdminController extends Controller
     {
         $request->validate([
             'tahun' => 'required',
+            'semester' => 'required',
         ]);
 
         // Pengecekan apakah STB/NIDN sudah ada di database
-        $cektahun = Periode::where('tahun', $request->tahun)->first();
+        $cektahun =
+            Periode::where('tahun', $request->tahun)
+            ->where('semester', $request->semester)
+            ->first();
+
         if ($cektahun && !$request->id) {
             return redirect()->back()->withErrors([
-                'tahun' => 'Periode sudah terdaftar'
+                'tahun' => 'Periode sudah terdaftar',
+                'semester' => 'Semester sudah terdaftar',
             ])->withInput();
         }
 
@@ -319,6 +325,7 @@ class AdminController extends Controller
         if ($request->id) {
             $user = Periode::findOrFail($request->id);
             $user->tahun = $request->tahun;
+            $user->semester = $request->semester;
             $user->save();
             return redirect()->route('periode')->with('success', 'Akun berhasil diperbaharui');
         }
@@ -326,6 +333,7 @@ class AdminController extends Controller
         // proses tambah akun
         $user = new Periode();
         $user->tahun = $request->tahun;
+        $user->semester = $request->semester;
         $user->save();
 
         return redirect()->route('periode')->with('success', 'Akun berhasil dibuat');

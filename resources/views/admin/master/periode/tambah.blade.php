@@ -25,6 +25,16 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Semester</label>
+                                    <input type="text" name="semester" required
+                                        value="{{ isset($periode) ? $periode->semester : '' }}">
+                                    @error('semester')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="col-lg-12">
                                 <button type="submit" class="btn btn-submit me-2">Submit</button>
                                 <a href="{{ route('periode') }}" class="btn btn-cancel">Cancel</a>
