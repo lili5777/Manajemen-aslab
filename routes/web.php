@@ -47,7 +47,9 @@ Route::get('admin/asdos/detail', [AdminController::class, 'detailasdos'])->name(
 Route::get('admin/dosen', [AdminController::class, 'dosen'])->name('dosen');
 Route::get('admin/dosen/tambah', [AdminController::class, 'tambahdosen'])->name('tambahdosen');
 Route::post('admin/dosen/tambah', [AdminController::class, 'postdosen'])->name('postdosen');
-Route::get('admin/dosen/detail', [AdminController::class, 'detaildosen'])->name('detaildosen');
+Route::get('admin/dosen/detail/{id}', [AdminController::class, 'detaildosen'])->name('detaildosen');
+Route::get('admin/dosen/edit/{id}', [AdminController::class, 'editdosen'])->name('editdosen');
+Route::delete('admin/dosen/hapus/{id}', [AdminController::class, 'hapusdosen'])->name('hapusdosen');
 
 
 // matkul

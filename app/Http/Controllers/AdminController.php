@@ -145,7 +145,8 @@ class AdminController extends Controller
     }
     public function detaildosen($id)
     {
-        return view('admin.master.dosen.detail');
+        $dosen = Dosen::findOrFail($id);
+        return view('admin.master.dosen.detail', compact('dosen'));
     }
     public function hapusdosen($id)
     {
@@ -180,12 +181,6 @@ class AdminController extends Controller
             $namaFoto = 'foto_dosen_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->foto->getClientOriginalExtension();
             $request->foto->move(public_path('img/dosen'), $namaFoto);
         }
-        // dd([
-        //     'namaFoto' => $namaFoto,
-        //     'hasFile' => $request->hasFile('foto'),
-        //     'file' => $request->file('foto'),
-        //     'allRequest' => $request->all()
-        // ]);
 
         // proses edit
         if ($request->id) {

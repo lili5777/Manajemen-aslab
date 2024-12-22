@@ -149,13 +149,14 @@
                                         <td>{{ $d->nidn }}</td>
                                         <td>{{ $d->no_wa }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detaildosen') }}">
+                                            <a class="me-3" href="{{ route('detaildosen', $d->id) }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
                                             </a>
-                                            <a class="me-3" href="{{ route('tambahdosen') }}">
+                                            <a class="me-3" href="{{ route('editdosen', $d->id) }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
-                                            <a class="confirm-text" href="javascript:void(0);">
+                                            <a class="confirm-text" href="javascript:void(0);"
+                                                data-url="{{ route('hapusdosen', $d->id) }}">
                                                 <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
                                             </a>
                                         </td>

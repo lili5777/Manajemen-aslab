@@ -13,6 +13,7 @@
                 <div class="card-body">
                     <form action="{{ route('postmatkul') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="id" value="{{ isset($matkul) ? $matkul->id : '' }}">
                         <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">

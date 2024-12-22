@@ -13,35 +13,35 @@
                 <div class="card-body">
                     <form action="{{ route('postdosen') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-
+                        <input type="hidden" name="id" value="{{ isset($dosen) ? $dosen->id : '' }}">
                         <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Nama</label>
-                                    <input type="text" name="nama">
+                                    <input type="text" name="nama" value="{{ isset($dosen) ? $dosen->nama : '' }}">
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Email</label>
-                                    <input type="text" name="email">
+                                    <input type="text" name="email" value="{{ isset($dosen) ? $dosen->email : '' }}">
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>NIDN</label>
-                                    <input type="text" name="nidn">
+                                    <input type="text" name="nidn" value="{{ isset($dosen) ? $dosen->nidn : '' }}">
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>No WA</label>
-                                    <input type="text" name="no_wa">
+                                    <input type="text" name="no_wa" value="{{ isset($dosen) ? $dosen->no_wa : '' }}">
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <div class="form-group">
-                                    <label> Product Image</label>
+                                    <label> Foto</label>
                                     <div class="image-upload">
                                         <input type="file" name="foto">
                                         <div class="image-uploads">
