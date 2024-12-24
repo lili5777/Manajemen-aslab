@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class InputNilai extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'id_pendaftar',
+        'kode',
+        'nama_matkul',
+        'sks',
+        'nilai'
+    ];
 }

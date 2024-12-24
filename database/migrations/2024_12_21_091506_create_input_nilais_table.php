@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('nama_matkul');
             $table->string('sks');
             $table->string('nilai');
-            $table->string('ipk');
             $table->timestamps();
         });
     }

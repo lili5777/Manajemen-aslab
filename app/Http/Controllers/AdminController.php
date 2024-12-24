@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dosen;
+use App\Models\InputNilai;
 use App\Models\Matkul;
 use App\Models\Pendaftar;
 use App\Models\Periode;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Smalot\PdfParser\Parser;
 
 class AdminController extends Controller
 {
@@ -45,7 +47,7 @@ class AdminController extends Controller
             'ttl' => 'required|date',
             'tempat_lahir' => 'required|string|max:255',
             'no_wa' => 'required|string|max:15',
-            'foto' => 'nullable|image|max:10240', // Maksimal 10MB
+            'foto' => 'nullable|image|max:10240',
             'transkip' => 'required|file|max:10240',
             'surat_pernyataan' => 'required|file|max:10240',
             'surat_rekomendasi' => 'required|file|max:10240',
@@ -58,7 +60,7 @@ class AdminController extends Controller
         }
 
         // Proses upload file
-        $namaFoto = null;
+        // $namaFoto = null;
         if ($request->hasFile('foto')) {
             $namaFoto = 'foto_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->foto->getClientOriginalExtension();
             $request->foto->move(public_path('img/asdos'), $namaFoto);
@@ -68,6 +70,7 @@ class AdminController extends Controller
         if ($request->hasFile('transkip')) {
             $namaTranskip = 'transkip_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->transkip->getClientOriginalExtension();
             $request->transkip->move(public_path('file/transkip'), $namaTranskip);
+            $transkipPath = public_path('file/transkip/' . $namaTranskip);
         }
 
         $namaPernyataan = null;
@@ -100,6 +103,23 @@ class AdminController extends Controller
         $pendaftar->status = "belum diseleksi";
         $pendaftar->save();
 
+        if (isset($transkipPath) && file_exists($transkipPath)) {
+            $pdfParser = new Parser();
+            $pdf = $pdfParser->parseFile($transkipPath);
+            $text = $pdf->getText();
+
+            preg_match_all('/(\d+)\s+([A-Z0-9-]+)\s+([^0-9\n]+)\s+(\d+)\s+([A-Z+-]+)\s+/', $text, $matches, PREG_SET_ORDER);
+
+            foreach ($matches as $match) {
+                InputNilai::create([
+                    'id_pendaftar' => $pendaftar->id,
+                    'kode' => $match[2],
+                    'nama_matkul' => trim($match[3]),
+                    'sks' => $match[4],
+                    'nilai' => $match[5]
+                ]);
+            }
+        }
         // Redirect dengan pesan sukses
         return redirect()->route('pendaftar')->with('success', 'Pendaftar berhasil ditambahkan.');
     }
