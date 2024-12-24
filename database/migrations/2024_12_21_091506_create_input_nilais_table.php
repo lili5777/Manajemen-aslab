@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('input_nilais', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_pendaftar')->constrained('pendaftars', 'id')->onDelete('cascade');
+            $table->string('kode');
+            $table->string('nama_matkul');
+            $table->string('sks');
+            $table->string('nilai');
+            $table->string('ipk');
             $table->timestamps();
         });
     }

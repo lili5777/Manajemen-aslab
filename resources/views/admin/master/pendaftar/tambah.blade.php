@@ -11,127 +11,98 @@
 
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Product Name</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Category</label>
-                                <select class="select">
-                                    <option>Choose Category</option>
-                                    <option>Computers</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Sub Category</label>
-                                <select class="select">
-                                    <option>Choose Sub Category</option>
-                                    <option>Fruits</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Brand</label>
-                                <select class="select">
-                                    <option>Choose Brand</option>
-                                    <option>Brand</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Unit</label>
-                                <select class="select">
-                                    <option>Choose Unit</option>
-                                    <option>Unit</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>SKU</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Minimum Qty</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Quantity</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Tax</label>
-                                <select class="select">
-                                    <option>Choose Tax</option>
-                                    <option>2%</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Discount Type</label>
-                                <select class="select">
-                                    <option>Percentage</option>
-                                    <option>10%</option>
-                                    <option>20%</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Price</label>
-                                <input type="text">
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label> Status</label>
-                                <select class="select">
-                                    <option>Closed</option>
-                                    <option>Open</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label> Product Image</label>
-                                <div class="image-upload">
-                                    <input type="file">
-                                    <div class="image-uploads">
-                                        <img src="{{ asset('img/icons/upload.svg') }}" alt="img">
-                                        <h4>Drag and drop a file to upload</h4>
-                                    </div>
+                    <form action="{{ route('postpendaftar') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Akun</label>
+                                    <select name="id_user" class="select" required>
+                                        <option value="">Pilih Akun</option>
+                                        @foreach ($user as $a)
+                                            <option value="{{ $a->id }}">{{ $a->name }}</option>
+                                        @endforeach
+
+                                    </select>
                                 </div>
                             </div>
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Nama</label>
+                                    <input type="text" name="nama" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Stambuk</label>
+                                    <input type="text" name="stb" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Alamat</label>
+                                    <input type="text" name="alamat" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Jurusan</label>
+                                    <input type="text" name="jurusan" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Tempat Lahir</label>
+                                    <input type="text" name="tempat_lahir" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Tanggal Lahir</label>
+                                    <input type="date" name="ttl" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>No WhatsApp</label>
+                                    <input type="text" name="no_wa" class="form-control" required>
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="col-lg-12">
-                            <a href="javascript:void(0);" class="btn btn-submit me-2">Submit</a>
-                            <a href="{{ route('pendaftar') }}" class="btn btn-cancel">Cancel</a>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12 col-12">
+                                <div class="form-group">
+                                    <label>Foto</label>
+                                    <input type="file" name="foto" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12 col-12">
+                                <div class="form-group">
+                                    <label>Transkip</label>
+                                    <input type="file" name="transkip" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12 col-12">
+                                <div class="form-group">
+                                    <label>Surat Pernyataan</label>
+                                    <input type="file" name="surat_pernyataan" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-sm-12 col-12">
+                                <div class="form-group">
+                                    <label>Surat Rekomendasi</label>
+                                    <input type="file" name="surat_rekomendasi" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <button type="submit" class="btn btn-submit me-2">Submit</button>
+                                <a href="{{ route('pendaftar') }}" class="btn btn-cancel">Cancel</a>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
-
         </div>
     </div>
 @endsection

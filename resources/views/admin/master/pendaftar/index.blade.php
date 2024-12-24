@@ -115,50 +115,52 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Product Name</th>
-                                    <th>SKU</th>
-                                    <th>Category </th>
-                                    <th>Brand</th>
-                                    <th>price</th>
-                                    <th>Unit</th>
-                                    <th>Qty</th>
-                                    <th>Created By</th>
+                                    <th>Foto</th>
+                                    <th>Nama</th>
+                                    <th>Stambuk </th>
+                                    <th>Jurusan</th>
+                                    <th>periode</th>
+                                    <th>status</th>
+                                    <th>Transkip</th>
+                                    <th>Matkul</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ asset('img/product/product1.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Macbook pro</a>
-                                    </td>
-                                    <td>PT001</td>
-                                    <td>Computers</td>
-                                    <td>N/D</td>
-                                    <td>1500.00</td>
-                                    <td>pc</td>
-                                    <td>100.00</td>
-                                    <td>Admin</td>
-                                    <td>
-                                        <a class="me-3" href="{{ route('detailpendaftar') }}">
-                                            <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                        </a>
-                                        <a class="me-3" href="{{ route('tambahpendaftar') }}">
-                                            <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                        </a>
-                                        <a class="confirm-text" href="javascript:void(0);">
-                                            <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
-                                        </a>
-                                    </td>
-                                </tr>
+                                @foreach ($pendaftar as $p)
+                                    <tr>
+                                        <td>
+                                            <label class="checkboxs">
+                                                <input type="checkbox">
+                                                <span class="checkmarks"></span>
+                                            </label>
+                                        </td>
+                                        <td class="productimgname">
+                                            <a href="javascript:void(0);" class="product-img">
+                                                <img src="{{ asset('img/asdos/' . $p->foto) }}" alt="asdos">
+                                            </a>
+                                        </td>
+                                        <td>{{ $p->nama }}</td>
+                                        <td>{{ $p->stb }}</td>
+                                        <td>{{ $p->jurusan }}</td>
+                                        <td>{{ $p->periode }}</td>
+                                        <td>{{ $p->status }}</td>
+                                        <td><a href="" class="btn btn-primary text-white">Lihat Transkip</a></td>
+                                        <td><a href="" class="btn btn-primary text-white">Lihat Matkul</a></td>
+                                        <td>
+                                            <a class="me-3" href="{{ route('detailpendaftar') }}">
+                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
+                                            </a>
+                                            <a class="me-3" href="{{ route('tambahpendaftar') }}">
+                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
+                                            </a>
+                                            <a class="confirm-text" href="javascript:void(0);">
+                                                <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
                             </tbody>
                         </table>
                     </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use App\Models\Matkul;
+use App\Models\Pendaftar;
 use App\Models\Periode;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -20,16 +21,89 @@ class AdminController extends Controller
     // pendaftar
     public function pendaftar()
     {
-        return view('admin.master.pendaftar.index');
+        $pendaftar = Pendaftar::all();
+        return view('admin.master.pendaftar.index', compact('pendaftar'));
     }
     public function tambahpendaftar()
     {
-        return view('admin.master.pendaftar.tambah');
+        $user = User::all();
+        return view('admin.master.pendaftar.tambah', compact('user'));
     }
     public function detailpendaftar()
     {
         return view('admin.master.pendaftar.detail');
     }
+    public function postpendaftar(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'id_user' => 'required|exists:users,id',
+            'stb' => 'required|string|unique:pendaftars,stb',
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'jurusan' => 'required|string|max:255',
+            'ttl' => 'required|date',
+            'tempat_lahir' => 'required|string|max:255',
+            'no_wa' => 'required|string|max:15',
+            'foto' => 'nullable|image|max:10240', // Maksimal 10MB
+            'transkip' => 'required|file|max:10240',
+            'surat_pernyataan' => 'required|file|max:10240',
+            'surat_rekomendasi' => 'required|file|max:10240',
+        ]);
+
+        // Ambil periode aktif
+        $periode = Periode::where('status', 'aktif')->first();
+        if (!$periode) {
+            return redirect()->back()->withErrors(['periode' => 'Tidak ada periode aktif yang ditemukan']);
+        }
+
+        // Proses upload file
+        $namaFoto = null;
+        if ($request->hasFile('foto')) {
+            $namaFoto = 'foto_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->foto->getClientOriginalExtension();
+            $request->foto->move(public_path('img/asdos'), $namaFoto);
+        }
+
+        $namaTranskip = null;
+        if ($request->hasFile('transkip')) {
+            $namaTranskip = 'transkip_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->transkip->getClientOriginalExtension();
+            $request->transkip->move(public_path('file/transkip'), $namaTranskip);
+        }
+
+        $namaPernyataan = null;
+        if ($request->hasFile('surat_pernyataan')) {
+            $namaPernyataan = 'surat_pernyataan_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->surat_pernyataan->getClientOriginalExtension();
+            $request->surat_pernyataan->move(public_path('file/surat_pernyataan'), $namaPernyataan);
+        }
+
+        $namaRekomendasi = null;
+        if ($request->hasFile('surat_rekomendasi')) {
+            $namaRekomendasi = 'surat_rekomendasi_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->surat_rekomendasi->getClientOriginalExtension();
+            $request->surat_rekomendasi->move(public_path('file/surat_rekomendasi'), $namaRekomendasi);
+        }
+
+        // Simpan data ke tabel pendaftar
+        $pendaftar = new Pendaftar();
+        $pendaftar->id_user = $request->id_user;
+        $pendaftar->stb = $request->stb;
+        $pendaftar->nama = $request->nama;
+        $pendaftar->alamat = $request->alamat;
+        $pendaftar->jurusan = $request->jurusan;
+        $pendaftar->ttl = $request->ttl;
+        $pendaftar->tempat_lahir = $request->tempat_lahir;
+        $pendaftar->no_wa = $request->no_wa;
+        $pendaftar->foto = $namaFoto;
+        $pendaftar->transkip = $namaTranskip;
+        $pendaftar->surat_pernyataan = $namaPernyataan;
+        $pendaftar->surat_rekomendasi = $namaRekomendasi;
+        $pendaftar->periode = $periode->tahun;
+        $pendaftar->status = "belum diseleksi";
+        $pendaftar->save();
+
+        // Redirect dengan pesan sukses
+        return redirect()->route('pendaftar')->with('success', 'Pendaftar berhasil ditambahkan.');
+    }
+
 
 
 

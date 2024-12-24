@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('stb');
             $table->string('alamat');
+            $table->string('jurusan');
             $table->date('ttl');
             $table->string('tempat_lahir');
             $table->string('no_wa');
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->string('foto');
             $table->string('transkip');
             $table->string('periode');
+            $table->string('status');
             $table->timestamps();
         });
     }

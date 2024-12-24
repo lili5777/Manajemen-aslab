@@ -13,12 +13,15 @@ class Pendaftar extends Model
         'nama',
         'stb',
         'alamat',
+        'jurusan',
         'ttl',
         'tempat_lahir',
         'no_wa',
         'surat_pernyataan',
         'surat_rekomendasi',
         'foto',
-        'transkip'
+        'transkip',
+        'periode',
+        'status',
     ];
 }

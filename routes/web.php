@@ -26,6 +26,7 @@ Route::get('admin', [AdminController::class, 'index'])->name('admin');
 Route::get('admin/pendaftar', [AdminController::class, 'pendaftar'])->name('pendaftar');
 Route::get('admin/pendaftar/tambah', [AdminController::class, 'tambahpendaftar'])->name('tambahpendaftar');
 Route::get('admin/pendaftar/detail', [AdminController::class, 'detailpendaftar'])->name('detailpendaftar');
+Route::post('admin/pendaftar/tambah', [AdminController::class, 'postpendaftar'])->name('postpendaftar');
 
 
 // akun

@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AkunSeeder::class,
             MatkulSeeder::class,
+            PeriodeSeeder::class,
         ]);
     }
 }
