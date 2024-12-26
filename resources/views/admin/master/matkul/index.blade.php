@@ -132,9 +132,6 @@
                                         <td>{{ $m->kode }}</td>
                                         <td>{{ $m->nama }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detailmatkul', $m->id) }}">
-                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                            </a>
                                             <a class="me-3" href="{{ route('editmatkul', $m->id) }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>

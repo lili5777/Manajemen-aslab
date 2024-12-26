@@ -136,9 +136,6 @@
                                         <td>{{ $t->sks }}</td>
                                         <td>{{ $t->nilai }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detailasdos') }}">
-                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                            </a>
                                             <a class="me-3" href="{{ route('tambahasdos') }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
