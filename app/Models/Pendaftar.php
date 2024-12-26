@@ -23,5 +23,6 @@ class Pendaftar extends Model
         'transkip',
         'periode',
         'status',
+        'ipk'
     ];
 }

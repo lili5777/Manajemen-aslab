@@ -4,8 +4,8 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Product Details</h4>
-                    <h6>Full details of a product</h6>
+                    <h4>Pendaftar</h4>
+                    <h6>Data Pendaftar</h6>
                 </div>
             </div>
 
@@ -13,66 +13,79 @@
                 <div class="col-lg-8 col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="bar-code-view">
-                                <img src="{{ asset('img/barcode1.png') }}" alt="barcode">
-                                <a class="printimg">
-                                    <img src="{{ asset('img/icons/printer.svg') }}" alt="print">
-                                </a>
-                            </div>
+
                             <div class="productdetails">
                                 <ul class="product-bar">
                                     <li>
-                                        <h4>Product</h4>
-                                        <h6>Macbook pro </h6>
+                                        <h4>Nama</h4>
+                                        <h6>{{ $p->nama }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Category</h4>
-                                        <h6>Computers</h6>
+                                        <h4>Stambuk</h4>
+                                        <h6>{{ $p->stb }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Sub Category</h4>
-                                        <h6>None</h6>
+                                        <h4>Alamat</h4>
+                                        <h6>{{ $p->alamat }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Brand</h4>
-                                        <h6>None</h6>
+                                        <h4>Jurusan</h4>
+                                        <h6>{{ $p->jurusan }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Unit</h4>
-                                        <h6>Piece</h6>
+                                        <h4>Tempat Tanggal Lahir</h4>
+                                        <h6>{{ $p->tempat_lahir }}, {{ $p->ttl }}</h6>
                                     </li>
                                     <li>
-                                        <h4>SKU</h4>
-                                        <h6>PT0001</h6>
+                                        <h4>No WA</h4>
+                                        <h6>{{ $p->no_wa }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Minimum Qty</h4>
-                                        <h6>5</h6>
+                                        <h4>Periode</h4>
+                                        <h6>{{ $p->periode }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Quantity</h4>
-                                        <h6>50</h6>
-                                    </li>
-                                    <li>
-                                        <h4>Tax</h4>
-                                        <h6>0.00 %</h6>
-                                    </li>
-                                    <li>
-                                        <h4>Discount Type</h4>
-                                        <h6>Percentage</h6>
-                                    </li>
-                                    <li>
-                                        <h4>Price</h4>
-                                        <h6>1500.00</h6>
+                                        <h4>IPK</h4>
+                                        <h6>{{ $p->ipk }}</h6>
                                     </li>
                                     <li>
                                         <h4>Status</h4>
-                                        <h6>Active</h6>
+                                        <h6>{{ $p->status }}</h6>
                                     </li>
                                     <li>
-                                        <h4>Description</h4>
-                                        <h6>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                                            Ipsum has been the industry's standard dummy text ever since the 1500s,</h6>
+                                        <h4>Transkip Nilai</h4>
+                                        @if ($p->transkip)
+                                            <a href="{{ asset('file/transkip/' . $p->transkip) }}"
+                                                class="btn btn-primary btn-sm px-3 my-2 mx-2" target="_blank">
+                                                Lihat
+                                            </a>
+                                        @else
+                                            <b class="text-red">Tidak Ada</b>
+                                        @endif
+
+                                    </li>
+                                    <li>
+                                        <h4>Surat Rekomendasi</h4>
+                                        @if ($p->surat_pernyataan)
+                                            <a href="{{ asset('file/surat_rekomendasi/' . $p->surat_rekomendasi) }}"
+                                                class="btn btn-primary btn-sm px-3 my-2 mx-2" target="_blank">
+                                                Lihat
+                                            </a>
+                                        @else
+                                            <b class="text-red">Tidak Ada</b>
+                                        @endif
+
+                                    </li>
+                                    <li>
+                                        <h4>Surat Pernyataan</h4>
+                                        @if ($p->surat_pernyataan)
+                                            <a href="{{ asset('file/surat_pernyataan/' . $p->surat_pernyataan) }}"
+                                                class="btn btn-primary btn-sm px-3 my-2 mx-2" target="_blank">
+                                                Lihat
+                                            </a>
+                                        @else
+                                            <b class="text-red">Tidak Ada</b>
+                                        @endif
                                     </li>
                                 </ul>
                             </div>
@@ -85,14 +98,9 @@
                             <div class="slider-product-details">
                                 <div class="owl-carousel owl-theme product-slide">
                                     <div class="slider-product">
-                                        <img src="{{ asset('img/product/product69.jpg') }}" alt="img">
-                                        <h4>macbookpro.jpg</h4>
-                                        <h6>581kb</h6>
-                                    </div>
-                                    <div class="slider-product">
-                                        <img src="{{ asset('img/product/product69.jpg') }}" alt="img">
-                                        <h4>macbookpro.jpg</h4>
-                                        <h6>581kb</h6>
+                                        <img src="{{ asset('img/asdos/' . $p->foto) }}" alt="img">
+                                        <h4>{{ $p->foto }}</h4>
+
                                     </div>
                                 </div>
                             </div>

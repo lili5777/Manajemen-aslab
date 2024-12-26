@@ -31,9 +31,10 @@ class AdminController extends Controller
         $user = User::all();
         return view('admin.master.pendaftar.tambah', compact('user'));
     }
-    public function detailpendaftar()
+    public function detailpendaftar($id)
     {
-        return view('admin.master.pendaftar.detail');
+        $p = Pendaftar::findOrFail($id);
+        return view('admin.master.pendaftar.detail', compact('p'));
     }
     public function postpendaftar(Request $request)
     {
@@ -108,20 +109,39 @@ class AdminController extends Controller
             $pdf = $pdfParser->parseFile($transkipPath);
             $text = $pdf->getText();
 
+            preg_match('/Indeks Prestasi Komulatif\s+([\d.]+)/', $text, $matches);
+            if (!empty($matches[1])) {
+                $ipk = $matches[1];
+                $pendaftar->ipk = $ipk;
+                $pendaftar->save();
+            }
+
             preg_match_all('/(\d+)\s+([A-Z0-9-]+)\s+([^0-9\n]+)\s+(\d+)\s+([A-Z+-]+)\s+/', $text, $matches, PREG_SET_ORDER);
 
             foreach ($matches as $match) {
-                InputNilai::create([
-                    'id_pendaftar' => $pendaftar->id,
-                    'kode' => $match[2],
-                    'nama_matkul' => trim($match[3]),
-                    'sks' => $match[4],
-                    'nilai' => $match[5]
-                ]);
+                if (strpos($match[3], 'Jumlah SKS') === false && strpos($match[3], 'Indeks Prestasi') === false) {
+                    InputNilai::create([
+                        'id_pendaftar' => $pendaftar->id,
+                        'kode' => $match[2],
+                        'nama_matkul' => trim($match[3]),
+                        'sks' => $match[4],
+                        'nilai' => $match[5],
+                    ]);
+                }
             }
         }
         // Redirect dengan pesan sukses
         return redirect()->route('pendaftar')->with('success', 'Pendaftar berhasil ditambahkan.');
+    }
+
+
+
+
+    // transkip nilai
+    public function transkip($id)
+    {
+        $transkip = InputNilai::where('id_pendaftar', $id)->get();
+        return view('admin.master.transkip.index', compact('transkip'));
     }
 
 

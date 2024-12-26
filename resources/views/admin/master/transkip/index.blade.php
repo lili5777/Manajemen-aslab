@@ -4,12 +4,12 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Data Pendaftar</h4>
-                    <h6>Kelola Pendaftar</h6>
+                    <h4>Data Transkip</h4>
+                    <h6>Kelola Transkip</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ route('tambahpendaftar') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah Pendaftar</a>
+                    <a href="{{ route('tambahasdos') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
+                            alt="img" class="me-1">Tambah Nilai</a>
                 </div>
             </div>
 
@@ -115,19 +115,15 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Foto</th>
-                                    <th>Nama</th>
-                                    <th>Stambuk </th>
-                                    <th>Jurusan</th>
-                                    <th>periode</th>
-                                    <th>status</th>
-                                    <th>Transkip</th>
-                                    <th>Matkul</th>
+                                    <th>KODE</th>
+                                    <th>MATKUL</th>
+                                    <th>SKS</th>
+                                    <th>NILAI</th>/
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($pendaftar as $p)
+                                @foreach ($transkip as $t)
                                     <tr>
                                         <td>
                                             <label class="checkboxs">
@@ -135,26 +131,15 @@
                                                 <span class="checkmarks"></span>
                                             </label>
                                         </td>
-                                        <td class="productimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('img/asdos/' . $p->foto) }}" alt="asdos">
-                                            </a>
-                                        </td>
-                                        <td>{{ $p->nama }}</td>
-                                        <td>{{ $p->stb }}</td>
-                                        <td>{{ $p->jurusan }}</td>
-                                        <td>{{ $p->periode }}</td>
-                                        <td>{{ $p->status }}</td>
-                                        <td><a href="{{ route('transkip', $p->id) }}"
-                                                class="btn btn-primary text-white btn-sm">Lihat Transkip</a>
-                                        </td>
-                                        <td><a href="" class="btn btn-primary text-white btn-sm">Lihat Matkul</a>
-                                        </td>
+                                        <td>{{ $t->kode }}</td>
+                                        <td>{{ $t->nama_matkul }}</td>
+                                        <td>{{ $t->sks }}</td>
+                                        <td>{{ $t->nilai }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detailpendaftar', $p->id) }}">
+                                            <a class="me-3" href="{{ route('detailasdos') }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
                                             </a>
-                                            <a class="me-3" href="{{ route('tambahpendaftar') }}">
+                                            <a class="me-3" href="{{ route('tambahasdos') }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
                                             <a class="confirm-text" href="javascript:void(0);">

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('transkip');
             $table->string('periode');
             $table->string('status');
+            $table->float('ipk')->nullable();
             $table->timestamps();
         });
     }

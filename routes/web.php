@@ -25,9 +25,12 @@ Route::get('admin', [AdminController::class, 'index'])->name('admin');
 // pendaftar
 Route::get('admin/pendaftar', [AdminController::class, 'pendaftar'])->name('pendaftar');
 Route::get('admin/pendaftar/tambah', [AdminController::class, 'tambahpendaftar'])->name('tambahpendaftar');
-Route::get('admin/pendaftar/detail', [AdminController::class, 'detailpendaftar'])->name('detailpendaftar');
+Route::get('admin/pendaftar/detail/{id}', [AdminController::class, 'detailpendaftar'])->name('detailpendaftar');
 Route::post('admin/pendaftar/tambah', [AdminController::class, 'postpendaftar'])->name('postpendaftar');
 
+
+//transkip 
+Route::get('admin/pendaftar/transkip/{id}', [AdminController::class, 'transkip'])->name('transkip');
 
 // akun
 Route::get('admin/akun', [AdminController::class, 'akun'])->name('akun');
