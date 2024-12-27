@@ -31,6 +31,12 @@ class AdminController extends Controller
         $user = User::all();
         return view('admin.master.pendaftar.tambah', compact('user'));
     }
+    public function editpendaftar($id)
+    {
+        $pendaftar = Pendaftar::findOrFail($id);
+        $user = User::all();
+        return view('admin.master.pendaftar.tambah', compact('user', 'pendaftar'));
+    }
     public function detailpendaftar($id)
     {
         $p = Pendaftar::findOrFail($id);
@@ -39,9 +45,9 @@ class AdminController extends Controller
     public function postpendaftar(Request $request)
     {
         // Validasi input
-        $request->validate([
+        $rules = [
             'id_user' => 'required|exists:users,id',
-            'stb' => 'required|string|unique:pendaftars,stb',
+            'stb' => 'required|string|unique:pendaftars,stb,' . ($request->id ?? 'NULL') . ',id',
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string',
             'jurusan' => 'required|string|max:255',
@@ -49,10 +55,57 @@ class AdminController extends Controller
             'tempat_lahir' => 'required|string|max:255',
             'no_wa' => 'required|string|max:15',
             'foto' => 'nullable|image|max:10240',
-            'transkip' => 'required|file|max:10240',
-            'surat_pernyataan' => 'required|file|max:10240',
-            'surat_rekomendasi' => 'required|file|max:10240',
-        ]);
+            'transkip' => 'nullable|file|max:10240',
+            'surat_pernyataan' => 'nullable|file|max:10240',
+            'surat_rekomendasi' => 'nullable|file|max:10240',
+        ];
+
+        // Only require files if we are creating a new pendaftar (not updating)
+        if (!$request->has('id')) {
+            $rules['transkip'] = 'required|file|max:10240';
+            $rules['surat_pernyataan'] = 'required|file|max:10240';
+            $rules['surat_rekomendasi'] = 'required|file|max:10240';
+        }
+
+        // Custom validation messages
+        $customMessages = [
+            'id_user.required' => 'Akun wajib dipilih.',
+            'id_user.exists' => 'Akun yang dipilih tidak valid.',
+            'stb.required' => 'Stambuk wajib diisi.',
+            'stb.string' => 'Stambuk harus berupa teks.',
+            'stb.unique' => 'Stambuk sudah terdaftar.',
+            'nama.required' => 'Nama wajib diisi.',
+            'nama.string' => 'Nama harus berupa teks.',
+            'nama.max' => 'Nama tidak boleh lebih dari 255 karakter.',
+            'alamat.required' => 'Alamat wajib diisi.',
+            'alamat.string' => 'Alamat harus berupa teks.',
+            'jurusan.required' => 'Jurusan wajib diisi.',
+            'jurusan.string' => 'Jurusan harus berupa teks.',
+            'jurusan.max' => 'Jurusan tidak boleh lebih dari 255 karakter.',
+            'ttl.required' => 'Tanggal lahir wajib diisi.',
+            'ttl.date' => 'Tanggal lahir harus berupa tanggal yang valid.',
+            'tempat_lahir.required' => 'Tempat lahir wajib diisi.',
+            'tempat_lahir.string' => 'Tempat lahir harus berupa teks.',
+            'tempat_lahir.max' => 'Tempat lahir tidak boleh lebih dari 255 karakter.',
+            'no_wa.required' => 'Nomor WhatsApp wajib diisi.',
+            'no_wa.string' => 'Nomor WhatsApp harus berupa teks.',
+            'no_wa.max' => 'Nomor WhatsApp tidak boleh lebih dari 15 karakter.',
+            'foto.image' => 'Foto harus berupa file gambar.',
+            'foto.max' => 'Ukuran foto tidak boleh lebih dari 10MB.',
+            'transkip.required' => 'Transkip wajib diunggah.',
+            'transkip.file' => 'Transkip harus berupa file.',
+            'transkip.max' => 'Ukuran file transkip tidak boleh lebih dari 10MB.',
+            'surat_pernyataan.required' => 'Surat Pernyataan wajib diunggah.',
+            'surat_pernyataan.file' => 'Surat Pernyataan harus berupa file.',
+            'surat_pernyataan.max' => 'Ukuran file Surat Pernyataan tidak boleh lebih dari 10MB.',
+            'surat_rekomendasi.required' => 'Surat Rekomendasi wajib diunggah.',
+            'surat_rekomendasi.file' => 'Surat Rekomendasi harus berupa file.',
+            'surat_rekomendasi.max' => 'Ukuran file Surat Rekomendasi tidak boleh lebih dari 10MB.',
+        ];
+
+        // Validate the input with custom messages
+        $request->validate($rules, $customMessages);
+
 
         // Ambil periode aktif
         $periode = Periode::where('status', 'aktif')->first();
@@ -60,34 +113,53 @@ class AdminController extends Controller
             return redirect()->back()->withErrors(['periode' => 'Tidak ada periode aktif yang ditemukan']);
         }
 
-        // Proses upload file
-        // $namaFoto = null;
+        // Inisialisasi nama file
+        $namaFoto = null;
+        $namaTranskip = null;
+        $namaPernyataan = null;
+        $namaRekomendasi = null;
+
+        // Jika proses edit, ambil data pendaftar
+        $pendaftar = $request->id ? Pendaftar::findOrFail($request->id) : new Pendaftar();
+
+        // Proses upload file baru dan hapus file lama jika ada
         if ($request->hasFile('foto')) {
+            if ($pendaftar->foto && file_exists(public_path('img/asdos/' . $pendaftar->foto))) {
+                unlink(public_path('img/asdos/' . $pendaftar->foto));
+            }
             $namaFoto = 'foto_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->foto->getClientOriginalExtension();
             $request->foto->move(public_path('img/asdos'), $namaFoto);
+            $pendaftar->foto = $namaFoto;
         }
 
-        $namaTranskip = null;
         if ($request->hasFile('transkip')) {
+            if ($pendaftar->transkip && file_exists(public_path('file/transkip/' . $pendaftar->transkip))) {
+                unlink(public_path('file/transkip/' . $pendaftar->transkip));
+            }
             $namaTranskip = 'transkip_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->transkip->getClientOriginalExtension();
             $request->transkip->move(public_path('file/transkip'), $namaTranskip);
-            $transkipPath = public_path('file/transkip/' . $namaTranskip);
+            $pendaftar->transkip = $namaTranskip;
         }
 
-        $namaPernyataan = null;
         if ($request->hasFile('surat_pernyataan')) {
+            if ($pendaftar->surat_pernyataan && file_exists(public_path('file/surat_pernyataan/' . $pendaftar->surat_pernyataan))) {
+                unlink(public_path('file/surat_pernyataan/' . $pendaftar->surat_pernyataan));
+            }
             $namaPernyataan = 'surat_pernyataan_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->surat_pernyataan->getClientOriginalExtension();
             $request->surat_pernyataan->move(public_path('file/surat_pernyataan'), $namaPernyataan);
+            $pendaftar->surat_pernyataan = $namaPernyataan;
         }
 
-        $namaRekomendasi = null;
         if ($request->hasFile('surat_rekomendasi')) {
+            if ($pendaftar->surat_rekomendasi && file_exists(public_path('file/surat_rekomendasi/' . $pendaftar->surat_rekomendasi))) {
+                unlink(public_path('file/surat_rekomendasi/' . $pendaftar->surat_rekomendasi));
+            }
             $namaRekomendasi = 'surat_rekomendasi_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->surat_rekomendasi->getClientOriginalExtension();
             $request->surat_rekomendasi->move(public_path('file/surat_rekomendasi'), $namaRekomendasi);
+            $pendaftar->surat_rekomendasi = $namaRekomendasi;
         }
 
-        // Simpan data ke tabel pendaftar
-        $pendaftar = new Pendaftar();
+        // Simpan data pendaftar
         $pendaftar->id_user = $request->id_user;
         $pendaftar->stb = $request->stb;
         $pendaftar->nama = $request->nama;
@@ -96,28 +168,29 @@ class AdminController extends Controller
         $pendaftar->ttl = $request->ttl;
         $pendaftar->tempat_lahir = $request->tempat_lahir;
         $pendaftar->no_wa = $request->no_wa;
-        $pendaftar->foto = $namaFoto;
-        $pendaftar->transkip = $namaTranskip;
-        $pendaftar->surat_pernyataan = $namaPernyataan;
-        $pendaftar->surat_rekomendasi = $namaRekomendasi;
         $pendaftar->periode = $periode->tahun;
         $pendaftar->status = "belum diseleksi";
         $pendaftar->save();
 
-        if (isset($transkipPath) && file_exists($transkipPath)) {
+        // Proses parsing transkip untuk mendapatkan IPK dan nilai
+        if ($namaTranskip) {
+            $transkipPath = public_path('file/transkip/' . $namaTranskip);
             $pdfParser = new Parser();
             $pdf = $pdfParser->parseFile($transkipPath);
             $text = $pdf->getText();
 
+            // Ambil IPK
             preg_match('/Indeks Prestasi Komulatif\s+([\d.]+)/', $text, $matches);
             if (!empty($matches[1])) {
-                $ipk = $matches[1];
-                $pendaftar->ipk = $ipk;
+                $pendaftar->ipk = $matches[1];
                 $pendaftar->save();
             }
 
-            preg_match_all('/(\d+)\s+([A-Z0-9-]+)\s+([^0-9\n]+)\s+(\d+)\s+([A-Z+-]+)\s+/', $text, $matches, PREG_SET_ORDER);
+            // Hapus nilai lama sebelum menambah nilai baru
+            InputNilai::where('id_pendaftar', $pendaftar->id)->delete();
 
+            // Ambil nilai matkul
+            preg_match_all('/(\d+)\s+([A-Z0-9-]+)\s+([^0-9\n]+)\s+(\d+)\s+([A-Z+-]+)/', $text, $matches, PREG_SET_ORDER);
             foreach ($matches as $match) {
                 if (strpos($match[3], 'Jumlah SKS') === false && strpos($match[3], 'Indeks Prestasi') === false) {
                     InputNilai::create([
@@ -130,8 +203,22 @@ class AdminController extends Controller
                 }
             }
         }
-        // Redirect dengan pesan sukses
-        return redirect()->route('pendaftar')->with('success', 'Pendaftar berhasil ditambahkan.');
+
+        return redirect()->route('pendaftar')->with('success', $request->id ? 'Pendaftar berhasil diupdate.' : 'Pendaftar berhasil ditambahkan.');
+    }
+
+
+    public function hapuspendaftar($id)
+    {
+        $user = Pendaftar::find($id);
+
+        if ($user) {
+            $user->delete(); // Hapus data
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+
+        // Jika data tidak ditemukan
+        return response()->json(['message' => 'User not found.'], 404);
     }
 
 

@@ -26,7 +26,9 @@ Route::get('admin', [AdminController::class, 'index'])->name('admin');
 Route::get('admin/pendaftar', [AdminController::class, 'pendaftar'])->name('pendaftar');
 Route::get('admin/pendaftar/tambah', [AdminController::class, 'tambahpendaftar'])->name('tambahpendaftar');
 Route::get('admin/pendaftar/detail/{id}', [AdminController::class, 'detailpendaftar'])->name('detailpendaftar');
+Route::get('admin/pendaftar/edit/{id}', [AdminController::class, 'editpendaftar'])->name('editpendaftar');
 Route::post('admin/pendaftar/tambah', [AdminController::class, 'postpendaftar'])->name('postpendaftar');
+Route::delete('admin/pendaftar/hapus/{id}', [AdminController::class, 'hapuspendaftar'])->name('hapuspendaftar');
 
 
 //transkip 

@@ -155,10 +155,11 @@
                                             <a class="me-3" href="{{ route('detailpendaftar', $p->id) }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
                                             </a>
-                                            <a class="me-3" href="{{ route('tambahpendaftar') }}">
+                                            <a class="me-3" href="{{ route('editpendaftar', $p->id) }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
-                                            <a class="confirm-text" href="javascript:void(0);">
+                                            <a class="confirm-text" href="javascript:void(0);"
+                                                data-url="{{ route('hapuspendaftar', $p->id) }}">
                                                 <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
                                             </a>
                                         </td>
