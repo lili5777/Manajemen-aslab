@@ -22,7 +22,7 @@
                     <a href="javascript:void(0);"><img src="{{ asset('img/icons/places.svg') }}" alt="img"><span>
                             Jadwal</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="newcountry.html">New Country</a></li>
+                        <li><a href="{{ route('jadwal') }}">Data Jadwal</a></li>
                         <li><a href="countrieslist.html">Countries list</a></li>
                         <li><a href="newstate.html">New State </a></li>
                         <li><a href="statelist.html">State list</a></li>

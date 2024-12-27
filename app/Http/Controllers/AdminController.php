@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dosen;
 use App\Models\InputNilai;
+use App\Models\Jadwal;
 use App\Models\Matkul;
 use App\Models\Pendaftar;
 use App\Models\Periode;
@@ -598,5 +599,20 @@ class AdminController extends Controller
 
         // Jika data tidak ditemukan
         return response()->json(['message' => 'User not found.'], 404);
+    }
+
+
+    public function jadwal()
+    {
+        $jadwal = Jadwal::all();
+
+        return view('admin.jadwal.index', compact('jadwal'));
+    }
+
+    public function tambahjadwal()
+    {
+        $matkul = Matkul::all();
+        $dosen = Dosen::all();
+        return view('admin.jadwal.tambah', compact('matkul', 'dosen'));
     }
 }

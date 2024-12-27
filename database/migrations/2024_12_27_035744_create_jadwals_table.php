@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('semester');
             $table->string('nama_matkul');
             $table->string('nama_dosen');
-            $table->string('asdos1');
-            $table->string('asdos2');
+            $table->string('asdos1')->nullable();
+            $table->string('asdos2')->nullable();
             $table->timestamps();
         });
     }

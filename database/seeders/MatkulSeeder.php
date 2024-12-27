@@ -35,7 +35,7 @@ class MatkulSeeder extends Seeder
             ['kode' => 'K5024-D', 'kode_kelas' => '3DJRK', 'nama' => 'JARINGAN KOMPUTER'],
             ['kode' => 'K2053-R', 'kode_kelas' => '3RDUI', 'nama' => 'Desain Ui/Ux'],
             ['kode' => 'K3013-K', 'kode_kelas' => '3KDGM', 'nama' => 'Desain Grafis dan Multimedia'],
-            ['kode' => 'G5032-R', 'kode_kelas' => '5RSMG-A', 'nama' => 'Smart Game 1'],
+            ['kode' => 'G5032-R', 'kode_kelas' => '5RSMG', 'nama' => 'Smart Game 1'],
             ['kode' => 'K1013-R', 'kode_kelas' => '3RMRY', 'nama' => 'Mixed Reality'],
             ['kode' => 'E2011-T', 'kode_kelas' => '1TLEA', 'nama' => 'Praktikum Elektronika Analog'],
             ['kode' => 'U6223-S', 'kode_kelas' => '6SSIG', 'nama' => 'Analisis Data Spasial'],

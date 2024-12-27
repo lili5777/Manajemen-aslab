@@ -75,3 +75,8 @@ Route::get('admin/periode/edit/{id}', [AdminController::class, 'editperiode'])->
 Route::post('admin/periode/update', [AdminController::class, 'updateperiode'])->name('updateperiode');
 Route::get('admin/periode/detail/{id}', [AdminController::class, 'detailperiode'])->name('detailperiode');
 Route::delete('admin/periode/hapus/{id}', [AdminController::class, 'hapusperiode'])->name('hapusperiode');
+
+
+// jadwal
+Route::get('admin/jadwal', [AdminController::class, 'jadwal'])->name('jadwal');
+Route::get('admin/jadwal/tambah', [AdminController::class, 'tambahjadwal'])->name('tambahjadwal');
