@@ -27,6 +27,16 @@
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
+                                    <label>Kode</label>
+                                    <input type="text" name="kode_kelas" required
+                                        value="{{ isset($matkul) ? $matkul->kode_kelas : '' }}">
+                                    @error('kelas')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="form-group">
                                     <label>Nama Mata Kuliah Praktek</label>
                                     <input type="text" name="nama" value="{{ isset($matkul) ? $matkul->nama : '' }}">
                                 </div>

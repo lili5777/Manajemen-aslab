@@ -17,8 +17,12 @@
                             <div class="productdetails">
                                 <ul class="product-bar">
                                     <li>
-                                        <h4>Kode</h4>
+                                        <h4>Kode Matkul</h4>
                                         <h6>{{ $matkul->kode }}</h6>
+                                    </li>
+                                    <li>
+                                        <h4>Kode Kelas</h4>
+                                        <h6>{{ $matkul->kode_kelas }}</h6>
                                     </li>
                                     <li>
                                         <h4>Nama Mata Kuliah</h4>

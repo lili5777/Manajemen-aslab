@@ -440,6 +440,7 @@ class AdminController extends Controller
     {
         $request->validate([
             'kode' => 'required',
+            'kode_kelas' => 'required',
             'nama' => 'required',
         ]);
 
@@ -447,7 +448,14 @@ class AdminController extends Controller
         $cekstb = Matkul::where('kode', $request->kode)->first();
         if ($cekstb && !$request->id) {
             return redirect()->back()->withErrors([
-                'kode' => 'KODE sudah terdaftar'
+                'matkul' => 'KODE sudah terdaftar'
+            ])->withInput();
+        }
+
+        $cekkode = Matkul::where('kode_kelas', $request->kode_kelas)->first();
+        if ($cekkode && !$request->id) {
+            return redirect()->back()->withErrors([
+                'kelas' => 'Kode Kelas sudah terdaftar'
             ])->withInput();
         }
 
@@ -455,6 +463,7 @@ class AdminController extends Controller
         if ($request->id) {
             $user = Matkul::findOrFail($request->id);
             $user->kode = $request->kode;
+            $user->kode_kelas = $request->kode_kelas;
             $user->nama = $request->nama;
             $user->save();
             return redirect()->route('matkul')->with('success', 'Matkul berhasil diperbaharui');
@@ -463,6 +472,7 @@ class AdminController extends Controller
         // proses tambah akun
         $user = new Matkul();
         $user->kode = $request->kode;
+        $user->kode_kelas = $request->kode_kelas;
         $user->nama = $request->nama;
         $user->save();
 

@@ -115,7 +115,8 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Kode</th>
+                                    <th>Kode Matkul</th>
+                                    <th>Kode Kelas</th>
                                     <th>Nama Mata Kuliah Praktek</th>
                                     <th>Action</th>
                                 </tr>
@@ -130,6 +131,7 @@
                                             </label>
                                         </td>
                                         <td>{{ $m->kode }}</td>
+                                        <td>{{ $m->kode_kelas }}</td>
                                         <td>{{ $m->nama }}</td>
                                         <td>
                                             <a class="me-3" href="{{ route('editmatkul', $m->id) }}">
