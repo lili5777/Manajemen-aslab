@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('matkuls', function (Blueprint $table) {
             $table->id();
             $table->string('kode')->unique();
+            $table->string('kode_kelas')->unique();
             $table->string('nama');
             $table->timestamps();
         });
