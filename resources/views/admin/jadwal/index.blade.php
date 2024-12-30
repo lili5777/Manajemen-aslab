@@ -4,12 +4,12 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Data akun</h4>
-                    <h6>Kelola akun</h6>
+                    <h4>Data Jadwal</h4>
+                    <h6>Kelola Jadwal</h6>
                 </div>
                 <div class="page-btn">
                     <a href="{{ route('tambahjadwal') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah akun</a>
+                            alt="img" class="me-1">Tambah Jadwal</a>
                 </div>
             </div>
 
@@ -138,15 +138,29 @@
                                             </label>
                                         </td>
                                         <td>{{ $a->hari }}</td>
-                                        <td>{{ $a->pukul }}</td>
+                                        <td>{{ substr($a->pukul, 0, 5) }} -
+                                            {{ \Carbon\Carbon::createFromFormat('H:i', substr($a->pukul, 0, 5))->addMinutes(100)->format('H:i') }}
+                                        </td>
                                         <td>{{ $a->ruang }}</td>
                                         <td>{{ $a->kode_kelas }}</td>
                                         <td>{{ $a->prodi }}</td>
                                         <td>{{ $a->semester }}</td>
                                         <td>{{ $a->nama_matkul }}</td>
                                         <td>{{ $a->nama_dosen }}</td>
-                                        <td>{{ $a->asdos1 }}</td>
-                                        <td>{{ $a->asdos2 }}</td>
+                                        <td>
+                                            @if ($a->asdos1)
+                                                {{ $a->asdos1 }}
+                                            @else
+                                                Belum ada
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($a->asdos2)
+                                                {{ $a->asdos2 }}
+                                            @else
+                                                Belum ada
+                                            @endif
+                                        </td>
                                         <td>
                                             <a class="me-3" href="{{ route('detailakun', $a->id) }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
@@ -155,7 +169,7 @@
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
                                             <a class="confirm-text" href="javascript:void(0);"
-                                                data-url="{{ route('hapusakun', $a->id) }}">
+                                                data-url="{{ route('hapusjadwal', $a->id) }}">
                                                 <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
                                             </a>
                                         </td>

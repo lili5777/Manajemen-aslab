@@ -15,7 +15,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/logoundipa.png') }}">
 
     <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    {{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" /> --}}
 
     <link rel="stylesheet" href="{{ asset('css/animate.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
@@ -273,8 +273,8 @@
     <script src="{{ asset('plugins/apexchart/chart-data.js') }}"></script>
 
     <script src="{{ asset('js/script.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> --}}
     <script>
         $(document).ready(function() {
             console.log('jQuery and Select2 Loaded!');

@@ -11,7 +11,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <form action="" method="POST">
+                    <form action="{{ route('postjadwal') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
@@ -25,10 +25,20 @@
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label>Pukul</label>
-                                    <input type="time" name="pukul" required value="{{ old('pukul') }}"
-                                        class="form-control">
-                                    @error('pukul')
+                                    <label>Jam Mulai</label>
+                                    <input type="time" id="pukul_mulai" name="pukul_mulai" required
+                                        value="{{ old('pukul') }}" class="form-control">
+                                    @error('pukul_mulai')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Jam Selesai</label>
+                                    <input type="time" id="pukul_selesai" name="pukul_selesai" required readonly
+                                        value="{{ old('pukul') }}" class="form-control">
+                                    @error('pukul_selesai')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -45,7 +55,7 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Kode Kelas</label>
-                                    <select name="kode_kelas" class="form-select select2" required>
+                                    <select id="kode_kelas" name="kode_kelas" class="form-select select2" required>
                                         <option value="">Pilih Kode Kelas</option>
                                         @foreach ($matkul as $m)
                                             <option value="{{ $m->kode_kelas }}">{{ $m->kode_kelas }}
@@ -59,6 +69,19 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="col-lg-3 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Huruf/Angka Kelas</label>
+                                    <input type="text" id="huruf_kelas" name="huruf_kelas"
+                                        value="{{ old('huruf_kelas') }}" required>
+                                    @error('huruf_kelas')
+                                        <span class="text-danger small">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Prodi</label>
@@ -71,7 +94,8 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Semester</label>
-                                    <input type="text" name="semester" required value="{{ old('semester') }}">
+                                    <input type="text" id="semester" name="semester" required
+                                        value="{{ old('semester') }}">
                                     @error('semester')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -80,7 +104,8 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Nama Mata Kuliah</label>
-                                    <input type="text" name="nama_matkul" required value="{{ old('nama_matkul') }}">
+                                    <input type="text" name="nama_matkul" id="nama_matkul" required readonly
+                                        value="{{ old('nama_matkul') }}">
                                     @error('nama_matkul')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -105,7 +130,8 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Asisten Dosen 1</label>
-                                    <input type="text" name="asdos1" value="{{ old('asdos1') }}">
+                                    <input type="text" name="asdos1" value="{{ old('asdos1') }}"
+                                        placeholder="Kosongkan klo belum ada">
                                     @error('asdos1')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -114,7 +140,8 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Asisten Dosen 2</label>
-                                    <input type="text" name="asdos2" value="{{ old('asdos2') }}">
+                                    <input type="text" name="asdos2" value="{{ old('asdos2') }}"
+                                        placeholder="Kosongkan klo belum ada">
                                     @error('asdos2')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -131,4 +158,67 @@
 
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        const matkulData = @json($matkul);
+        $(document).ready(function() {
+            // Ketika kode kelas berubah
+            $('#kode_kelas').change(function() {
+                const kodeKelas = $(this).val();
+
+                if (kodeKelas) {
+                    // Ambil karakter pertama dari kode kelas
+                    const semester = kodeKelas.charAt(0);
+                    // Cari data berdasarkan kode kelas dari matkulData
+                    const selectedMatkul = matkulData.find(matkul => matkul.kode_kelas === kodeKelas);
+
+                    if (selectedMatkul) {
+
+                        // Isi Nama Mata Kuliah
+                        $('#nama_matkul').val(selectedMatkul.nama);
+                        // Isi Semester
+                        $('#semester').val(semester);
+
+                    } else {
+                        alert('Kode Kelas tidak ditemukan!');
+                        $('#nama_matkul').val('');
+                        $('#semester').val('');
+                    }
+                } else {
+                    // Reset jika tidak ada kode kelas
+                    $('#nama_matkul').val('');
+                    $('#semester').val('');
+                }
+            });
+        });
+
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputJamMulai = document.getElementById('pukul_mulai');
+            const inputJamSelesai = document.getElementById('pukul_selesai');
+
+            inputJamMulai.addEventListener('input', function() {
+                const jamMulai = inputJamMulai.value;
+
+                if (jamMulai) {
+                    // Konversi waktu ke menit
+                    const [hours, minutes] = jamMulai.split(':').map(Number);
+                    const totalMinutes = hours * 60 + minutes + 100; // Tambahkan 100 menit
+
+                    // Hitung kembali jam dan menit
+                    const newHours = Math.floor(totalMinutes / 60) %
+                        24; // Gunakan mod 24 untuk format 24 jam
+                    const newMinutes = totalMinutes % 60;
+
+                    // Format angka ke dua digit
+                    const formattedHours = String(newHours).padStart(2, '0');
+                    const formattedMinutes = String(newMinutes).padStart(2, '0');
+
+                    // Set nilai pada input Jam Selesai
+                    inputJamSelesai.value = `${formattedHours}:${formattedMinutes}`;
+                }
+            });
+        });
+    </script>
 @endsection

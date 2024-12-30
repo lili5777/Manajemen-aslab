@@ -80,3 +80,5 @@ Route::delete('admin/periode/hapus/{id}', [AdminController::class, 'hapusperiode
 // jadwal
 Route::get('admin/jadwal', [AdminController::class, 'jadwal'])->name('jadwal');
 Route::get('admin/jadwal/tambah', [AdminController::class, 'tambahjadwal'])->name('tambahjadwal');
+Route::post('admin/jadwal/tambah', [AdminController::class, 'postjadwal'])->name('postjadwal');
+Route::delete('admin/jadwal/hapus/{id}', [AdminController::class, 'hapusjadwal'])->name('hapusjadwal');

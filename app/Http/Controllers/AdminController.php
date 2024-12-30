@@ -615,4 +615,60 @@ class AdminController extends Controller
         $dosen = Dosen::all();
         return view('admin.jadwal.tambah', compact('matkul', 'dosen'));
     }
+
+    public function postjadwal(Request $request)
+    {
+        $request->validate([
+            'hari' => 'required',
+            'pukul_mulai' => 'required',
+            'pukul_selesai' => 'required',
+            'ruang' => 'required',
+            'kode_kelas' => 'required',
+            'huruf_kelas' => 'required',
+            'prodi' => 'required',
+            'semester' => 'required',
+            'nama_matkul' => 'required',
+            'nama_dosen' => 'required',
+        ]);
+        // dd($request->all());
+
+
+        // proses edit
+        if ($request->id) {
+            $user = Matkul::findOrFail($request->id);
+            $user->id_periode = Periode::where('status', 'aktif')->first()->id;
+            $user->kode_kelas = $request->kode_kelas;
+            $user->nama = $request->nama;
+            $user->save();
+            return redirect()->route('matkul')->with('success', 'Matkul berhasil diperbaharui');
+        }
+
+        // proses tambah akun
+        $user = new Jadwal();
+        $user->id_periode = Periode::where('status', 'aktif')->first()->id;
+        $user->hari = $request->hari;
+        $user->pukul = substr($request->pukul_mulai, 0, 5);
+        $user->kode_kelas = $request->kode_kelas . "-" . $request->huruf_kelas;
+        $user->ruang = $request->ruang;
+        $user->prodi = $request->prodi;
+        $user->semester = $request->semester;
+        $user->nama_matkul = $request->nama_matkul;
+        $user->nama_dosen = $request->nama_dosen;
+        $user->save();
+
+        return redirect()->route('jadwal')->with('success', 'Jadwal berhasil dibuat');
+    }
+
+    public function hapusjadwal($id)
+    {
+        $user = Jadwal::find($id);
+
+        if ($user) {
+            $user->delete(); // Hapus data
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+
+        // Jika data tidak ditemukan
+        return response()->json(['message' => 'User not found.'], 404);
+    }
 }
