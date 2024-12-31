@@ -282,7 +282,7 @@
 
         $(document).ready(function() {
             $('.select2').select2({
-                placeholder: "Pilih atau ketik Nama Dosen",
+                // placeholder: "Pilih atau ketik Nama Dosen",
                 // allowClear: true
             });
         });

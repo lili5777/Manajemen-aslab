@@ -82,3 +82,4 @@ Route::get('admin/jadwal', [AdminController::class, 'jadwal'])->name('jadwal');
 Route::get('admin/jadwal/tambah', [AdminController::class, 'tambahjadwal'])->name('tambahjadwal');
 Route::post('admin/jadwal/tambah', [AdminController::class, 'postjadwal'])->name('postjadwal');
 Route::delete('admin/jadwal/hapus/{id}', [AdminController::class, 'hapusjadwal'])->name('hapusjadwal');
+Route::get('admin/jadwal/edit/{id}', [AdminController::class, 'editjadwal'])->name('editjadwal');

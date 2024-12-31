@@ -13,11 +13,29 @@
                 <div class="card-body">
                     <form action="{{ route('postjadwal') }}" method="POST">
                         @csrf
+                        <input type="text" name="id" value="{{ isset($jadwal) ? $jadwal->id : '' }}" hidden>
                         <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Hari</label>
-                                    <input type="text" name="hari" required value="{{ old('hari') }}">
+                                    <select id="hari" name="hari" class="form-select select2" required>
+                                        <option value="">Pilih hari</option>
+                                        <option value="Senin"
+                                            {{ isset($jadwal) && $jadwal->hari == 'Senin' ? 'selected' : '' }}>Senin
+                                        </option>
+                                        <option value="Selasa"
+                                            {{ isset($jadwal) && $jadwal->hari == 'Selasa' ? 'selected' : '' }}>Selasa
+                                        </option>
+                                        <option value="Rabu"
+                                            {{ isset($jadwal) && $jadwal->hari == 'Rabu' ? 'selected' : '' }}>Rabu
+                                        </option>
+                                        <option value="Kamis"
+                                            {{ isset($jadwal) && $jadwal->hari == 'Kamis' ? 'selected' : '' }}>Kamis
+                                        </option>
+                                        <option value="Jumat"
+                                            {{ isset($jadwal) && $jadwal->hari == 'Jumat' ? 'selected' : '' }}>Jumat
+                                        </option>
+                                    </select>
                                     @error('hari')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -27,7 +45,7 @@
                                 <div class="form-group">
                                     <label>Jam Mulai</label>
                                     <input type="time" id="pukul_mulai" name="pukul_mulai" required
-                                        value="{{ old('pukul') }}" class="form-control">
+                                        value="{{ isset($jadwal) ? $jadwal->pukul : '' }}" class="form-control">
                                     @error('pukul_mulai')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -46,7 +64,8 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Ruang</label>
-                                    <input type="text" name="ruang" required value="{{ old('ruang') }}">
+                                    <input type="text" name="ruang" required
+                                        value="{{ isset($jadwal) ? $jadwal->ruang : '' }}">
                                     @error('ruang')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -58,11 +77,11 @@
                                     <select id="kode_kelas" name="kode_kelas" class="form-select select2" required>
                                         <option value="">Pilih Kode Kelas</option>
                                         @foreach ($matkul as $m)
-                                            <option value="{{ $m->kode_kelas }}">{{ $m->kode_kelas }}
+                                            <option value="{{ $m->kode_kelas }}"
+                                                {{ isset($jadwal) && substr($jadwal->kode_kelas, 0, 5) == $m->kode_kelas ? 'selected' : '' }}>
+                                                {{ $m->kode_kelas }}
                                             </option>
                                         @endforeach
-
-                                        <!-- Tambahkan opsi lain sesuai kebutuhan -->
                                     </select>
                                     @error('kode_kelas')
                                         <span class="text-danger small">{{ $message }}</span>
@@ -74,7 +93,7 @@
                                 <div class="form-group">
                                     <label>Huruf/Angka Kelas</label>
                                     <input type="text" id="huruf_kelas" name="huruf_kelas"
-                                        value="{{ old('huruf_kelas') }}" required>
+                                        value="{{ isset($jadwal) ? substr($jadwal->kode_kelas, -1) : '' }}" required>
                                     @error('huruf_kelas')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -85,7 +104,27 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Prodi</label>
-                                    <input type="text" name="prodi" required value="{{ old('prodi') }}">
+                                    <select id="prodi" name="prodi" class="form-select select2" required>
+                                        <option value="">Pilih prodi</option>
+                                        <option value="TI"
+                                            {{ isset($jadwal) && $jadwal->prodi == 'TI' ? 'selected' : '' }}>Teknik
+                                            Informatika</option>
+                                        <option value="SI"
+                                            {{ isset($jadwal) && $jadwal->prodi == 'SI' ? 'selected' : '' }}>Sistem
+                                            Informasi</option>
+                                        <option value="RPL"
+                                            {{ isset($jadwal) && $jadwal->prodi == 'RPL' ? 'selected' : '' }}>Rekayasa
+                                            Perangkat Lunak</option>
+                                        <option value="BD"
+                                            {{ isset($jadwal) && $jadwal->prodi == 'BD' ? 'selected' : '' }}>Bisnis Digital
+                                        </option>
+                                        <option value="MI"
+                                            {{ isset($jadwal) && $jadwal->prodi == 'MI' ? 'selected' : '' }}>Manajemen
+                                            Informatika</option>
+                                        <option value="KU"
+                                            {{ isset($jadwal) && $jadwal->prodi == 'KU' ? 'selected' : '' }}>Kewirausahaan
+                                        </option>
+                                    </select>
                                     @error('prodi')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -95,7 +134,7 @@
                                 <div class="form-group">
                                     <label>Semester</label>
                                     <input type="text" id="semester" name="semester" required
-                                        value="{{ old('semester') }}">
+                                        value="{{ isset($jadwal) ? $jadwal->semester : '' }}">
                                     @error('semester')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -105,7 +144,7 @@
                                 <div class="form-group">
                                     <label>Nama Mata Kuliah</label>
                                     <input type="text" name="nama_matkul" id="nama_matkul" required readonly
-                                        value="{{ old('nama_matkul') }}">
+                                        value="{{ isset($jadwal) ? $jadwal->nama_matkul : '' }}">
                                     @error('nama_matkul')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -117,7 +156,9 @@
                                     <select name="nama_dosen" class="form-select select2" required>
                                         <option value="">Pilih Nama Dosen</option>
                                         @foreach ($dosen as $d)
-                                            <option value="{{ $d->nama }}">{{ $d->nama }}
+                                            <option value="{{ $d->nama }}"
+                                                {{ isset($jadwal) && $jadwal->nama_dosen == $d->nama ? 'selected' : '' }}>
+                                                {{ $d->nama }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -130,7 +171,8 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Asisten Dosen 1</label>
-                                    <input type="text" name="asdos1" value="{{ old('asdos1') }}"
+                                    <input type="text" name="asdos1"
+                                        value="{{ isset($jadwal) ? $jadwal->asdos1 : '' }}"
                                         placeholder="Kosongkan klo belum ada">
                                     @error('asdos1')
                                         <span class="text-danger small">{{ $message }}</span>
@@ -140,7 +182,8 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Asisten Dosen 2</label>
-                                    <input type="text" name="asdos2" value="{{ old('asdos2') }}"
+                                    <input type="text" name="asdos2"
+                                        value="{{ isset($jadwal) ? $jadwal->asdos2 : '' }}"
                                         placeholder="Kosongkan klo belum ada">
                                     @error('asdos2')
                                         <span class="text-danger small">{{ $message }}</span>

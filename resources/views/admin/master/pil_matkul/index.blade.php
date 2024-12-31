@@ -4,12 +4,12 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Data Jadwal</h4>
-                    <h6>Kelola Jadwal</h6>
+                    <h4>Data Pilihan Matkul Prakter</h4>
+                    <h6>Kelola Pilihan Matkul Prakter</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ route('tambahjadwal') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah Jadwal</a>
+                    <a href="{{ route('tambahdosen') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
+                            alt="img" class="me-1">Tambah dosen</a>
                 </div>
             </div>
 
@@ -96,7 +96,7 @@
                                         <div class="col-lg-1 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <a class="btn btn-filters ms-auto"><img
-                                                        src="{{ asset('img/icons/search-whites.svg') }}" alt="img"></a>
+                                                        src="assets/img/icons/search-whites.svg" alt="img"></a>
                                             </div>
                                         </div>
                                     </div>
@@ -115,21 +115,16 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Hari</th>
-                                    <th>Pukul</th>
-                                    <th>Ruang</th>
-                                    <th>Kelas</th>
-                                    <th>Prodi</th>
-                                    <th>Semester</th>
-                                    <th>Matkul</th>
-                                    <th>Dosen</th>
-                                    <th>Asdos 1</th>
-                                    <th>Asdos 2</th>
+                                    <th>Foto</th>
+                                    <th>Nama</th>
+                                    <th>Email </th>
+                                    <th>NIDN</th>
+                                    <th>No</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($jadwal as $a)
+                                @foreach ($dosen as $d)
                                     <tr>
                                         <td>
                                             <label class="checkboxs">
@@ -137,43 +132,36 @@
                                                 <span class="checkmarks"></span>
                                             </label>
                                         </td>
-                                        <td>{{ $a->hari }}</td>
-                                        <td>{{ substr($a->pukul, 0, 5) }} -
-                                            {{ \Carbon\Carbon::createFromFormat('H:i', substr($a->pukul, 0, 5))->addMinutes(100)->format('H:i') }}
-                                        </td>
-                                        <td>{{ $a->ruang }}</td>
-                                        <td>{{ $a->kode_kelas }}</td>
-                                        <td>{{ $a->prodi }}</td>
-                                        <td>{{ $a->semester }}</td>
-                                        <td>{{ $a->nama_matkul }}</td>
-                                        <td>{{ $a->nama_dosen }}</td>
-                                        <td>
-                                            @if ($a->asdos1)
-                                                {{ $a->asdos1 }}
+                                        <td class="productimgname">
+                                            @if ($d->foto)
+                                                <a href="javascript:void(0);" class="product-img">
+                                                    <img src="{{ asset('img/dosen/' . $d->foto) }}" alt="foto">
+                                                </a>
                                             @else
-                                                Belum ada
+                                                <a href="javascript:void(0);" class="product-img">
+                                                    <img src="{{ asset('img/dosen/pf.webp') }}" alt="foto">
+                                                </a>
                                             @endif
+
                                         </td>
+                                        <td>{{ $d->nama }}</td>
+                                        <td>{{ $d->email }}</td>
+                                        <td>{{ $d->nidn }}</td>
+                                        <td>{{ $d->no_wa }}</td>
                                         <td>
-                                            @if ($a->asdos2)
-                                                {{ $a->asdos2 }}
-                                            @else
-                                                Belum ada
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a class="me-3" href="{{ route('editjadwal', $a->id) }}">
+                                            <a class="me-3" href="{{ route('detaildosen', $d->id) }}">
+                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
+                                            </a>
+                                            <a class="me-3" href="{{ route('editdosen', $d->id) }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
                                             <a class="confirm-text" href="javascript:void(0);"
-                                                data-url="{{ route('hapusjadwal', $a->id) }}">
+                                                data-url="{{ route('hapusdosen', $d->id) }}">
                                                 <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
                                             </a>
                                         </td>
                                     </tr>
-                                @empty
-                                @endforelse
-
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

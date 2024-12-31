@@ -29,7 +29,9 @@
                             <div class="col-lg-4 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Akun</label>
-                                    <select name="id_user" class="select" required>
+
+                                    <select name="id_user" class="select2" required>
+                                        {{-- <option value="" >Pilih Akun</option> --}}
                                         <option value="">Pilih Akun</option>
                                         @foreach ($user as $a)
                                             <option value="{{ $a->id }}"
