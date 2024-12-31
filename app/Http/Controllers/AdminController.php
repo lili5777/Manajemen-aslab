@@ -8,6 +8,7 @@ use App\Models\Jadwal;
 use App\Models\Matkul;
 use App\Models\Pendaftar;
 use App\Models\Periode;
+use App\Models\PilihMatkul;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -671,6 +672,76 @@ class AdminController extends Controller
     public function hapusjadwal($id)
     {
         $user = Jadwal::find($id);
+
+        if ($user) {
+            $user->delete(); // Hapus data
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+        // Jika data tidak ditemukan
+        return response()->json(['message' => 'User not found.'], 404);
+    }
+
+
+
+    // pilih matkul
+    public function pilmatkul($id)
+    {
+        $pendaftaran = Pendaftar::find($id);
+        $matkul = PilihMatkul::where('id_pendaftar', $id)->get();
+        return view('admin.master.pil_matkul.index', compact('matkul', 'pendaftaran'));
+    }
+
+    public function tambahpilmatkul($id)
+    {
+        $pendaftaran = Pendaftar::find($id);
+        $periode = Periode::where('status', 'aktif')->first();
+        $matkul = Jadwal::where('id_periode', $periode->id)->get();
+        return view('admin.master.pil_matkul.tambah', compact('pendaftaran', 'matkul'));
+    }
+
+    public function postpilmatkul(Request $request, $id)
+    {
+        // Validasi input
+        $request->validate([
+            'id_pendaftar' => 'required',
+            'matkul' => 'required|array|max:3',
+        ], [
+            'matkul.required' => 'Anda harus memilih setidaknya 1 mata kuliah.',
+            'matkul.max' => 'Maksimal 3 mata kuliah yang dapat dipilih.',
+        ]);
+
+        // Ambil ID pengguna
+        $userId = $request->id_pendaftar;
+        // Cek jumlah data di tabel pilmatkul untuk pengguna ini
+        $existingCount = PilihMatkul::where('id_pendaftar', $userId)->count();
+        $remainingSlots = 3 - $existingCount;
+        if ($existingCount + count($request->matkul) > 3) {
+            return redirect()->back()->withErrors([
+                'matkul' => " Anda hanya dapat menambahkan $remainingSlots mata kuliah lagi."
+            ]);
+        }
+        // Cek duplikasi mata kuliah
+        foreach ($request->matkul as $matkulId) {
+            $exists = PilihMatkul::where('id_pendaftar', $userId)->where('matkul', $matkulId)->exists();
+            if ($exists) {
+                return redirect()->back()->withErrors(['matkul' => 'Mata kuliah yang sama tidak boleh dipilih lebih dari sekali.']);
+            }
+        }
+
+        // Simpan data ke tabel `pilmatkul`
+        foreach ($request->matkul as $matkulId) {
+            PilihMatkul::create([
+                'id_pendaftar' => $userId,
+                'matkul' => $matkulId,
+            ]);
+        }
+
+        return redirect()->route('pilmatkul', $userId)->with('success', 'Pilihan mata kuliah berhasil disimpan.');
+    }
+
+    public function hapuspilmatkul($id)
+    {
+        $user = PilihMatkul::find($id);
 
         if ($user) {
             $user->delete(); // Hapus data

@@ -149,7 +149,8 @@
                                                 class="btn btn-primary text-white btn-sm">Lihat Transkip</a>
                                         </td>
                                         <td>
-                                            <a href="" class="btn btn-primary text-white btn-sm">Lihat Matkul</a>
+                                            <a href="{{ route('pilmatkul', $p->id) }}"
+                                                class="btn btn-primary text-white btn-sm">Lihat Matkul</a>
                                         </td>
                                         <td>
                                             <a class="me-3" href="{{ route('detailpendaftar', $p->id) }}">

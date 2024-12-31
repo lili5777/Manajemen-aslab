@@ -83,3 +83,11 @@ Route::get('admin/jadwal/tambah', [AdminController::class, 'tambahjadwal'])->nam
 Route::post('admin/jadwal/tambah', [AdminController::class, 'postjadwal'])->name('postjadwal');
 Route::delete('admin/jadwal/hapus/{id}', [AdminController::class, 'hapusjadwal'])->name('hapusjadwal');
 Route::get('admin/jadwal/edit/{id}', [AdminController::class, 'editjadwal'])->name('editjadwal');
+
+
+// pilihan matkul prakter
+Route::get('admin/pilmatkul/{id}', [AdminController::class, 'pilmatkul'])->name('pilmatkul');
+Route::get('admin/pilmatkul/tambah/{id}', [AdminController::class, 'tambahpilmatkul'])->name('tambahpilmatkul');
+Route::post('admin/pilmatkul/tambah/{id}', [AdminController::class, 'postpilmatkul'])->name('postpilmatkul');
+Route::delete('admin/pilmatkul/hapus/{id}', [AdminController::class, 'hapuspilmatkul'])->name('hapuspilmatkul');
+Route::get('admin/pilmatkul/edit/{id}/{m}', [AdminController::class, 'editpilmatkul'])->name('editpilmatkul');

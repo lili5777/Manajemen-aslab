@@ -8,8 +8,11 @@
                     <h6>Kelola Pilihan Matkul Prakter</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ route('tambahdosen') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah dosen</a>
+                    @if ($matkul->count() < 3)
+                        <a href="{{ route('tambahpilmatkul', $pendaftaran->id) }}" class="btn btn-added"><img
+                                src="{{ asset('img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Matkul</a>
+                    @endif
+
                 </div>
             </div>
 
@@ -115,16 +118,12 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Foto</th>
-                                    <th>Nama</th>
-                                    <th>Email </th>
-                                    <th>NIDN</th>
-                                    <th>No</th>
+                                    <th>Nama Matakuliah Praktek</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($dosen as $d)
+                                @foreach ($matkul as $d)
                                     <tr>
                                         <td>
                                             <label class="checkboxs">
@@ -132,31 +131,11 @@
                                                 <span class="checkmarks"></span>
                                             </label>
                                         </td>
-                                        <td class="productimgname">
-                                            @if ($d->foto)
-                                                <a href="javascript:void(0);" class="product-img">
-                                                    <img src="{{ asset('img/dosen/' . $d->foto) }}" alt="foto">
-                                                </a>
-                                            @else
-                                                <a href="javascript:void(0);" class="product-img">
-                                                    <img src="{{ asset('img/dosen/pf.webp') }}" alt="foto">
-                                                </a>
-                                            @endif
-
-                                        </td>
-                                        <td>{{ $d->nama }}</td>
-                                        <td>{{ $d->email }}</td>
-                                        <td>{{ $d->nidn }}</td>
-                                        <td>{{ $d->no_wa }}</td>
+                                        <td>{{ $d->matkul }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detaildosen', $d->id) }}">
-                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                            </a>
-                                            <a class="me-3" href="{{ route('editdosen', $d->id) }}">
-                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                            </a>
+
                                             <a class="confirm-text" href="javascript:void(0);"
-                                                data-url="{{ route('hapusdosen', $d->id) }}">
+                                                data-url="{{ route('hapuspilmatkul', $d->id) }}">
                                                 <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
                                             </a>
                                         </td>
