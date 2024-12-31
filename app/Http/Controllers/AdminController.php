@@ -234,8 +234,47 @@ class AdminController extends Controller
     }
     public function tambahtranskip($id)
     {
-
         return view('admin.master.transkip.tambah', compact('id'));
+    }
+    public function posttranskip(Request $request)
+    {
+        $request->validate([
+            'kode' => 'required',
+            'nama_matkul' => 'required',
+            'sks' => 'required',
+            'nilai' => 'required',
+        ]);
+
+        // Pengecekan apakah STB/NIDN sudah ada di database
+        $cekstb = InputNilai::where('kode', $request->kode)->first();
+        if ($cekstb && !$request->id) {
+            return redirect()->back()->withErrors([
+                'kode' => 'sudah terdaftar'
+            ])->withInput();
+        }
+
+        // proses edit
+        if ($request->id) {
+            $user = InputNilai::findOrFail($request->id);
+            $user->id_pendaftar = $request->id_pendaftar;
+            $user->kode = $request->kode;
+            $user->nama_matkul = $request->nama_matkul;
+            $user->sks = $request->sks;
+            $user->nilai = $request->nilai;
+            $user->save();
+            return redirect()->route('transkip', $request->id_pendaftar)->with('success', 'Transkip berhasil diperbaharui');
+        }
+
+        // proses tambah akun
+        $user = new InputNilai();
+        $user->id_pendaftar = $request->id_pendaftar;
+        $user->kode = $request->kode;
+        $user->nama_matkul = $request->nama_matkul;
+        $user->sks = $request->sks;
+        $user->nilai = $request->nilai;
+        $user->save();
+
+        return redirect()->route('transkip', $request->id_pendaftar)->with('success', 'Transkip berhasil dibuat');
     }
     public function hapustranskip($id)
     {

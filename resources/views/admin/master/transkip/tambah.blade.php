@@ -4,14 +4,14 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Tambah akun</h4>
-                    <h6>Buat akun baru</h6>
+                    <h4>Tambah Nilai Transkip</h4>
+                    <h6>Buat Nilai Baru</h6>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('postakun') }}" method="POST">
+                    <form action="{{ route('posttranskip') }}" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-lg-3 col-sm-6 col-12">
