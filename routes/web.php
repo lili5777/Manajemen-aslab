@@ -33,6 +33,8 @@ Route::delete('admin/pendaftar/hapus/{id}', [AdminController::class, 'hapuspenda
 
 //transkip 
 Route::get('admin/pendaftar/transkip/{id}', [AdminController::class, 'transkip'])->name('transkip');
+Route::get('admin/pendaftar/transkip/tambah/{id}', [AdminController::class, 'tambahtranskip'])->name('tambahtranskip');
+Route::delete('admin/pendaftar/transkip/hapus/{id}', [AdminController::class, 'hapustranskip'])->name('hapustranskip');
 
 // akun
 Route::get('admin/akun', [AdminController::class, 'akun'])->name('akun');

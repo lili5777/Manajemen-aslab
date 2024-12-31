@@ -8,8 +8,8 @@
                     <h6>Kelola Transkip</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ route('tambahasdos') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah Nilai</a>
+                    <a href="{{ route('tambahtranskip', $id) }}" class="btn btn-added"><img
+                            src="{{ asset('img/icons/plus.svg') }}" alt="img" class="me-1">Tambah Nilai</a>
                 </div>
             </div>
 
@@ -136,10 +136,8 @@
                                         <td>{{ $t->sks }}</td>
                                         <td>{{ $t->nilai }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('tambahasdos') }}">
-                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                            </a>
-                                            <a class="confirm-text" href="javascript:void(0);">
+                                            <a class="confirm-text" href="javascript:void(0);"
+                                                data-url="{{ route('hapustranskip', $t->id) }}">
                                                 <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
                                             </a>
                                         </td>

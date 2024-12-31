@@ -50,7 +50,7 @@
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <label>Role</label>
-                                    <select class="select" name="role" required>
+                                    <select class="select2" name="role" required>
                                         <option value="">Silahkan Pilih</option>
                                         <option value="admin"
                                             {{ isset($user) && $user->role == 'admin' ? 'selected' : '' }}>

@@ -230,7 +230,24 @@ class AdminController extends Controller
     public function transkip($id)
     {
         $transkip = InputNilai::where('id_pendaftar', $id)->get();
-        return view('admin.master.transkip.index', compact('transkip'));
+        return view('admin.master.transkip.index', compact('transkip', 'id'));
+    }
+    public function tambahtranskip($id)
+    {
+
+        return view('admin.master.transkip.tambah', compact('id'));
+    }
+    public function hapustranskip($id)
+    {
+        $user = InputNilai::find($id);
+
+        if ($user) {
+            $user->delete(); // Hapus data
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+
+        // Jika data tidak ditemukan
+        return response()->json(['message' => 'User not found.'], 404);
     }
 
 
