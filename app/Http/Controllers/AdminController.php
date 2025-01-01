@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asdos;
 use App\Models\Dosen;
 use App\Models\InputNilai;
 use App\Models\Jadwal;
@@ -859,6 +860,34 @@ class AdminController extends Controller
                 'foto' => $p->foto,
                 'skor' => $skor,
             ];
+        }
+
+        // $asdosTerpilih = array_slice($ranking, 0, 26);
+        foreach ($ranking as $index => $asdos) {
+            $status = $index < 26 ? 'lulus' : 'tidak';
+
+            if ($index < 26) {
+                Asdos::Create( // Identifikasi unik
+                    [
+                        'rank' => $index + 1,
+                        'id_user' => $asdos['id_user'],
+                        'id_pendaftar' => $asdos['id'],
+                        'nama' => $asdos['nama'],
+                        'stb' => $asdos['stb'],
+                        'jurusan' => $asdos['jurusan'],
+                        'no_wa' => $asdos['no_wa'],
+                        'foto' => $asdos['foto'],
+                        'skor' => $asdos['skor'],
+                    ]
+                );
+                $pen = Pendaftar::findOrFail($asdos['id_pendaftar']);
+                $pen->status = $status;
+                $pen->save();
+            } else {
+                $pen = Pendaftar::findOrFail($asdos['id_pendaftar']);
+                $pen->status = $status;
+                $pen->save();
+            }
         }
     }
 }
