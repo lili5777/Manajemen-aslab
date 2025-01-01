@@ -816,13 +816,13 @@ class AdminController extends Controller
             'pernyataan' => 0.1, // 10%
         ];
 
-        $pendaftar=Pendaftar::all();
-        $ranking=[];
+        $pendaftar = Pendaftar::all();
+        $ranking = [];
 
-        foreach($pendaftar as $p){
-            $pilmatkul=InputNilai::where('id_pendaftar',$p->id)->get();
+        foreach ($pendaftar as $p) {
+            $pilmatkul = InputNilai::where('id_pendaftar', $p->id)->get();
             $n = []; // Array untuk menyimpan bobot nilai
-            foreach ($pimatkul as $m) {
+            foreach ($pilmatkul as $m) {
                 // Cek nilai dan tambahkan bobot sesuai
                 if ($m->nilai == 'A') {
                     $n[] = 4.0;
@@ -842,7 +842,23 @@ class AdminController extends Controller
                     $n[] = 0.00;
                 }
             }
-            // $skor= ($p->ipk/4.0)*$bobot['ipk']+
+            $sp = $p->surat_pernyataan ? 1 : 0; // Cek surat pernyataan
+            $sr = $p->surat_rekomendasi ? 1 : 0; // Cek surat rekomendasi
+            $skor = ($p->ipk / 4.0) * $bobot['ipk'] +
+                (array_sum($n) / 12) * $bobot['nilai_matkul'] +
+                $sp * $bobot['pernyataan'] +
+                $sr * $bobot['rekomendasi'];
+
+            $ranking[] = [
+                'id_user' => $p->id_user,
+                'id_pendaftar' => $p->id,
+                'nama' => $p->nama,
+                'stb' => $p->stb,
+                'jurusan' => $p->jurusan,
+                'no_wa' => $p->no_wa,
+                'foto' => $p->foto,
+                'skor' => $skor,
+            ];
         }
     }
 }
