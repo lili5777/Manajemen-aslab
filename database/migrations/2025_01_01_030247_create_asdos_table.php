@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('jurusan');
             $table->string('no_wa');
             $table->string('foto');
-            $table->integer('skor');
+            $table->float('skor');
             $table->integer('rank');
             $table->timestamps();
         });

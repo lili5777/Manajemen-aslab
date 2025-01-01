@@ -806,4 +806,43 @@ class AdminController extends Controller
         // Jika data tidak ditemukan
         return response()->json(['message' => 'User not found.'], 404);
     }
+
+    public function postverifikasi()
+    {
+        $bobot = [
+            'ipk' => 0.4, // 40%
+            'nilai_matkul' => 0.3, // 30%
+            'rekomendasi' => 0.2, // 20%
+            'pernyataan' => 0.1, // 10%
+        ];
+
+        $pendaftar=Pendaftar::all();
+        $ranking=[];
+
+        foreach($pendaftar as $p){
+            $pilmatkul=InputNilai::where('id_pendaftar',$p->id)->get();
+            $n = []; // Array untuk menyimpan bobot nilai
+            foreach ($pimatkul as $m) {
+                // Cek nilai dan tambahkan bobot sesuai
+                if ($m->nilai == 'A') {
+                    $n[] = 4.0;
+                } elseif ($m->nilai == 'A-') {
+                    $n[] = 3.75;
+                } elseif ($m->nilai == 'B+') {
+                    $n[] = 3.50;
+                } elseif ($m->nilai == 'B') {
+                    $n[] = 3.00;
+                } elseif ($m->nilai == 'B-') {
+                    $n[] = 2.75;
+                } elseif ($m->nilai == 'C') {
+                    $n[] = 2.00;
+                } elseif ($m->nilai == 'D') {
+                    $n[] = 1.00;
+                } elseif ($m->nilai == 'E') {
+                    $n[] = 0.00;
+                }
+            }
+            // $skor= ($p->ipk/4.0)*$bobot['ipk']+
+        }
+    }
 }
