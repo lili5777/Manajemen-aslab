@@ -808,6 +808,11 @@ class AdminController extends Controller
         return response()->json(['message' => 'User not found.'], 404);
     }
 
+
+    public function verifikasi()
+    {
+        return view('admin.verifikasi.index');
+    }
     public function postverifikasi()
     {
         $bobot = [
@@ -823,32 +828,43 @@ class AdminController extends Controller
         foreach ($pendaftar as $p) {
             $pilmatkul = InputNilai::where('id_pendaftar', $p->id)->get();
             $n = []; // Array untuk menyimpan bobot nilai
+            $nilai = PilihMatkul::where('id_pendaftar', $p->id)->get();
             foreach ($pilmatkul as $m) {
-                // Cek nilai dan tambahkan bobot sesuai
-                if ($m->nilai == 'A') {
-                    $n[] = 4.0;
-                } elseif ($m->nilai == 'A-') {
-                    $n[] = 3.75;
-                } elseif ($m->nilai == 'B+') {
-                    $n[] = 3.50;
-                } elseif ($m->nilai == 'B') {
-                    $n[] = 3.00;
-                } elseif ($m->nilai == 'B-') {
-                    $n[] = 2.75;
-                } elseif ($m->nilai == 'C') {
-                    $n[] = 2.00;
-                } elseif ($m->nilai == 'D') {
-                    $n[] = 1.00;
-                } elseif ($m->nilai == 'E') {
-                    $n[] = 0.00;
+                foreach ($nilai as $ni) {
+                    dd($ni);
+                    if ($ni->matkul == $m->nama_matkul) {
+                        // Cek nilai dan tambahkan bobot sesuai
+                        if ($m->nilai == 'A') {
+                            $n[] = 4.0;
+                        } elseif ($m->nilai == 'A-') {
+                            $n[] = 3.75;
+                        } elseif ($m->nilai == 'B+') {
+                            $n[] = 3.50;
+                        } elseif ($m->nilai == 'B') {
+                            $n[] = 3.00;
+                        } elseif ($m->nilai == 'B-') {
+                            $n[] = 2.75;
+                        } elseif ($m->nilai == 'C+') {
+                            $n[] = 2.50;
+                        } elseif ($m->nilai == 'C') {
+                            $n[] = 2.00;
+                        } elseif ($m->nilai == 'D') {
+                            $n[] = 1.00;
+                        } elseif ($m->nilai == 'E') {
+                            $n[] = 0.00;
+                        }
+                    }
                 }
             }
+
+
             $sp = $p->surat_pernyataan ? 1 : 0; // Cek surat pernyataan
             $sr = $p->surat_rekomendasi ? 1 : 0; // Cek surat rekomendasi
-            $skor = ($p->ipk / 4.0) * $bobot['ipk'] +
-                (array_sum($n) / 12) * $bobot['nilai_matkul'] +
-                $sp * $bobot['pernyataan'] +
-                $sr * $bobot['rekomendasi'];
+            $ip = ($p->ipk / 4.0) * $bobot['ipk'];
+            $pm = (array_sum($n) / 12) * $bobot['nilai_matkul'];
+            $sup = $sp * $bobot['pernyataan'];
+            $sur = $sr * $bobot['rekomendasi'];
+            $skor =  $ip + $pm + $sur + $sup;;
 
             $ranking[] = [
                 'id_user' => $p->id_user,
@@ -859,19 +875,28 @@ class AdminController extends Controller
                 'no_wa' => $p->no_wa,
                 'foto' => $p->foto,
                 'skor' => $skor,
+                'ip' => $ip,
+                'pm' => $pm,
+                'sup' => $sup,
+                'sur' => $sur,
+
+
             ];
         }
+        usort($ranking, function ($a, $b) {
+            return $b['skor'] <=> $a['skor'];
+        });
 
-        // $asdosTerpilih = array_slice($ranking, 0, 26);
+        $jmlulus = Jadwal::count() / 2;
         foreach ($ranking as $index => $asdos) {
-            $status = $index < 26 ? 'lulus' : 'tidak';
+            $status = $index < $jmlulus ? 'lulus' : 'tidak';
 
-            if ($index < 26) {
+            if ($index < $jmlulus) {
                 Asdos::Create( // Identifikasi unik
                     [
                         'rank' => $index + 1,
                         'id_user' => $asdos['id_user'],
-                        'id_pendaftar' => $asdos['id'],
+                        'id_pendaftar' => $asdos['id_pendaftar'],
                         'nama' => $asdos['nama'],
                         'stb' => $asdos['stb'],
                         'jurusan' => $asdos['jurusan'],
@@ -889,5 +914,7 @@ class AdminController extends Controller
                 $pen->save();
             }
         }
+
+        return view('admin.dashboard.index');
     }
 }

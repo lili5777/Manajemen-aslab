@@ -23,20 +23,13 @@
                             Jadwal</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('jadwal') }}">Data Jadwal</a></li>
-                        <li><a href="countrieslist.html">Countries list</a></li>
-                        <li><a href="newstate.html">New State </a></li>
-                        <li><a href="statelist.html">State list</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="javascript:void(0);"><i data-feather="alert-octagon"></i><span>
                             Verifikasi</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="saleslist.html">Sales List</a></li>
-                        <li><a href="pos.html">POS</a></li>
-                        <li><a href="pos.html">New Sales</a></li>
-                        <li><a href="salesreturnlists.html">Sales Return List</a></li>
-                        <li><a href="createsalesreturns.html">New Sales Return</a></li>
+                        <li><a href="{{ route('verifikasi') }}">Verifikasi Pendaftar</a></li>
                     </ul>
                 </li>
                 <li class="submenu">

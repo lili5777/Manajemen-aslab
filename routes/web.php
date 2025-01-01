@@ -94,3 +94,8 @@ Route::get('admin/pilmatkul/tambah/{id}', [AdminController::class, 'tambahpilmat
 Route::post('admin/pilmatkul/tambah/{id}', [AdminController::class, 'postpilmatkul'])->name('postpilmatkul');
 Route::delete('admin/pilmatkul/hapus/{id}', [AdminController::class, 'hapuspilmatkul'])->name('hapuspilmatkul');
 Route::get('admin/pilmatkul/edit/{id}/{m}', [AdminController::class, 'editpilmatkul'])->name('editpilmatkul');
+
+
+// verifikasi
+Route::get('admin/verifikasi', [AdminController::class, 'verifikasi'])->name('verifikasi');
+Route::post('admin/verifikasi/post', [AdminController::class, 'postverifikasi'])->name('postverifikasi');
