@@ -694,7 +694,6 @@ class AdminController extends Controller
             'nama_matkul' => 'required',
             'nama_dosen' => 'required',
         ]);
-        // dd($request->all());
 
         if ($request->id) {
             $user = Jadwal::findOrFail($request->id);
@@ -744,8 +743,9 @@ class AdminController extends Controller
     public function pilmatkul($id)
     {
         $pendaftaran = Pendaftar::find($id);
+        $ko = Matkul::all();
         $matkul = PilihMatkul::where('id_pendaftar', $id)->get();
-        return view('admin.master.pil_matkul.index', compact('matkul', 'pendaftaran'));
+        return view('admin.master.pil_matkul.index', compact('matkul', 'pendaftaran', 'ko'));
     }
 
     public function tambahpilmatkul($id)
@@ -753,6 +753,7 @@ class AdminController extends Controller
         $pendaftaran = Pendaftar::find($id);
         $periode = Periode::where('status', 'aktif')->first();
         $matkul = Jadwal::where('id_periode', $periode->id)->get();
+        // $ko = Matkul::all();
         return view('admin.master.pil_matkul.tambah', compact('pendaftaran', 'matkul'));
     }
 
@@ -772,6 +773,7 @@ class AdminController extends Controller
         // Cek jumlah data di tabel pilmatkul untuk pengguna ini
         $existingCount = PilihMatkul::where('id_pendaftar', $userId)->count();
         $remainingSlots = 3 - $existingCount;
+
         if ($existingCount + count($request->matkul) > 3) {
             return redirect()->back()->withErrors([
                 'matkul' => " Anda hanya dapat menambahkan $remainingSlots mata kuliah lagi."
@@ -789,7 +791,7 @@ class AdminController extends Controller
         foreach ($request->matkul as $matkulId) {
             PilihMatkul::create([
                 'id_pendaftar' => $userId,
-                'matkul' => $matkulId,
+                'matkul' => substr($matkulId, 0, 5),
             ]);
         }
 
@@ -824,15 +826,17 @@ class AdminController extends Controller
 
         $pendaftar = Pendaftar::all();
         $ranking = [];
-
+        $n = [];
         foreach ($pendaftar as $p) {
             $pilmatkul = InputNilai::where('id_pendaftar', $p->id)->get();
-            $n = []; // Array untuk menyimpan bobot nilai
+            // Array untuk menyimpan bobot nilai
             $nilai = PilihMatkul::where('id_pendaftar', $p->id)->get();
+
             foreach ($pilmatkul as $m) {
                 foreach ($nilai as $ni) {
-                    dd($ni);
-                    if ($ni->matkul == $m->nama_matkul) {
+                    $relasi = Matkul::where('kode_kelas', $ni->matkul)->first();
+
+                    if ($relasi->kode == $m->kode) {
                         // Cek nilai dan tambahkan bobot sesuai
                         if ($m->nilai == 'A') {
                             $n[] = 4.0;
@@ -861,11 +865,10 @@ class AdminController extends Controller
             $sp = $p->surat_pernyataan ? 1 : 0; // Cek surat pernyataan
             $sr = $p->surat_rekomendasi ? 1 : 0; // Cek surat rekomendasi
             $ip = ($p->ipk / 4.0) * $bobot['ipk'];
-            $pm = (array_sum($n) / 12) * $bobot['nilai_matkul'];
+            $pm = (array_sum($n) / (count($n) * 4)) * $bobot['nilai_matkul'];
             $sup = $sp * $bobot['pernyataan'];
             $sur = $sr * $bobot['rekomendasi'];
-            $skor =  $ip + $pm + $sur + $sup;;
-
+            $skor =  $ip + $pm + $sur + $sup;
             $ranking[] = [
                 'id_user' => $p->id_user,
                 'id_pendaftar' => $p->id,
@@ -883,10 +886,11 @@ class AdminController extends Controller
 
             ];
         }
+
         usort($ranking, function ($a, $b) {
             return $b['skor'] <=> $a['skor'];
         });
-
+        // dd(vars: $ranking);
         $jmlulus = Jadwal::count() / 2;
         foreach ($ranking as $index => $asdos) {
             $status = $index < $jmlulus ? 'lulus' : 'tidak';

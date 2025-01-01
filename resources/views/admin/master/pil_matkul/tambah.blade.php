@@ -22,7 +22,7 @@
                                 @foreach ($matkul as $m)
                                     <div class="form-check">
                                         <input class="form-check-input matkul-checkbox" type="checkbox" name="matkul[]"
-                                            value="{{ $m->nama_matkul }}" id="matkul-{{ $m->id }}">
+                                            value="{{ $m->kode_kelas }}" id="matkul-{{ $m->id }}">
                                         <label class="form-check-label" for="matkul-{{ $m->id }}">
                                             {{ $m->nama_matkul }}
                                         </label>
