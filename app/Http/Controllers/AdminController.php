@@ -896,7 +896,7 @@ class AdminController extends Controller
             $status = $index < $jmlulus ? 'lulus' : 'tidak';
 
             if ($index < $jmlulus) {
-                Asdos::Create( // Identifikasi unik
+                Asdos::Create( 
                     [
                         'rank' => $index + 1,
                         'id_user' => $asdos['id_user'],
