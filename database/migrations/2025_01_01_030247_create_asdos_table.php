@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('foto');
             $table->float('skor');
             $table->integer('rank');
+            $table->string('periode');
             $table->timestamps();
         });
     }

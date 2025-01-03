@@ -4,12 +4,12 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Data asdos</h4>
-                    <h6>Kelola asdos</h6>
+                    <h4>Data Pendaftar</h4>
+                    <h6>Kelola Pendaftar</h6>
                 </div>
                 <div class="page-btn">
-                    <a href="{{ route('tambahasdos') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah asdos</a>
+                    <a href="{{ route('tambahpendaftar') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
+                            alt="img" class="me-1">Tambah Pendaftar</a>
                 </div>
             </div>
 
@@ -115,50 +115,53 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Product Name</th>
-                                    <th>SKU</th>
-                                    <th>Category </th>
-                                    <th>Brand</th>
-                                    <th>price</th>
-                                    <th>Unit</th>
-                                    <th>Qty</th>
-                                    <th>Created By</th>
+                                    <th>Foto</th>
+                                    <th>Nama</th>
+                                    <th>Stambuk </th>
+                                    <th>Jurusan</th>
+                                    <th>WA</th>
+                                    <th>Skor</th>
+                                    <th>Rank</th>
+                                    <th>periode</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <label class="checkboxs">
-                                            <input type="checkbox">
-                                            <span class="checkmarks"></span>
-                                        </label>
-                                    </td>
-                                    <td class="productimgname">
-                                        <a href="javascript:void(0);" class="product-img">
-                                            <img src="{{ asset('img/product/product1.jpg') }}" alt="product">
-                                        </a>
-                                        <a href="javascript:void(0);">Macbook pro</a>
-                                    </td>
-                                    <td>PT001</td>
-                                    <td>Computers</td>
-                                    <td>N/D</td>
-                                    <td>1500.00</td>
-                                    <td>pc</td>
-                                    <td>100.00</td>
-                                    <td>Admin</td>
-                                    <td>
-                                        <a class="me-3" href="{{ route('detailasdos') }}">
-                                            <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                        </a>
-                                        <a class="me-3" href="{{ route('tambahasdos') }}">
-                                            <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                        </a>
-                                        <a class="confirm-text" href="javascript:void(0);">
-                                            <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
-                                        </a>
-                                    </td>
-                                </tr>
+                                @foreach ($asdos as $p)
+                                    <tr>
+                                        <td>
+                                            <label class="checkboxs">
+                                                <input type="checkbox">
+                                                <span class="checkmarks"></span>
+                                            </label>
+                                        </td>
+                                        <td class="productimgname">
+                                            <a href="javascript:void(0);" class="product-img">
+                                                <img src="{{ asset('img/asdos/' . $p->foto) }}" alt="asdos">
+                                            </a>
+                                        </td>
+                                        <td>{{ $p->nama }}</td>
+                                        <td>{{ $p->stb }}</td>
+                                        <td>{{ $p->jurusan }}</td>
+                                        <td>{{ $p->no_wa }}</td>
+                                        <td>{{ $p->skor }}</td>
+                                        <td>{{ $p->rank }}</td>
+                                        <td>{{ $p->periode }}</td>
+                                        <td>
+                                            <a class="me-3" href="{{ route('detailpendaftar', $p->id) }}">
+                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
+                                            </a>
+                                            <a class="me-3" href="{{ route('editpendaftar', $p->id) }}">
+                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
+                                            </a>
+                                            <a class="confirm-text" href="javascript:void(0);"
+                                                data-url="{{ route('hapuspendaftar', $p->id) }}">
+                                                <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
                             </tbody>
                         </table>
                     </div>

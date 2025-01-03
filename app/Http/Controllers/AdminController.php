@@ -374,7 +374,8 @@ class AdminController extends Controller
     // asdos
     public function asdos()
     {
-        return view('admin.master.asdos.index');
+        $asdos = Asdos::all();
+        return view('admin.master.asdos.index', compact('asdos'));
     }
     public function tambahasdos()
     {
@@ -823,8 +824,8 @@ class AdminController extends Controller
             'rekomendasi' => 0.2, // 20%
             'pernyataan' => 0.1, // 10%
         ];
-
-        $pendaftar = Pendaftar::all();
+        $periode = Periode::where('status', 'aktif')->first();
+        $pendaftar = Pendaftar::where('periode', $periode->tahun)->get();
         $ranking = [];
         $n = [];
         foreach ($pendaftar as $p) {
@@ -855,7 +856,7 @@ class AdminController extends Controller
                         } elseif ($m->nilai == 'D') {
                             $n[] = 1.00;
                         } elseif ($m->nilai == 'E') {
-                            $n[] = 0.00;
+                            $n[] = 0;
                         }
                     }
                 }
@@ -896,7 +897,7 @@ class AdminController extends Controller
             $status = $index < $jmlulus ? 'lulus' : 'tidak';
 
             if ($index < $jmlulus) {
-                Asdos::Create( 
+                Asdos::Create(
                     [
                         'rank' => $index + 1,
                         'id_user' => $asdos['id_user'],
@@ -907,6 +908,7 @@ class AdminController extends Controller
                         'no_wa' => $asdos['no_wa'],
                         'foto' => $asdos['foto'],
                         'skor' => $asdos['skor'],
+                        'periode' => $periode->tahun
                     ]
                 );
                 $pen = Pendaftar::findOrFail($asdos['id_pendaftar']);
@@ -919,6 +921,7 @@ class AdminController extends Controller
             }
         }
 
-        return view('admin.dashboard.index');
+
+        return redirect()->route('asdos')->with('success', 'asdos berhasil diverifikasi.');
     }
 }

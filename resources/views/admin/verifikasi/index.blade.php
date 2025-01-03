@@ -30,9 +30,11 @@
                     </ul>
 
                     <div class="text-center mt-4">
-                        <a href="{{ route('postverifikasi') }}" class="btn btn-success btn-lg px-4"">
-                            <i class="fas fa-user-check"></i> Verifikasi
-                        </a>
+                        <form action="{{ route('postverifikasi') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success btn-lg px-4"><i class="fas fa-user-check"></i>
+                                Verifikasi</button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -17,6 +17,7 @@ class Asdos extends Model
         'no_wa',
         'foto',
         'skor',
-        'rank'
+        'rank',
+        'periode'
     ];
 }
