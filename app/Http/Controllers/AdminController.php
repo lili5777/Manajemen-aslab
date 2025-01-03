@@ -19,7 +19,10 @@ class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard.index');
+        $pendaftar=Pendaftar::count();
+        $asdos=Asdos::count();
+        $jadwal=Jadwal::count();
+        return view('admin.dashboard.index',compact('pendaftar','asdos','jadwal'));
     }
 
     // master
