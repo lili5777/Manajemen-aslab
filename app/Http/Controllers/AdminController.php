@@ -19,10 +19,10 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $pendaftar=Pendaftar::count();
-        $asdos=Asdos::count();
-        $jadwal=Jadwal::count();
-        return view('admin.dashboard.index',compact('pendaftar','asdos','jadwal'));
+        $pendaftar = Pendaftar::count();
+        $asdos = Asdos::count();
+        $jadwal = Jadwal::count();
+        return view('admin.dashboard.index', compact('pendaftar', 'asdos', 'jadwal'));
     }
 
     // master
@@ -35,6 +35,7 @@ class AdminController extends Controller
     public function tambahpendaftar()
     {
         $user = User::all();
+
         return view('admin.master.pendaftar.tambah', compact('user'));
     }
     public function editpendaftar($id)
@@ -675,14 +676,19 @@ class AdminController extends Controller
     {
         $matkul = Matkul::all();
         $dosen = Dosen::all();
-        return view('admin.jadwal.tambah', compact('matkul', 'dosen'));
+        $periode = Periode::where('status', 'aktif')->first();
+        $asdos = Asdos::where('periode', $periode->tahun)->get();
+        // dd($asdos);
+        return view('admin.jadwal.tambah', compact('matkul', 'dosen', 'asdos'));
     }
     public function editjadwal($id)
     {
         $jadwal = Jadwal::find($id);
         $matkul = Matkul::all();
         $dosen = Dosen::all();
-        return view('admin.jadwal.tambah', compact('matkul', 'dosen', 'jadwal'));
+        $periode = Periode::where('status', 'aktif')->first();
+        $asdos = Asdos::where('periode', $periode->tahun)->get();
+        return view('admin.jadwal.tambah', compact('matkul', 'dosen', 'jadwal', 'asdos'));
     }
 
     public function postjadwal(Request $request)
@@ -697,6 +703,19 @@ class AdminController extends Controller
             'semester' => 'required',
             'nama_matkul' => 'required',
             'nama_dosen' => 'required',
+            'asdos1' => 'nullable',
+            'asdos2' => 'nullable|different:asdos1',
+        ], [
+            'hari.required' => 'Hari harus diisi.',
+            'pukul_mulai.required' => 'Pukul mulai harus diisi.',
+            'ruang.required' => 'Ruang harus diisi.',
+            'kode_kelas.required' => 'Kode kelas harus diisi.',
+            'huruf_kelas.required' => 'Huruf kelas harus diisi.',
+            'prodi.required' => 'Prodi harus diisi.',
+            'semester.required' => 'Semester harus diisi.',
+            'nama_matkul.required' => 'Nama mata kuliah harus diisi.',
+            'nama_dosen.required' => 'Nama dosen harus diisi.',
+            'asdos2.different' => 'Asisten dosen 2 tidak boleh sama dengan Asisten dosen 1.',
         ]);
 
         if ($request->id) {
@@ -710,6 +729,8 @@ class AdminController extends Controller
             $user->semester = $request->semester;
             $user->nama_matkul = $request->nama_matkul;
             $user->nama_dosen = $request->nama_dosen;
+            $user->asdos1 = $request->asdos1 ?? null;
+            $user->asdos2 = $request->asdos2 ?? null;
             $user->save();
             return redirect()->route('jadwal')->with('success', 'Jadwal berhasil diperbaharui');
         }
@@ -724,6 +745,8 @@ class AdminController extends Controller
         $user->semester = $request->semester;
         $user->nama_matkul = $request->nama_matkul;
         $user->nama_dosen = $request->nama_dosen;
+        $user->asdos1 = $request->asdos1 ?? null;
+        $user->asdos2 = $request->asdos2 ?? null;
         $user->save();
 
         return redirect()->route('jadwal')->with('success', 'Jadwal berhasil dibuat');

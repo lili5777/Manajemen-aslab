@@ -171,9 +171,15 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Asisten Dosen 1</label>
-                                    <input type="text" name="asdos1"
-                                        value="{{ isset($jadwal) ? $jadwal->asdos1 : '' }}"
-                                        placeholder="Kosongkan klo belum ada">
+                                    <select name="asdos1" class="form-select select2" required>
+                                        <option value="">Pilih Asisten Dosen 1</option>
+                                        @foreach ($asdos as $d)
+                                            <option value="{{ $d->nama }}"
+                                                {{ isset($jadwal) && $jadwal->asdos1 == $d->nama ? 'selected' : '' }}>
+                                                {{ $d->nama }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                     @error('asdos1')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
@@ -182,9 +188,15 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Asisten Dosen 2</label>
-                                    <input type="text" name="asdos2"
-                                        value="{{ isset($jadwal) ? $jadwal->asdos2 : '' }}"
-                                        placeholder="Kosongkan klo belum ada">
+                                    <select name="asdos2" class="form-select select2" required>
+                                        <option value="">Pilih Asisten Dosen 2</option>
+                                        @foreach ($asdos as $d)
+                                            <option value="{{ $d->nama }}"
+                                                {{ isset($jadwal) && $jadwal->asdos2 == $d->nama ? 'selected' : '' }}>
+                                                {{ $d->nama }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                     @error('asdos2')
                                         <span class="text-danger small">{{ $message }}</span>
                                     @enderror
