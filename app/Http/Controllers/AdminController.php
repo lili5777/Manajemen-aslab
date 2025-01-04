@@ -950,4 +950,9 @@ class AdminController extends Controller
 
         return redirect()->route('asdos')->with('success', 'asdos berhasil diverifikasi.');
     }
+
+
+    public function login(){
+        return view('login.login');
+    }
 }

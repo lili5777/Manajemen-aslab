@@ -99,3 +99,6 @@ Route::get('admin/pilmatkul/edit/{id}/{m}', [AdminController::class, 'editpilmat
 // verifikasi
 Route::get('admin/verifikasi', [AdminController::class, 'verifikasi'])->name('verifikasi');
 Route::post('admin/verifikasi/post', [AdminController::class, 'postverifikasi'])->name('postverifikasi');
+
+
+Route::get('login', [AdminController::class, 'login'])->name('login');
