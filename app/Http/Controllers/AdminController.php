@@ -389,6 +389,17 @@ class AdminController extends Controller
     {
         return view('admin.master.asdos.detail');
     }
+    public function hapusasdos($id)
+    {
+        $dosen = Asdos::findOrFail($id);
+        if ($dosen) {
+            $dosen->delete(); // Hapus data
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+        }
+
+        // Jika data tidak ditemukan
+        return response()->json(['message' => 'User not found.'], 404);
+    }
 
 
 

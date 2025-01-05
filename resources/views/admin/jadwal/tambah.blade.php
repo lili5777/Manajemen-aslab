@@ -171,7 +171,7 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Asisten Dosen 1</label>
-                                    <select name="asdos1" class="form-select select2" required>
+                                    <select name="asdos1" class="form-select select2" >
                                         <option value="">Pilih Asisten Dosen 1</option>
                                         @foreach ($asdos as $d)
                                             <option value="{{ $d->nama }}"
@@ -188,7 +188,7 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Asisten Dosen 2</label>
-                                    <select name="asdos2" class="form-select select2" required>
+                                    <select name="asdos2" class="form-select select2" >
                                         <option value="">Pilih Asisten Dosen 2</option>
                                         @foreach ($asdos as $d)
                                             <option value="{{ $d->nama }}"

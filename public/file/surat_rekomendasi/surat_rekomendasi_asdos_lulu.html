@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, #1e3a8a, #1e40af, #2563eb);
+            color: white;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        h1 {
+            font-size: 4rem;
+            text-align: center;
+            animation: jedagJedug 0.5s infinite;
+        }
+
+        @keyframes jedagJedug {
+            0%, 100% {
+                transform: scale(1);
+                color: #ffffff;
+            }
+            50% {
+                transform: scale(1.2);
+                color: #ffcb05;
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffcb05;
+            animation: fall 5s infinite ease-in-out;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .image-container {
+            position: absolute;
+            width: 150px;
+            height: auto;
+            animation: moveAround 10s infinite;
+        }
+
+        @keyframes moveAround {
+            0% {
+                top: 10%;
+                left: 10%;
+            }
+            25% {
+                top: 10%;
+                left: 80%;
+            }
+            50% {
+                top: 80%;
+                left: 80%;
+            }
+            75% {
+                top: 80%;
+                left: 10%;
+            }
+            100% {
+                top: 10%;
+                left: 10%;
+            }
+        }
+
+        .image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .image-container {
+                width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Happy New Year 2025! 🎉<br>From "Login" Team</h1>
+    </div>
+    <div class="image-container">
+        <img src="https://i.ibb.co.com/Mnb0hSk/Whats-App-Image-2024-12-31-at-21-01-04-61369e29.jpg" alt="Celebration">
+    </div>
+
+    <script>
+        // Function to generate confetti
+        function createConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                document.body.appendChild(confetti);
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = Math.random() * -100 + 'px';
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        // Generate confetti on page load
+        window.onload = createConfetti;
+
+        // Generate confetti every 3 seconds
+        setInterval(createConfetti, 3000);
+    </script>
+</body>
+</html>

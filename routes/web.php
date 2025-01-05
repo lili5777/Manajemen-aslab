@@ -50,6 +50,7 @@ Route::get('admin/akun/detail/{id}', [AdminController::class, 'detailakun'])->na
 Route::get('admin/asdos', [AdminController::class, 'asdos'])->name('asdos');
 Route::get('admin/asdos/tambah', [AdminController::class, 'tambahasdos'])->name('tambahasdos');
 Route::get('admin/asdos/detail', [AdminController::class, 'detailasdos'])->name('detailasdos');
+Route::delete('admin/asdos/hapus/{id}', [AdminController::class, 'hapusasdos'])->name('hapusasdos');
 
 
 // dosen
