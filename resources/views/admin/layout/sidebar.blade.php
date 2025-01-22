@@ -2,34 +2,34 @@
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
-                <li class="active">
-                    <a href="{{ route('admin') }}"><img src="{{ asset('img/icons/dashboard.svg') }}" alt="img"><span>
+                <li class="{{ Request::routeIs('admin') ? 'active' : '' }}">
+                    <a href="{{ route('admin') }}"><img src="{{ asset('img/icons/dashboard.svg') }}" alt="img" ><span>
                             Dashboard</span> </a>
                 </li>
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('img/icons/product.svg') }}" alt="img"><span>
                             Master</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('pendaftar') }}">Data Pendaftar</a></li>
-                        <li><a href="{{ route('asdos') }}">Data Asisten Labotarium</a></li>
-                        <li><a href="{{ route('dosen') }}">Data Dosen</a></li>
-                        <li><a href="{{ route('matkul') }}">Data Mata Kuliah Pratikum</a></li>
-                        <li><a href="{{ route('akun') }}">Data Akun</a></li>
-                        <li><a href="{{ route('periode') }}">Data Periode</a></li>
+                        <li><a href="{{ route('pendaftar') }}" class="{{ Request::routeIs('pendaftar') ? 'active' : '' }}">Data Pendaftar</a></li>
+                        <li><a href="{{ route('asdos') }}" class="{{ Request::routeIs('asdos') ? 'active' : '' }}">Data Asisten Labotarium</a></li>
+                        <li><a href="{{ route('dosen') }}" class="{{ Request::routeIs('dosen') ? 'active' : '' }}">Data Dosen</a></li>
+                        <li><a href="{{ route('matkul') }}" class="{{ Request::routeIs('matkul') ? 'active' : '' }}">Data Mata Kuliah Pratikum</a></li>
+                        <li><a href="{{ route('akun') }}" class="{{ Request::routeIs('akun') ? 'active' : '' }}">Data Akun</a></li>
+                        <li><a href="{{ route('periode') }}" class="{{ Request::routeIs('periode') ? 'active' : '' }}">Data Periode</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('img/icons/places.svg') }}" alt="img"><span>
                             Jadwal</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('jadwal') }}">Data Jadwal</a></li>
+                        <li><a href="{{ route('jadwal') }}" class="{{ Request::routeIs('jadwal') ? 'active' : '' }}">Data Jadwal</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="javascript:void(0);"><i data-feather="alert-octagon"></i><span>
                             Verifikasi</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('verifikasi') }}">Verifikasi Pendaftar</a></li>
+                        <li><a href="{{ route('verifikasi') }}" class="{{ Request::routeIs('verifikasi') ? 'active' : '' }}">Verifikasi Pendaftar</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
