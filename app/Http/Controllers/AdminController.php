@@ -963,7 +963,20 @@ class AdminController extends Controller
     }
 
 
-    public function login(){
+    public function absen()
+    {
+        return view('admin.absensi.absen.index');
+    }
+
+
+    public function verifyabsen()
+    {
+        return view('admin.absensi.verifikasi.index');
+    }
+
+
+    public function login()
+    {
         return view('login.login');
     }
 }

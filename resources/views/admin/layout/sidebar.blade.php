@@ -36,8 +36,8 @@
                     <a href="javascript:void(0);"><i data-feather="layers"></i><span> Absensi</span> <span
                             class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="quotationList.html">Quotation List</a></li>
-                        <li><a href="addquotation.html">Add Quotation</a></li>
+                        <li><a href="{{route('absen')}}" class="{{ Request::routeIs('absen') ? 'active' : '' }}">Absen</a></li>
+                        <li><a href="{{route('verifyabsen')}}" class="{{ Request::routeIs('verifyabsen') ? 'active' : '' }}">Verifikasi</a></li>
                     </ul>
                 </li>
                 <li class="submenu">

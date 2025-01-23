@@ -102,4 +102,13 @@ Route::get('admin/verifikasi', [AdminController::class, 'verifikasi'])->name('ve
 Route::post('admin/verifikasi/post', [AdminController::class, 'postverifikasi'])->name('postverifikasi');
 
 
+// absensi
+Route::get('admin/absen', [AdminController::class, 'absen'])->name('absen');
+Route::get('admin/verifyabsen', [AdminController::class, 'verifyabsen'])->name('verifyabsen');
+// Route::post('admin/akun/tambah', [AdminController::class, 'postakun'])->name('postakun');
+// Route::get('admin/akun/edit/{id}', [AdminController::class, 'editakun'])->name('editakun');
+// Route::delete('admin/akun/hapus/{id}', [AdminController::class, 'hapusakun'])->name('hapusakun');
+// Route::get('admin/akun/detail/{id}', [AdminController::class, 'detailakun'])->name('detailakun');
+
+
 Route::get('login', [AdminController::class, 'login'])->name('login');
