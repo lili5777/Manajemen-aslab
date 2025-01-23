@@ -117,12 +117,24 @@
                                 </th>
                                 <th>STB/NIDN</th>
                                 <th>Nama</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Action</th>
+                                <th>Riwayat</th>
+                                <th>Kehadiran</th>
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td>
+                                    <label class="checkboxs">
+                                        <input type="checkbox">
+                                        <span class="checkmarks"></span>
+                                    </label>
+                                </td>
+                                <td>212040</td>
+                                <td>Muhammad Ali Ferdiansyah</td>
+                                <td><a href="#" class="btn btn-primary text-white">Lihat</a></td>
+                                <td>9/10</td>
+                            </tr>
+                            
                             {{-- @forelse ($user as $a)
                                 <tr>
                                     <td>
