@@ -21,6 +21,7 @@ Route::get('/', function () {
 
 // login
 Route::post('proses_login', [AuthController::class, 'proses_login'])->name('proses_login');
+Route::post('proses_register', [AuthController::class, 'proses_register'])->name('proses_register');
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::group(['middleware' => ['auth']], function () {

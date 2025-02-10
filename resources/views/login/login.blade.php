@@ -363,23 +363,37 @@
             <div class="col align-items-center flex-col sign-up">
                 <div class="form-wrapper align-items-center">
                     <div class="form sign-up">
+                        <form action="{{route('proses_register')}}" method="POST">
+                            @csrf
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="Username">
+                            <input type="text" placeholder="Nama" name="name">
+                            @error('name')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="input-group">
+                            <i class='bx bxs-user'></i>
+                            <input type="text" placeholder="Stambuk" name="stb">
+                            @error('stb')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-group">
                             <i class='bx bx-mail-send'></i>
-                            <input type="email" placeholder="Email">
+                            <input type="email" placeholder="Email" name="email">
+                            @error('email')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" placeholder="Password">
+                            <input type="password" placeholder="Password" name="password">
+                            @error('password')
+                                <span class="text-red-500">{{ $message }}</span>
+                            @enderror
                         </div>
-                        <div class="input-group">
-                            <i class='bx bxs-lock-alt'></i>
-                            <input type="password" placeholder="Confirm password">
-                        </div>
-                        <button>
+                        <button type="submit">
                             Sign up
                         </button>
                         <p>
@@ -390,6 +404,7 @@
                                 Sign in here
                             </b>
                         </p>
+                        </form>
                     </div>
                 </div>
 
@@ -400,6 +415,7 @@
                 <div class="form-wrapper align-items-center">
                     <form action="{{route('proses_login')}}" method="POST">
                         @csrf
+                   
                     <div class="form sign-in">
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
