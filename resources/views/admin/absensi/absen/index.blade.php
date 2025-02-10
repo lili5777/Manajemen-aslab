@@ -122,18 +122,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    <label class="checkboxs">
-                                        <input type="checkbox">
-                                        <span class="checkmarks"></span>
-                                    </label>
-                                </td>
-                                <td>212040</td>
-                                <td>Muhammad Ali Ferdiansyah</td>
-                                <td><a href="#" class="btn btn-primary text-white">Lihat</a></td>
-                                <td>9/10</td>
-                            </tr>
+                            @foreach ($asdos as $a)
+                                <tr>
+                                    <td>
+                                        <label class="checkboxs">
+                                            <input type="checkbox">
+                                            <span class="checkmarks"></span>
+                                        </label>
+                                    </td>
+                                    <td>{{$a->stb}}</td>
+                                    <td>{{$a->nama}}</td>
+                                    <td><a href="#" class="btn btn-primary text-white">Lihat</a></td>
+                                    <td>9/10</td>
+                                </tr>
+                            @endforeach
+                            
                             
                             {{-- @forelse ($user as $a)
                                 <tr>

@@ -398,18 +398,21 @@
             <!-- SIGN IN -->
             <div class="col align-items-center flex-col sign-in">
                 <div class="form-wrapper align-items-center">
+                    <form action="{{route('proses_login')}}" method="POST">
+                        @csrf
                     <div class="form sign-in">
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="Username">
+                            <input type="text" placeholder="Email" name="email">
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" placeholder="Password">
+                            <input type="password" placeholder="Password" name="password">
                         </div>
-                        <button>
+                        <button type="submit">
                             Sign in
                         </button>
+                        
                         <p>
                             <b>
                                 Forgot password?
@@ -424,6 +427,7 @@
                             </b>
                         </p>
                     </div>
+                    </form>
                 </div>
                 <div class="form-wrapper">
 

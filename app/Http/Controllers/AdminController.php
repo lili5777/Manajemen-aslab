@@ -12,6 +12,7 @@ use App\Models\Periode;
 use App\Models\PilihMatkul;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Smalot\PdfParser\Parser;
 
@@ -965,7 +966,8 @@ class AdminController extends Controller
 
     public function absen()
     {
-        return view('admin.absensi.absen.index');
+        $asdos = Asdos::all();
+        return view('admin.absensi.absen.index', compact('asdos'));
     }
 
 
@@ -977,6 +979,12 @@ class AdminController extends Controller
 
     public function login()
     {
+        $user = Auth::user();
+        if ($user) {
+            // if ($user->role == 'admin') {
+            return redirect()->intended('admin');
+            // }
+        }
         return view('login.login');
     }
 }
