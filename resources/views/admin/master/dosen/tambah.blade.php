@@ -15,6 +15,24 @@
                         @csrf
                         <input type="hidden" name="id" value="{{ isset($dosen) ? $dosen->id : '' }}">
                         <div class="row">
+                            <div class="col-lg-4 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label>Akun</label>
+                            
+                                    <select name="id_akun" class="select2" required>
+                                        {{-- <option value="">Pilih Akun</option> --}}
+                                        <option value="">Pilih Akun</option>
+                                        @foreach ($user as $a)
+                                            <option value="{{ $a->id }}" {{ isset($dosen) && $dosen->id_akun == $a->id ? 'selected' : '' }}>
+                                                {{ $a->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('id_akun')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Nama</label>

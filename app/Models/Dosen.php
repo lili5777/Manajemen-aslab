@@ -9,6 +9,7 @@ class Dosen extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'id_akun',
         'foto',
         'nama',
         'email',

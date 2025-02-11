@@ -26,6 +26,7 @@
                         @endif
 
                         <div class="row">
+                            @if (auth()->user()->role == 'admin')
                             <div class="col-lg-4 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Akun</label>
@@ -44,7 +45,10 @@
                                     @enderror
                                 </div>
                             </div>
-
+                            @endif
+                            @if (auth()->user()->role == 'mahasiswa')
+                            <input type="text" value="{{auth()->user()->id}}" name="id_user" hidden>
+                            @endif
                             <div class="col-lg-4 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Nama</label>

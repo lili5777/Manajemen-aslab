@@ -7,10 +7,12 @@
                     <h4>Data matkul</h4>
                     <h6>Kelola matkul</h6>
                 </div>
+                @if (auth()->user()->role == 'admin')
                 <div class="page-btn">
                     <a href="{{ route('tambahmatkul') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
                             alt="img" class="me-1">Tambah matkul</a>
                 </div>
+                @endif
             </div>
 
             <div class="card">
@@ -134,6 +136,7 @@
                                         <td>{{ $m->kode_kelas }}</td>
                                         <td>{{ $m->nama }}</td>
                                         <td>
+                                            @if (auth()->user()->role == 'admin')
                                             <a class="me-3" href="{{ route('editmatkul', $m->id) }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
@@ -141,6 +144,7 @@
                                                 data-url="{{ route('hapusmatkul', $m->id) }}">
                                                 <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
                                             </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

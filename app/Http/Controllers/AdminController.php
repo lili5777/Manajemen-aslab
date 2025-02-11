@@ -176,7 +176,7 @@ class AdminController extends Controller
         $pendaftar->ttl = $request->ttl;
         $pendaftar->tempat_lahir = $request->tempat_lahir;
         $pendaftar->no_wa = $request->no_wa;
-        $pendaftar->periode = $periode->tahun;
+        $pendaftar->periode = $periode->id;
         $pendaftar->status = "belum diseleksi";
         $pendaftar->save();
 
@@ -211,8 +211,12 @@ class AdminController extends Controller
                 }
             }
         }
-
-        return redirect()->route('pendaftar')->with('success', $request->id ? 'Pendaftar berhasil diupdate.' : 'Pendaftar berhasil ditambahkan.');
+        $u = Auth::user();
+        if ($u->role == 'admin') {
+            return redirect()->route('pendaftar')->with('success', $request->id ? 'Pendaftar berhasil diupdate.' : 'Pendaftar berhasil ditambahkan.');
+        } else {
+            return redirect()->route('zpendaftar')->with('success', $request->id ? 'Pendaftar berhasil diupdate.' : 'Pendaftar berhasil ditambahkan.');
+        }
     }
 
 
@@ -413,7 +417,8 @@ class AdminController extends Controller
     }
     public function tambahdosen()
     {
-        return view('admin.master.dosen.tambah');
+        $user = User::where('role', 'dosen')->get();
+        return view('admin.master.dosen.tambah', compact('user'));
     }
     public function editdosen($id)
     {
@@ -439,6 +444,7 @@ class AdminController extends Controller
     public function postdosen(Request $request)
     {
         $request->validate([
+            'id_akun' => 'required',
             'nidn' => 'required',
             'nama' => 'required',
             'foto' => 'nullable|image|max:10240',
@@ -462,6 +468,7 @@ class AdminController extends Controller
         // proses edit
         if ($request->id) {
             $user = Dosen::findOrFail($request->id);
+            $user->id_akun = $request->id_akun;
             $user->email = $request->email;
             $user->nama = $request->nama;
             $user->nidn = $request->nidn;
@@ -480,6 +487,7 @@ class AdminController extends Controller
 
         // proses tambah akun
         $user = new Dosen();
+        $user->id_akun = $request->id_akun;
         $user->email = $request->email;
         $user->nama = $request->nama;
         $user->nidn = $request->nidn;
@@ -986,5 +994,22 @@ class AdminController extends Controller
             // }
         }
         return view('login.login');
+    }
+
+    // master 
+    public function ketentuan()
+    {
+        return view('admin.master.ketentuan.index');
+    }
+
+    public function zpendaftar()
+    {
+        $user = Auth::user();
+        $periode = Periode::where('status', 'aktif')->first();
+        debug($periode);
+        debug($user);
+        $pendaftar = Pendaftar::where('id_user', $user->id)->where('periode', $periode->id)->first();
+        debug($pendaftar);
+        return view('admin.master.pendaftar.zindex', compact('pendaftar', 'periode'));
     }
 }

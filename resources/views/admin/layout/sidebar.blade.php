@@ -10,12 +10,24 @@
                     <a href="javascript:void(0);"><img src="{{ asset('img/icons/product.svg') }}" alt="img"><span>
                             Master</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('pendaftar') }}" class="{{ Request::routeIs('pendaftar') ? 'active' : '' }}">Data Pendaftar</a></li>
-                        <li><a href="{{ route('asdos') }}" class="{{ Request::routeIs('asdos') ? 'active' : '' }}">Data Asisten Labotarium</a></li>
+                        <li><a href="{{ route('ketentuan') }}" class="{{ Request::routeIs('ketentuan') ? 'active' : '' }}">Ketentuan</a></li>
+                        @if (auth()->user()->role == 'mahasiswa')
+                            <li><a href="{{ route('zpendaftar') }}" class="{{ Request::routeIs('zpendaftar') ? 'active' : '' }}">Pendaftaran</a>
+                            </li>
+                        @endif
+                        @if (auth()->user()->role == 'admin')
+                            <li><a href="{{ route('pendaftar') }}" class="{{ Request::routeIs('pendaftar') ? 'active' : '' }}">Data Pendaftar</a>
+                            </li>
+                        @endif
+                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dosen')
+                            <li><a href="{{ route('asdos') }}" class="{{ Request::routeIs('asdos') ? 'active' : '' }}">Data Asisten Labotarium</a></li>
+                        @endif
                         <li><a href="{{ route('dosen') }}" class="{{ Request::routeIs('dosen') ? 'active' : '' }}">Data Dosen</a></li>
                         <li><a href="{{ route('matkul') }}" class="{{ Request::routeIs('matkul') ? 'active' : '' }}">Data Mata Kuliah Pratikum</a></li>
+                        @if (auth()->user()->role == 'admin')
                         <li><a href="{{ route('akun') }}" class="{{ Request::routeIs('akun') ? 'active' : '' }}">Data Akun</a></li>
                         <li><a href="{{ route('periode') }}" class="{{ Request::routeIs('periode') ? 'active' : '' }}">Data Periode</a></li>
+                        @endif
                     </ul>
                 </li>
                 <li class="submenu">
@@ -25,6 +37,7 @@
                         <li><a href="{{ route('jadwal') }}" class="{{ Request::routeIs('jadwal') ? 'active' : '' }}">Data Jadwal</a></li>
                     </ul>
                 </li>
+                @if (auth()->user()->role == 'admin')
                 <li class="submenu">
                     <a href="javascript:void(0);"><i data-feather="alert-octagon"></i><span>
                             Verifikasi</span> <span class="menu-arrow"></span></a>
@@ -32,14 +45,18 @@
                         <li><a href="{{ route('verifikasi') }}" class="{{ Request::routeIs('verifikasi') ? 'active' : '' }}">Verifikasi Pendaftar</a></li>
                     </ul>
                 </li>
+                @endif
                 <li class="submenu">
                     <a href="javascript:void(0);"><i data-feather="layers"></i><span> Absensi</span> <span
                             class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{route('absen')}}" class="{{ Request::routeIs('absen') ? 'active' : '' }}">Absen</a></li>
+                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dosen')
                         <li><a href="{{route('verifyabsen')}}" class="{{ Request::routeIs('verifyabsen') ? 'active' : '' }}">Verifikasi</a></li>
+                        @endif
                     </ul>
                 </li>
+                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'mahasiswa')
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('img/icons/purchase1.svg') }}"
                             alt="img"><span> Sertifikat</span> <span class="menu-arrow"></span></a>
@@ -59,6 +76,7 @@
                         <li><a href="expensecategory.html">Expense Category</a></li>
                     </ul>
                 </li>
+                @endif
 
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('img/icons/users1.svg') }}" alt="img"><span>

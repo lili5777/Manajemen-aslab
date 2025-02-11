@@ -7,10 +7,12 @@
                     <h4>Data Pendaftar</h4>
                     <h6>Kelola Pendaftar</h6>
                 </div>
+                @if (auth()->user()->role == 'admin')
                 <div class="page-btn">
                     <a href="{{ route('tambahpendaftar') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
                             alt="img" class="me-1">Tambah Pendaftar</a>
                 </div>
+                @endif
             </div>
 
             <div class="card">
@@ -151,6 +153,7 @@
                                             <a class="me-3" href="{{ route('detailasdos', $p->id) }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
                                             </a>
+                                            @if (auth()->user()->role == 'admin')
                                             <a class="me-3" href="{{ route('editpendaftar', $p->id) }}">
                                                 <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
                                             </a>
@@ -158,6 +161,7 @@
                                                 data-url="{{ route('hapusasdos', $p->id) }}">
                                                 <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
                                             </a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

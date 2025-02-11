@@ -31,6 +31,9 @@ Route::group(['middleware' => ['auth']], function () {
     // dashboard
     Route::get('admin', [AdminController::class, 'index'])->name('admin');
 
+    //ketentuan
+    Route::get('admin/ketentuan', [AdminController::class, 'ketentuan'])->name('ketentuan');
+
 
     // pendaftar
     Route::get('admin/pendaftar', [AdminController::class, 'pendaftar'])->name('pendaftar');
@@ -39,6 +42,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('admin/pendaftar/edit/{id}', [AdminController::class, 'editpendaftar'])->name('editpendaftar');
     Route::post('admin/pendaftar/tambah', [AdminController::class, 'postpendaftar'])->name('postpendaftar');
     Route::delete('admin/pendaftar/hapus/{id}', [AdminController::class, 'hapuspendaftar'])->name('hapuspendaftar');
+
+
+    // zpendaftar
+    Route::get('admin/pendaftar_', [AdminController::class, 'zpendaftar'])->name('zpendaftar');
 
 
     //transkip 
