@@ -47,6 +47,10 @@ Route::group(['middleware' => ['auth']], function () {
     // zpendaftar
     Route::get('admin/pendaftar_', [AdminController::class, 'zpendaftar'])->name('zpendaftar');
 
+    // ambilkelas
+    Route::get('admin/ambil/{id}', [AdminController::class, 'ambilkelas'])->name('ambilkelas');
+    Route::get('admin/ambil2/{id}', [AdminController::class, 'ambilkelas2'])->name('ambilkelas2');
+
 
     //transkip 
     Route::get('admin/pendaftar/transkip/{id}', [AdminController::class, 'transkip'])->name('transkip');

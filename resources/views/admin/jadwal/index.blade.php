@@ -151,24 +151,34 @@
                                             @if ($a->asdos1)
                                                 {{ $a->asdos1 }}
                                             @else
-                                                Belum ada
+                                                @if (auth()->user()->role == 'admin')
+                                                    Belum ada
+                                                @else
+                                                    <a href="{{route('ambilkelas',$a->id)}}" class="btn btn-primary text-white btn-sm">Ambil Kelas</a>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>
                                             @if ($a->asdos2)
                                                 {{ $a->asdos2 }}
                                             @else
-                                                Belum ada
+                                                @if (auth()->user()->role == 'admin')
+                                                    Belum ada
+                                                @else
+                                                    <a href="{{route('ambilkelas2', $a->id)}}" class="btn btn-primary text-white btn-sm">Ambil Kelas</a>
+                                                @endif
                                             @endif
                                         </td>
                                         <td>
-                                            <a class="me-3" href="{{ route('editjadwal', $a->id) }}">
-                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                            </a>
-                                            <a class="confirm-text" href="javascript:void(0);"
-                                                data-url="{{ route('hapusjadwal', $a->id) }}">
-                                                <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
-                                            </a>
+                                            @if (auth()->user()->role == 'admin')
+                                                <a class="me-3" href="{{ route('editjadwal', $a->id) }}">
+                                                    <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
+                                                </a>
+                                                <a class="confirm-text" href="javascript:void(0);" data-url="{{ route('hapusjadwal', $a->id) }}">
+                                                    <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
+                                                </a>
+                                            @endif
+
                                         </td>
                                     </tr>
                                 @empty

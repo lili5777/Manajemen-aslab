@@ -871,7 +871,7 @@ class AdminController extends Controller
             'pernyataan' => 0.1, // 10%
         ];
         $periode = Periode::where('status', 'aktif')->first();
-        $pendaftar = Pendaftar::where('periode', $periode->tahun)->get();
+        $pendaftar = Pendaftar::where('periode', $periode->id)->get();
         $ranking = [];
         $n = [];
         foreach ($pendaftar as $p) {
@@ -954,7 +954,7 @@ class AdminController extends Controller
                         'no_wa' => $asdos['no_wa'],
                         'foto' => $asdos['foto'],
                         'skor' => $asdos['skor'],
-                        'periode' => $periode->tahun
+                        'periode' => $periode->id
                     ]
                 );
                 $pen = Pendaftar::findOrFail($asdos['id_pendaftar']);
@@ -1011,5 +1011,37 @@ class AdminController extends Controller
         $pendaftar = Pendaftar::where('id_user', $user->id)->where('periode', $periode->id)->first();
         debug($pendaftar);
         return view('admin.master.pendaftar.zindex', compact('pendaftar', 'periode'));
+    }
+
+
+    // ambil kelas
+    public function ambilkelas($id)
+    {
+        $user = Auth::user();
+        $periode = Periode::where('status', 'aktif')->first();
+        $asdos = Asdos::where('id_user', $user->id)->where('periode', $periode->id)->first();
+        $jadwal = Jadwal::find($id);
+        if ($jadwal->asdos2 == $asdos->nama) {
+            return redirect()->route('jadwal')->with('error', 'jadwal telah terdaftar');
+        } else {
+            $jadwal->asdos1 = $asdos->nama;
+            $jadwal->save();
+            return redirect()->route('jadwal')->with('success', 'jadwal berhasil diupdate.');
+        }
+    }
+
+    public function ambilkelas2($id)
+    {
+        $user = Auth::user();
+        $periode = Periode::where('status', 'aktif')->first();
+        $asdos = Asdos::where('id_user', $user->id)->where('periode', $periode->id)->first();
+        $jadwal = Jadwal::find($id);
+        if ($jadwal->asdos1 == $asdos->nama) {
+            return redirect()->route('jadwal')->with('error', 'jadwal telah terdaftar');
+        } else {
+            $jadwal->asdos2 = $asdos->nama;
+            $jadwal->save();
+            return redirect()->route('jadwal')->with('success', 'jadwal berhasil diupdate.');
+        }
     }
 }
