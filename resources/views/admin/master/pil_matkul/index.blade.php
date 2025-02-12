@@ -131,7 +131,7 @@
                                                 <span class="checkmarks"></span>
                                             </label>
                                         </td>
-                                        <td>{{ $ko->where('kode_kelas', $d->matkul)->first()->nama ?? 'Tidak Ditemukan' }}
+                                        <td>{{ $d->matkul ?? 'Tidak Ditemukan' }}
                                         </td>
                                         <td>
 

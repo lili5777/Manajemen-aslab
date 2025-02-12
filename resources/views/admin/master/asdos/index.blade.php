@@ -148,7 +148,7 @@
                                         <td>{{ $p->no_wa }}</td>
                                         <td>{{ $p->skor }}</td>
                                         <td>{{ $p->rank }}</td>
-                                        <td>{{ $p->periode }}</td>
+                                        <td>{{$periode->where('id', $p->periode)->first()->semester}} <br>{{ $periode->where('id', $p->periode)->first()->tahun }}</td>
                                         <td>
                                             <a class="me-3" href="{{ route('detailasdos', $p->id) }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">

@@ -383,8 +383,10 @@ class AdminController extends Controller
     // asdos
     public function asdos()
     {
+        $periode = Periode::all();
         $asdos = Asdos::all();
-        return view('admin.master.asdos.index', compact('asdos'));
+
+        return view('admin.master.asdos.index', compact('asdos', 'periode'));
     }
     public function tambahasdos()
     {
@@ -687,7 +689,25 @@ class AdminController extends Controller
 
     public function jadwal()
     {
-        $jadwal = Jadwal::all();
+        $user = Auth::user();
+        $periode = Periode::where('status', 'aktif')->first();
+
+
+        if ($user->role == 'admin') {
+            $jadwal = Jadwal::where('id_periode', $periode->id)->get();
+        } else if ($user->role == 'mahasiswa') {
+            $pen = Pendaftar::where('id_user', $user->id)->where('periode', $periode->id)->first();
+            if ($pen) {
+                $pilmatkul = PilihMatkul::where('id_pendaftar', $pen->id)->pluck('matkul')->toArray();
+                $jadwal = Jadwal::whereIn('nama_matkul', $pilmatkul)->where('id_periode', $periode->id)->get();
+            } else {
+                $jadwal = collect(); // Jika $pen tidak ditemukan, buat koleksi kosong
+            }
+        } else {
+            $dosen = Dosen::where('id_akun', $user->id)->first();
+            $jadwal = Jadwal::where('nama_dosen', $dosen->nama)->where('id_periode', $periode->id)->get();
+        }
+
 
         return view('admin.jadwal.index', compact('jadwal'));
     }
@@ -799,8 +819,8 @@ class AdminController extends Controller
     {
         $pendaftaran = Pendaftar::find($id);
         $periode = Periode::where('status', 'aktif')->first();
-        $matkul = Jadwal::where('id_periode', $periode->id)->get();
-        // $ko = Matkul::all();
+        $matkul = Jadwal::where('id_periode', $periode->id)->select('nama_matkul')->distinct()->get();
+        debug($matkul);
         return view('admin.master.pil_matkul.tambah', compact('pendaftaran', 'matkul'));
     }
 
@@ -814,7 +834,7 @@ class AdminController extends Controller
             'matkul.required' => 'Anda harus memilih setidaknya 1 mata kuliah.',
             'matkul.max' => 'Maksimal 3 mata kuliah yang dapat dipilih.',
         ]);
-
+        // dd($request->matkul);
         // Ambil ID pengguna
         $userId = $request->id_pendaftar;
         // Cek jumlah data di tabel pilmatkul untuk pengguna ini
@@ -838,7 +858,7 @@ class AdminController extends Controller
         foreach ($request->matkul as $matkulId) {
             PilihMatkul::create([
                 'id_pendaftar' => $userId,
-                'matkul' => substr($matkulId, 0, 5),
+                'matkul' => $matkulId,
             ]);
         }
 

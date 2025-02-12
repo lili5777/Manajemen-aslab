@@ -7,10 +7,12 @@
                     <h4>Data Jadwal</h4>
                     <h6>Kelola Jadwal</h6>
                 </div>
-                <div class="page-btn">
-                    <a href="{{ route('tambahjadwal') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah Jadwal</a>
-                </div>
+                @if (auth()->user()->role == 'admin')
+                    <div class="page-btn">
+                        <a href="{{ route('tambahjadwal') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}" alt="img"
+                                class="me-1">Tambah Jadwal</a>
+                    </div>
+                @endif
             </div>
 
             <div class="card">
@@ -151,10 +153,10 @@
                                             @if ($a->asdos1)
                                                 {{ $a->asdos1 }}
                                             @else
-                                                @if (auth()->user()->role == 'admin')
+                                                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dosen')
                                                     Belum ada
                                                 @else
-                                                    <a href="{{route('ambilkelas',$a->id)}}" class="btn btn-primary text-white btn-sm">Ambil Kelas</a>
+                                                    <a href="{{route('ambilkelas', $a->id)}}" class="btn btn-primary text-white btn-sm">Ambil Kelas</a>
                                                 @endif
                                             @endif
                                         </td>
@@ -162,7 +164,7 @@
                                             @if ($a->asdos2)
                                                 {{ $a->asdos2 }}
                                             @else
-                                                @if (auth()->user()->role == 'admin')
+                                                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dosen')
                                                     Belum ada
                                                 @else
                                                     <a href="{{route('ambilkelas2', $a->id)}}" class="btn btn-primary text-white btn-sm">Ambil Kelas</a>
