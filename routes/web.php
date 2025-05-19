@@ -124,8 +124,32 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     // absensi
-    Route::get('admin/absen', [AdminController::class, 'absen'])->name('absen');
-    Route::get('admin/verifyabsen', [AdminController::class, 'verifyabsen'])->name('verifyabsen');
+    // Route::get('admin/absen', [AdminController::class, 'absen'])->name('absen');
+    // Route::get('admin/absen/jadwal/{id}', [AdminController::class, 'jadwalasdos'])->name('jadwalasdoss');
+    // Route::get('admin/absen/jadwal/riwayat/{id}/{asdos}', [AdminController::class, 'riwayatabsensi'])->name('riwayatabsensi');
+    // Route::get('admin/absen/jadwal/riwayat/tambah/{id_jadwal}/{asdos}', [AdminController::class, 'tambahkehadiran'])->name('tambahriwayatabsensi');
+    // Route::post('admin/absen/tambah', [AdminController::class, 'postkehadiran'])->name('postkehadiran');
+    // Route::delete('admin/absen/hapus/{id}', [AdminController::class, 'hapuskehadiran'])->name('hapuskehadiran');
+    // Route::get('admin/absen/jadwal/riwayat/tambah/{id}/{id_jadwal}/{asdos}', [AdminController::class, 'editkehadiran'])->name('editkehadiran');
+
+    // updateabsensi
+    Route::get('admin/absen', [AdminController::class, 'absensi2'])->name('absen');
+    Route::get('admin/absen/{id}', [AdminController::class, 'detailabsensi2'])->name('detailabsen');
+    Route::post('admin/absen/tambah', [AdminController::class, 'postabsensi2'])->name('postkehadiran');
+
+    Route::get('admin/absensi_', [AdminController::class, 'kelolaabsensi'])->name('kelolaabsensi');
+    Route::get('admin/absensi_/{id}', [AdminController::class, 'verifikasiabsensi'])->name('verifikasiabsensi');
+    Route::get('admin/absen_/terima/{id}', [AdminController::class, 'terima_absensi'])->name('terima_absensi');
+
+    // financial
+    Route::get('admin/financial', [AdminController::class, 'financial'])->name('financial');
+    Route::get('admin/rekapfinancial', [AdminController::class, 'rekapfinancial'])->name('rekapfinancial');
+
+    // sertifikat
+    Route::get('admin/sertifikat', [AdminController::class, 'sertifikat'])->name('sertifikat');
+    Route::post('admin/absen/tambah', [AdminController::class, 'postabsensi2'])->name('postkehadiran');
+    Route::post('admin/sertifikat/upload/{name}', [AdminController::class, 'uploadSertifikat'])->name('uploadSertifikat');
+ 
     // Route::post('admin/akun/tambah', [AdminController::class, 'postakun'])->name('postakun');
     // Route::get('admin/akun/edit/{id}', [AdminController::class, 'editakun'])->name('editakun');
     // Route::delete('admin/akun/hapus/{id}', [AdminController::class, 'hapusakun'])->name('hapusakun');

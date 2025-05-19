@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('absens', function (Blueprint $table) {
+        Schema::create('sertifikats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_asdos')->constrained('asdos', 'id')->onDelete('cascade');
-            $table->foreignId('id_jadwal')->constrained('jadwals', 'id')->onDelete('cascade');
-            $table->string('status');
-            $table->string('periode');
-            $table->integer('verifikasi');
-            $table->integer('pertemuan');
+            $table->string('url')->nullable();
+            $table->string('qr_code')->nullable();
+            $table->string('file_path')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('absens');
+        Schema::dropIfExists('sertifikats');
     }
 };

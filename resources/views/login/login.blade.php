@@ -35,6 +35,9 @@
             height: 100vh;
             overflow: hidden;
         }
+        .dipa{
+            width: 100px;
+        }
 
         .container {
             position: relative;
@@ -351,6 +354,9 @@
                 margin: .5rem;
                 font-size: 2rem;
             }
+            .text-danger{
+                color: #DB4437;
+            }
         }
     </style>
 </head>
@@ -363,45 +369,46 @@
             <div class="col align-items-center flex-col sign-up">
                 <div class="form-wrapper align-items-center">
                     <div class="form sign-up">
+                        <img src="{{asset('img/logoundipa.png')}}" alt="" class="dipa">
                         <form action="{{route('proses_register')}}" method="POST">
                             @csrf
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="Nama" name="name">
+                            <input type="text" placeholder="Nama" name="name" required>
                             @error('name')
                                 <span class="text-red-500">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="Stambuk" name="stb">
+                            <input type="text" placeholder="Stambuk" name="stb" required>
                             @error('stb')
                                 <span class="text-red-500">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-group">
                             <i class='bx bx-mail-send'></i>
-                            <input type="email" placeholder="Email" name="email">
+                            <input type="email" placeholder="Email" name="email" required>
                             @error('email')
                                 <span class="text-red-500">{{ $message }}</span>
                             @enderror
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" placeholder="Password" name="password">
+                            <input type="password" placeholder="Password" name="password" required>
                             @error('password')
                                 <span class="text-red-500">{{ $message }}</span>
                             @enderror
                         </div>
                         <button type="submit">
-                            Sign up
+                            Daftar
                         </button>
                         <p>
                             <span>
-                                Already have an account?
+                                Sudah punya akun?
                             </span>
                             <b onclick="toggle()" class="pointer">
-                                Sign in here
+                                Masuk disini
                             </b>
                         </p>
                         </form>
@@ -415,31 +422,33 @@
                 <div class="form-wrapper align-items-center">
                     <form action="{{route('proses_login')}}" method="POST">
                         @csrf
-                   
+                        
                     <div class="form sign-in">
+                        <img src="{{asset('img/logoundipa.png')}}" alt="" class="dipa">
+                        @if ($errors->has('login_gagal'))
+                            <div class="text-danger" style="color: #DB4437">
+                                {{ $errors->first('login_gagal') }}
+                            </div>
+                        @endif
                         <div class="input-group">
                             <i class='bx bxs-user'></i>
-                            <input type="text" placeholder="Email" name="email">
+                            <input type="text" placeholder="Email" name="email" required>
                         </div>
                         <div class="input-group">
                             <i class='bx bxs-lock-alt'></i>
-                            <input type="password" placeholder="Password" name="password">
+                            <input type="password" placeholder="Password" name="password" required>
                         </div>
                         <button type="submit">
-                            Sign in
+                            Login
                         </button>
                         
-                        <p>
-                            <b>
-                                Forgot password?
-                            </b>
-                        </p>
+                        
                         <p>
                             <span>
-                                Don't have an account?
+                                Belum punya akun?
                             </span>
                             <b onclick="toggle()" class="pointer">
-                                Sign up here
+                                Daftar sekarnag
                             </b>
                         </p>
                     </div>

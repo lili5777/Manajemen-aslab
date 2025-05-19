@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asdos;
+use App\Models\Sertifikat;
+use App\Models\Absen;
 use App\Models\Dosen;
 use App\Models\InputNilai;
 use App\Models\Jadwal;
@@ -15,6 +17,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Smalot\PdfParser\Parser;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Process\Process;
 
 class AdminController extends Controller
 {
@@ -35,7 +40,7 @@ class AdminController extends Controller
     }
     public function tambahpendaftar()
     {
-        $user = User::all();
+        $user = User::where('role', 'mahasiswa')->get();
 
         return view('admin.master.pendaftar.tambah', compact('user'));
     }
@@ -701,7 +706,7 @@ class AdminController extends Controller
                 $pilmatkul = PilihMatkul::where('id_pendaftar', $pen->id)->pluck('matkul')->toArray();
                 $jadwal = Jadwal::whereIn('nama_matkul', $pilmatkul)->where('id_periode', $periode->id)->get();
             } else {
-                $jadwal = collect(); // Jika $pen tidak ditemukan, buat koleksi kosong
+                $jadwal = collect(); 
             }
         } else {
             $dosen = Dosen::where('id_akun', $user->id)->first();
@@ -717,7 +722,7 @@ class AdminController extends Controller
         $matkul = Matkul::all();
         $dosen = Dosen::all();
         $periode = Periode::where('status', 'aktif')->first();
-        $asdos = Asdos::where('periode', $periode->tahun)->get();
+        $asdos = Asdos::where('periode', $periode->id)->get();
         // dd($asdos);
         return view('admin.jadwal.tambah', compact('matkul', 'dosen', 'asdos'));
     }
@@ -727,7 +732,8 @@ class AdminController extends Controller
         $matkul = Matkul::all();
         $dosen = Dosen::all();
         $periode = Periode::where('status', 'aktif')->first();
-        $asdos = Asdos::where('periode', $periode->tahun)->get();
+        $asdos = Asdos::where('periode', $periode->id)->get();
+        // dd($periode);
         return view('admin.jadwal.tambah', compact('matkul', 'dosen', 'jadwal', 'asdos'));
     }
 
@@ -898,11 +904,11 @@ class AdminController extends Controller
             $pilmatkul = InputNilai::where('id_pendaftar', $p->id)->get();
             // Array untuk menyimpan bobot nilai
             $nilai = PilihMatkul::where('id_pendaftar', $p->id)->get();
-
             foreach ($pilmatkul as $m) {
                 foreach ($nilai as $ni) {
-                    $relasi = Matkul::where('kode_kelas', $ni->matkul)->first();
-
+                    $relasi = Matkul::where('nama', $ni->matkul)->first();
+                    // dd($relasi);
+                    // dd($m->kode);
                     if ($relasi->kode == $m->kode) {
                         // Cek nilai dan tambahkan bobot sesuai
                         if ($m->nilai == 'A') {
@@ -924,6 +930,7 @@ class AdminController extends Controller
                         } elseif ($m->nilai == 'E') {
                             $n[] = 0;
                         }
+                        
                     }
                 }
             }
@@ -992,19 +999,6 @@ class AdminController extends Controller
     }
 
 
-    public function absen()
-    {
-        $asdos = Asdos::all();
-        return view('admin.absensi.absen.index', compact('asdos'));
-    }
-
-
-    public function verifyabsen()
-    {
-        return view('admin.absensi.verifikasi.index');
-    }
-
-
     public function login()
     {
         $user = Auth::user();
@@ -1063,5 +1057,280 @@ class AdminController extends Controller
             $jadwal->save();
             return redirect()->route('jadwal')->with('success', 'jadwal berhasil diupdate.');
         }
+    }
+
+
+    // update absensi
+    public function absensi2(){
+        $user=Auth::user();
+        $asdos=Asdos::where('id_user',$user->id)->first();
+        $periode=Periode::where('status','aktif')->first();
+        $jadwal= Jadwal::where('id_periode', $periode->id)
+            ->where(function ($query) use ($asdos) {
+                $query->where('asdos1', $asdos->nama)
+                    ->orWhere('asdos2', $asdos->nama);
+            })
+            ->get();
+        return view('admin.absensi.index',compact('jadwal'));
+        
+    }
+    public function detailabsensi2($id){
+        $user = Auth::user();
+        $asdos = Asdos::where('id_user', $user->id)->first();
+        $jadwal=Jadwal::find($id);
+        $absensi=Absen::where('id_asdos',$asdos->id)->where('id_jadwal',$jadwal->id)->get();
+        // dd($absensi);
+        $summary = [
+            'total' => $absensi->where('verifikasi', 'terima')->count(),
+            'hadir' => $absensi->where('status', 'hadir')->where('verifikasi', 'terima')->count(),
+            'izin' => $absensi->where('status', 'izin')->where('verifikasi', 'terima')->count(),
+            'alpa' => $absensi->where('status', 'alpa')->where('verifikasi', 'terima')->count(),
+            'terima' => $absensi->where('verifikasi', 'terima')->count(),
+        ];
+        return view('admin.absensi.absen',compact('absensi','summary','jadwal'));
+    }
+
+    public function postabsensi2(Request $request){
+        $request->validate([
+            'pertemuan' => 'required',
+            'status' => 'required',
+        ]);
+        // dd($request->all());
+
+        $user = Auth::user();
+        $asdos = Asdos::where('id_user', $user->id)->first();
+        $jadwal = Jadwal::find($request->id_jadwal);
+        $periode=Periode::where('status','aktif')->first();
+
+        $absen=new Absen();
+        $absen->id_asdos=$asdos->id;
+        $absen->id_jadwal=$jadwal->id;
+        $absen->status=$request->status;
+        $absen->periode=$periode->id;
+        $absen->pertemuan=$request->pertemuan;
+        $absen->verifikasi='pending';
+        $absen->save();
+
+        return redirect()->back();
+    }
+
+    public function kelolaabsensi(){
+        $user = Auth::user();
+        if($user->role=='admin'){
+            $periode = Periode::where('status', 'aktif')->first();
+            $jadwal = Jadwal::where('id_periode', $periode->id)->get();
+            // dd($jadwal);
+            return view('admin.absensi.dosen.index',compact('jadwal'));
+        }else{
+            $dosen = Dosen::where('id_akun', $user->id)->first();
+            $periode = Periode::where('status', 'aktif')->first();
+            $jadwal = Jadwal::where('id_periode', $periode->id)->where('nama_dosen',$dosen->nama)->get();
+            return view('admin.absensi.dosen.index', compact('jadwal'));
+        }
+    }
+    public function verifikasiabsensi($id){
+        
+        $absensi = Absen::where('id_jadwal', $id)->get();
+        $periode=Periode::where('status','aktif')->first();
+        $asdos=Asdos::where('periode',$periode->id)->get();
+        $summary = [
+            'total' => $absensi->where('verifikasi', 'terima')->count(),
+            'hadir' => $absensi->where('status', 'hadir')->where('verifikasi', 'terima')->count(),
+            'izin' => $absensi->where('status', 'izin')->where('verifikasi', 'terima')->count(),
+            'alpa' => $absensi->where('status', 'alpa')->where('verifikasi', 'terima')->count(),
+            'terima' => $absensi->where('verifikasi', 'terima')->count(),
+        ];
+        return view('admin.absensi.dosen.verifikasi',compact('absensi','summary','asdos'));
+    }
+    public function terima_absensi($id){
+        $absensi = Absen::find($id);
+        $absensi->verifikasi='terima';
+        $absensi->save();
+        return redirect()->back();
+
+    }
+
+    // financial
+    public function financial(){
+        $user = Auth::user();
+        $asdos = Asdos::where('id_user', $user->id)->first();
+        $periode=Periode::where('status','aktif')->first();
+        $absen=Absen::where('id_asdos',$asdos->id)->where('periode',$periode->id)->where('verifikasi','terima')->get();
+        $pendapatan=[
+            'kehadiran'=>$absen->count(),
+            'gajipokok'=>15000,
+            'pendapatan'=>15000*$absen->count(),
+            'pajak'=> (15000 * $absen->count()) * 0.05,
+            'hasilbersih'=> (15000 * $absen->count()) * (1 - 0.05)
+        ];
+        return view('admin.financial.index',compact('asdos','pendapatan'));   
+    }
+    public function rekapfinancial(){
+        $periodeAktif = Periode::where('status', 'aktif')->first();
+
+        if (!$periodeAktif) {
+            return redirect()->back()->with('error', 'Tidak ada periode aktif yang ditemukan');
+        }
+
+        $asdosList = Asdos::where('periode', $periodeAktif->id)->get();
+
+        $absenList = Absen::where('periode', $periodeAktif->id)->get();
+
+        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList) {
+            $jumlahKehadiran = $absenList->where('id_asdos', $asdos->id)->count();
+            $pendapatan = ($jumlahKehadiran * 15000)*0.95; // Rp 15.000 per meeting
+
+            $asdos->kehadiran = $jumlahKehadiran;
+            $asdos->pendapatan = $pendapatan;
+
+            return $asdos;
+        });
+
+        $totalPengeluaran = ($asdosWithEarnings->sum('pendapatan'));
+
+        return view('admin.financial.admin', [
+            'asdos' => $asdosWithEarnings,
+            'pengeluaran' => $totalPengeluaran,
+            'absen' => $absenList
+        ]);
+    }
+
+
+    // sertifikat
+    public function sertifikat(){
+        $user = Auth::user();
+        $periode = Periode::where('status', 'aktif')->first();
+
+        // Ambil semua jadwal untuk periode aktif
+        $jadwals = Jadwal::where('id_periode', $periode->id)->get();
+        
+        $data = [];
+
+        foreach ($jadwals as $jadwal) {
+            // Cek asdos1
+            $asdos1 = Asdos::where('nama',$jadwal->asdos1)->first();
+            
+            if ($asdos1) {
+                $this->prosesAsdos($asdos1, $jadwal, $periode, $data);
+            }
+
+            // Cek asdos2
+            $asdos2 = Asdos::where('nama', $jadwal->asdos2)->first();
+            if ($asdos2) {
+                $this->prosesAsdos($asdos2, $jadwal, $periode, $data);
+            }
+        }
+        // dd($data);
+
+        return view('admin.sertifikat.index', compact('data'));
+    }
+
+    private function prosesAsdos($asdos, $jadwal, $periode, &$data)
+    {
+        // Hitung absen hadir yang sudah terverifikasi
+        $jumlahHadir = Absen::where('id_asdos', $asdos->id)
+            ->where('id_jadwal', $jadwal->id)
+            ->where('periode', $periode->id)
+            ->where('status', 'hadir')
+            ->where('verifikasi', 'terima')
+            ->count();
+
+        // Jika memenuhi syarat (minimal 2x hadir)
+        if ($jumlahHadir >= 1) {
+            $sertifikat = Sertifikat::firstOrNew(['id_asdos' => $asdos->id]);
+
+            $filePath = null;
+
+            // Jika sertifikat sudah ada, ambil file_path-nya
+            if ($sertifikat->exists && $sertifikat->file_path) {
+                $filePath = $sertifikat->file_path;
+            }
+
+            // Jika sertifikat baru dibuat
+            if (!$sertifikat->exists) {
+                $timestamp = Carbon::now()->format('Ymd_His');
+                $url = url("/storage/sertifikat/{$asdos->nama}_{$periode->id}_{$timestamp}.pdf");
+
+                // Buat direktori QR code jika belum ada
+                $qrDirectory = public_path('qrcode');
+                if (!file_exists($qrDirectory)) {
+                    mkdir($qrDirectory, 0755, true);
+                }
+
+                $qrFilename = "{$asdos->nama}_{$periode->id}_{$timestamp}.png";
+                $qrPath = public_path("qrcode/{$qrFilename}");
+
+                // Generate QR Code
+                try {
+                    $process = new Process([
+                        'C:\\Users\\Admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe',
+                        base_path('app/Python/generate_qr.py'),
+                        $url,
+                        $qrPath
+                    ]);
+                    $process->mustRun();
+                } catch (ProcessFailedException $e) {
+                    Log::error('Gagal generate QR Code: ' . $e->getMessage());
+                    $qrFilename = null; // Tetap simpan data meski QR gagal
+                }
+
+                // Simpan data sertifikat
+                $sertifikat->fill([
+                    'url' => $url,
+                    'qr_code' => $qrFilename,
+                    'file_path' => null
+                ])->save();
+            }
+
+            // Tambahkan ke data output
+            $data[] = [
+                'id'=> $sertifikat->id,
+                'asdos' => $asdos,
+                'jadwal' => $jadwal,
+                'jumlah_hadir' => $jumlahHadir,
+                'periode' => $periode,
+                'url' => $sertifikat->url,
+                'qr_code' => $sertifikat->qr_code,
+                'file_path' => $filePath
+            ];
+        }
+    }
+
+    public function uploadSertifikat(Request $request, $name)
+    {
+        $request->validate([
+            'sertifikat_pdf' => 'required|mimes:pdf|max:20000' // ~20MB
+        ]);
+        
+
+        $sertifikat = Sertifikat::where('qr_code', $name)->firstOrFail();
+        // dd($name);
+        
+        // Hapus file lama jika ada
+        if ($sertifikat->file_path) {
+            $oldFilePath = str_replace('sertifikat/', 'public/sertifikat/', $sertifikat->file_path);
+            if (Storage::exists($oldFilePath)) {
+                Storage::delete($oldFilePath);
+            }
+        }
+
+        // Generate nama file (hilangkan .png dari qr_code)
+        $fileName = str_replace('.png', '.pdf', $name);
+        // dd($fileName);
+
+        // Simpan file baru
+        $path = $request->file('sertifikat_pdf')->storeAs(
+            'public/sertifikat',
+            $fileName
+        );
+
+        // Simpan path relatif ke database
+        $publicPath = 'sertifikat/' . $fileName;
+
+        $sertifikat->file_path= $publicPath;
+        $sertifikat->update();
+        // dd($sertifikat);
+
+        return redirect()->back()->with('success', 'Sertifikat berhasil diupload');
     }
 }

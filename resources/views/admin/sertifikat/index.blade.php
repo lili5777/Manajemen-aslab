@@ -4,15 +4,9 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Data Pendaftar</h4>
-                    <h6>Kelola Pendaftar</h6>
+                    <h4>Data dosen</h4>
+                    <h6>Kelola dosen</h6>
                 </div>
-                {{-- @if (auth()->user()->role == 'admin')
-                <div class="page-btn">
-                    <a href="{{ route('tambahpendaftar') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah Pendaftar</a>
-                </div>
-                @endif --}}
             </div>
 
             <div class="card">
@@ -119,17 +113,14 @@
                                     </th>
                                     <th>Foto</th>
                                     <th>Nama</th>
-                                    <th>Stambuk </th>
-                                    <th>Jurusan</th>
-                                    <th>WA</th>
-                                    <th>Skor</th>
-                                    <th>Rank</th>
-                                    <th>periode</th>
-                                    <th>Action</th>
+                                    <th>Periode </th>
+                                    <th>Qrcode</th>
+                                    <th>Sertifikat</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($asdos as $p)
+                                @foreach ($data as $item)
+
                                     <tr>
                                         <td>
                                             <label class="checkboxs">
@@ -139,33 +130,32 @@
                                         </td>
                                         <td class="productimgname">
                                             <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('img/asdos/' . $p->foto) }}" alt="asdos">
+                                                @if($item['asdos']->foto)
+                                                    <img src="{{ asset('img/asdos/' . $item['asdos']->foto) }}" alt="foto">
+                                                @else
+                                                    <img src="{{ asset('img/default-profile.png') }}" alt="foto">
+                                                @endif
                                             </a>
                                         </td>
-                                        <td>{{ $p->nama }}</td>
-                                        <td>{{ $p->stb }}</td>
-                                        <td>{{ $p->jurusan }}</td>
-                                        <td>{{ $p->no_wa }}</td>
-                                        <td>{{ $p->skor }}</td>
-                                        <td>{{ $p->rank }}</td>
-                                        <td>{{$periode->where('id', $p->periode)->first()->semester}} <br>{{ $periode->where('id', $p->periode)->first()->tahun }}</td>
+                                        <td>{{ $item['asdos']->nama }}</td>
+                                        <td>{{ $item['periode']->semester }} - {{ $item['periode']->tahun }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detailasdos', $p->id) }}">
-                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
+                                            <a href="{{ $item['url'] }}" class="product-img">
+                                                <img src="{{asset('qrcode/' . $item['qr_code'])}}" alt="qrcode" >
                                             </a>
-                                            @if (auth()->user()->role == 'admin')
-                                            <a class="me-3" href="{{ route('editpendaftar', $p->id) }}">
-                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                            </a>
-                                            <a class="confirm-text" href="javascript:void(0);"
-                                                data-url="{{ route('hapusasdos', $p->id) }}">
-                                                <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
-                                            </a>
+                                        </td>
+                                        <td>
+                                            @if($item['file_path'])
+                                                <a href="{{ $item['url'] }}" target="_blank" class="badge bg-primary border-0 text-white">
+                                                    Lihat Sertifikat
+                                                </a>
+                                            @else
+                                                <button type="button" class="badge bg-warning border-0" data-bs-toggle="modal" data-bs-target="#uploadModal{{ $item['id'] }}">Belum diupload</button>
                                             @endif
                                         </td>
                                     </tr>
+                                    @include('admin.sertifikat.modal')
                                 @endforeach
-
                             </tbody>
                         </table>
                     </div>
@@ -174,4 +164,7 @@
 
         </div>
     </div>
+
+
+
 @endsection

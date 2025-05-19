@@ -50,35 +50,39 @@
                     <a href="javascript:void(0);"><i data-feather="layers"></i><span> Absensi</span> <span
                             class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{route('absen')}}" class="{{ Request::routeIs('absen') ? 'active' : '' }}">Absen</a></li>
-                        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dosen')
-                        <li><a href="{{route('verifyabsen')}}" class="{{ Request::routeIs('verifyabsen') ? 'active' : '' }}">Verifikasi</a></li>
+                        @if (auth()->user()->role == 'mahasiswa')
+                        <li><a href="{{route('absen')}}" class="{{ Request::routeIs('absen') ? 'active' : '' }}">Absensi</a></li>
+                        @else
+                            <li><a href="{{route('kelolaabsensi')}}" class="{{ Request::routeIs('kelolaabsensi') ? 'active' : '' }}">Verifikasi Absensi</a></li>
                         @endif
+                        
                     </ul>
                 </li>
                 @if (auth()->user()->role == 'admin' || auth()->user()->role == 'mahasiswa')
-                <li class="submenu">
-                    <a href="javascript:void(0);"><img src="{{ asset('img/icons/purchase1.svg') }}"
-                            alt="img"><span> Sertifikat</span> <span class="menu-arrow"></span></a>
-                    <ul>
-                        <li><a href="purchaselist.html">Purchase List</a></li>
-                        <li><a href="addpurchase.html">Add Purchase</a></li>
-                        <li><a href="importpurchase.html">Import Purchase</a></li>
-                    </ul>
-                </li>
-                <li class="submenu">
-                    <a href="javascript:void(0);"><img src="{{ asset('img/icons/expense1.svg') }}"
-                            alt="img"><span>
-                            Finansial</span> <span class="menu-arrow"></span></a>
-                    <ul>
-                        <li><a href="expenselist.html">Expense List</a></li>
-                        <li><a href="createexpense.html">Add Expense</a></li>
-                        <li><a href="expensecategory.html">Expense Category</a></li>
-                    </ul>
-                </li>
+                    <li class="submenu">
+                        <a href="javascript:void(0);"><img src="{{ asset('img/icons/purchase1.svg') }}"
+                                alt="img"><span> Sertifikat</span> <span class="menu-arrow"></span></a>
+                        <ul>
+                            <li><a href="{{route('sertifikat')}}">Data Sertifikat</a></li>
+                            {{-- <li><a href="addpurchase.html">Add Purchase</a></li>
+                            <li><a href="importpurchase.html">Import Purchase</a></li> --}}
+                        </ul>
+                    </li>
+                    <li class="submenu">
+                        <a href="javascript:void(0);"><img src="{{ asset('img/icons/expense1.svg') }}"
+                                alt="img"><span>
+                                Finansial</span> <span class="menu-arrow"></span></a>
+                        <ul>
+                            @if (auth()->user()->role == 'mahasiswa')
+                            <li><a href="{{route('financial')}}">Data Fincial</a></li>
+                            @else
+                            <li><a href="{{route('rekapfinancial')}}">Rekap Fincial</a></li>
+                            @endif
+                        </ul>
+                    </li>
                 @endif
 
-                <li class="submenu">
+                {{-- <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('img/icons/users1.svg') }}" alt="img"><span>
                             Users</span> <span class="menu-arrow"></span></a>
                     <ul>
@@ -98,7 +102,7 @@
                         <li><a href="grouppermissions.html">Group Permissions</a></li>
                         <li><a href="taxrates.html">Tax Rates</a></li>
                     </ul>
-                </li>
+                </li> --}}
             </ul>
         </div>
     </div>

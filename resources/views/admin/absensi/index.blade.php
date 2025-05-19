@@ -4,15 +4,10 @@
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
-                    <h4>Data Pendaftar</h4>
-                    <h6>Kelola Pendaftar</h6>
+                    <h4>Absensi</h4>
+                    <h6>Kelola kehadiran</h6>
                 </div>
-                {{-- @if (auth()->user()->role == 'admin')
-                <div class="page-btn">
-                    <a href="{{ route('tambahpendaftar') }}" class="btn btn-added"><img src="{{ asset('img/icons/plus.svg') }}"
-                            alt="img" class="me-1">Tambah Pendaftar</a>
-                </div>
-                @endif --}}
+
             </div>
 
             <div class="card">
@@ -98,7 +93,7 @@
                                         <div class="col-lg-1 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <a class="btn btn-filters ms-auto"><img
-                                                        src="assets/img/icons/search-whites.svg" alt="img"></a>
+                                                        src="{{ asset('img/icons/search-whites.svg') }}" alt="img"></a>
                                             </div>
                                         </div>
                                     </div>
@@ -117,19 +112,19 @@
                                             <span class="checkmarks"></span>
                                         </label>
                                     </th>
-                                    <th>Foto</th>
-                                    <th>Nama</th>
-                                    <th>Stambuk </th>
-                                    <th>Jurusan</th>
-                                    <th>WA</th>
-                                    <th>Skor</th>
-                                    <th>Rank</th>
-                                    <th>periode</th>
+                                    <th>Hari</th>
+                                    <th>Pukul</th>
+                                    <th>Ruang</th>
+                                    <th>Kelas</th>
+                                    <th>Prodi</th>
+                                    <th>Semester</th>
+                                    <th>Matkul</th>
+                                    <th>Dosen</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($asdos as $p)
+                                @forelse ($jadwal as $a)
                                     <tr>
                                         <td>
                                             <label class="checkboxs">
@@ -137,35 +132,22 @@
                                                 <span class="checkmarks"></span>
                                             </label>
                                         </td>
-                                        <td class="productimgname">
-                                            <a href="javascript:void(0);" class="product-img">
-                                                <img src="{{ asset('img/asdos/' . $p->foto) }}" alt="asdos">
-                                            </a>
+                                        <td>{{ $a->hari }}</td>
+                                        <td>{{ substr($a->pukul, 0, 5) }} -
+                                            {{ \Carbon\Carbon::createFromFormat('H:i', substr($a->pukul, 0, 5))->addMinutes(100)->format('H:i') }}
                                         </td>
-                                        <td>{{ $p->nama }}</td>
-                                        <td>{{ $p->stb }}</td>
-                                        <td>{{ $p->jurusan }}</td>
-                                        <td>{{ $p->no_wa }}</td>
-                                        <td>{{ $p->skor }}</td>
-                                        <td>{{ $p->rank }}</td>
-                                        <td>{{$periode->where('id', $p->periode)->first()->semester}} <br>{{ $periode->where('id', $p->periode)->first()->tahun }}</td>
+                                        <td>{{ $a->ruang }}</td>
+                                        <td>{{ $a->kode_kelas }}</td>
+                                        <td>{{ $a->prodi }}</td>
+                                        <td>{{ $a->semester }}</td>
+                                        <td>{{ $a->nama_matkul }}</td>
+                                        <td>{{ $a->nama_dosen }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detailasdos', $p->id) }}">
-                                                <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                            </a>
-                                            @if (auth()->user()->role == 'admin')
-                                            <a class="me-3" href="{{ route('editpendaftar', $p->id) }}">
-                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                            </a>
-                                            <a class="confirm-text" href="javascript:void(0);"
-                                                data-url="{{ route('hapusasdos', $p->id) }}">
-                                                <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
-                                            </a>
-                                            @endif
+                                            <a href="{{route('detailabsen',$a->id)}}" class="btn btn-primary text-white btn-sm">Absen</a>
                                         </td>
                                     </tr>
-                                @endforeach
-
+                                @empty
+                                @endforelse
                             </tbody>
                         </table>
                     </div>

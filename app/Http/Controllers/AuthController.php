@@ -22,7 +22,7 @@ class AuthController extends Controller
         }
         return redirect('login')
             ->withInput()
-            ->withErrors(['login_gagal' => 'These credentials does not match our records']);
+            ->withErrors(['login_gagal' => 'Email atau Password Anda Salah']);
     }
 
     public function logout(Request $request)
@@ -50,7 +50,7 @@ class AuthController extends Controller
             'password.required' => 'The password field is required.'
         ]);
 
-        $request['role'] = 'user';
+        $request['role'] = 'mahasiswa';
         $request['password'] = bcrypt($request->password);
         $user = User::create($request->all());
         auth()->login($user);
