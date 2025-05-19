@@ -12,7 +12,7 @@
                         <div class="col-12 col-md-6">
                             <h1 class="fw-bold">Hi, {{ Auth::user()->name }}</h1>
                             <p class="text-muted fs-5">Ready to start your journey as an Asisten Laboratorium?</p>
-                            <a href="{{ route('pendaftar') }}" class="btn btn-primary rounded-pill px-4 py-2 hover-effect">
+                            <a href="{{ route('zpendaftar') }}" class="btn btn-primary rounded-pill px-4 py-2 hover-effect">
                                 Daftar Jadi Asisten Lab
                             </a>
                         </div>
@@ -76,7 +76,7 @@
                 <div class="col-lg-3 col-sm-6 col-12 d-flex">
                     <div class="dash-count das3 hover-effect">
                         <div class="dash-counts">
-                            <h4>105</h4>
+                            <h4>{{$sertifikat}}</h4>
                             <h5>Sertifikat</h5>
                         </div>
                         <div class="dash-imgs">
@@ -164,7 +164,7 @@
                 @endif --}}
             </div>
 
-            
+
         </div>
     </div>
 
@@ -222,7 +222,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-          
+
                 const regCtx = document.getElementById('registrationsChart').getContext('2d');
                 new Chart(regCtx, {
                     type: 'line',
@@ -284,7 +284,7 @@
                         }
                     }
                 });
-        
+
             });
     </script>
 @endsection

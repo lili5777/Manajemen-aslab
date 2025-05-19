@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('id_jadwal')->constrained('jadwals', 'id')->onDelete('cascade');
             $table->string('status');
             $table->string('periode');
-            $table->integer('verifikasi');
+            $table->string('verifikasi');
             $table->integer('pertemuan');
             $table->timestamps();
         });

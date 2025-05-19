@@ -22,7 +22,7 @@ class PeriodeSeeder extends Seeder
         Periode::create([
             'tahun' => '2024/2025',
             'semester' => 'genap',
-            'status' => 'nonaktif',
+            'status' => 'aktif',
         ]);
     }
 }
