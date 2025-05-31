@@ -156,8 +156,13 @@
                                                 @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dosen')
                                                     Belum ada
                                                 @else
-                                                    <a href="{{route('ambilkelas', $a->id)}}"
-                                                        class="btn btn-primary text-white btn-sm">Ambil Kelas</a>
+                                                    @if ($asdos)
+                                                        <a href="{{route('ambilkelas2', $a->id)}}"
+                                                            class="btn btn-primary text-white btn-sm">Ambil Kelas</a>
+                                                    @else
+                                                        Belum bisa ambil kelas
+                                                    @endif
+
                                                 @endif
                                             @endif
                                         </td>

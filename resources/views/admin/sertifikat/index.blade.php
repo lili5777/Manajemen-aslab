@@ -1,11 +1,33 @@
 @extends('admin.layout.master')
 @section('konten')
+    @if ($ada)
+        <div class="page-wrapper">
+            <div class="content">
+                <div class="page-header mb-4">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <div class="page-title">
+                                <h4>Data Sertifikat</h4>
+                                <h6>Kelola sertifikat</h6>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-danger">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Anda belum terdaftar sebagai Asisten Labotarium pada periode ini.
+                    </h4>
+                    <p class="mb-0">Silakan hubungi administrator untuk informasi lebih lanjut.</p>
+                </div>
+            </div>
+        </div> 
+    @else
         <div class="page-wrapper">
             <div class="content">
                 <div class="page-header">
                     <div class="page-title">
-                        <h4>Data dosen</h4>
-                        <h6>Kelola dosen</h6>
+                        <h4>Data Sertifikat</h4>
+                        <h6>Kelola sertifikat</h6>
                     </div>
                 </div>
 
@@ -140,26 +162,28 @@
                                             <td>{{ $item['asdos']->nama }}</td>
                                             <td>{{ $item['periode']->semester }} - {{ $item['periode']->tahun }}</td>
                                             <td>
-                                                <a href="{{ $item['url'] }}" class="product-img">
-                                                    <img src="{{asset('qrcode/' . $item['qr_code'])}}" alt="qrcode" >
-                                                </a>
+                                                <img src="{{ asset('qrcode/' . $item['qr_code']) }}" alt="QR Code" class="qr-thumbnail"
+                                                    onclick="showQrModal('{{ asset('qrcode/' . $item['qr_code']) }}')">
                                             </td>
                                             <td>
                                                 @if (Auth::user()->role == 'admin')
-                                                        @if($item['file_path'])
-                                                            <a href="{{ $item['url'] }}" target="_blank" class="badge bg-primary border-0 text-white">
-                                                                Lihat Sertifikat
-                                                            </a>
-                                                        @else
-                                                        <button type="button" class="badge bg-warning border-0" data-bs-toggle="modal" data-bs-target="#uploadModal{{ $item['id'] }}">Belum diupload</button>
-                                                    @endif
-                                                @else
                                                     @if($item['file_path'])
-                                                        <a href="{{ $item['url'] }}" target="_blank" class="badge bg-primary border-0 text-white">
+                                                        <a href="{{ $item['url'] }}" target="_blank"
+                                                            class="badge bg-primary border-0 text-white">
                                                             Lihat Sertifikat
                                                         </a>
                                                     @else
-                                                        <span  class="badge bg-warning border-0">Belum diupload</span>
+                                                        <button type="button" class="badge bg-warning border-0" data-bs-toggle="modal"
+                                                            data-bs-target="#uploadModal{{ $item['id'] }}">Belum diupload</button>
+                                                    @endif
+                                                @else
+                                                    @if($item['file_path'])
+                                                        <a href="{{ $item['url'] }}" target="_blank"
+                                                            class="badge bg-primary border-0 text-white">
+                                                            Lihat Sertifikat
+                                                        </a>
+                                                    @else
+                                                        <span class="badge bg-warning border-0">Belum diupload</span>
                                                     @endif
                                                 @endif
 
@@ -176,30 +200,67 @@
             </div>
         </div>
 
-    <!-- Modal Bootstrap -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content border-danger">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="errorModalLabel">Terjadi Kesalahan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-                <div class="modal-body">
-                    {{ session('error') }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+        <!-- Modal Bootstrap -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content border-danger">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="errorModalLabel">Terjadi Kesalahan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                    </div>
+                    <div class="modal-body">
+                        {{ session('error') }}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    @if(session('error'))
+        @if(session('error'))
+            <script>
+                window.onload = () => {
+                    const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+                    errorModal.show();
+                };
+            </script>
+        @endif
+
+        <!-- Modal untuk menampilkan gambar besar -->
+        <div class="modal fade" id="qrModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">QR Code</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img id="modalQrImage" src="" alt="QR Code" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .qr-thumbnail {
+                width: 80px;
+                height: 80px;
+                cursor: pointer;
+                transition: transform 0.2s;
+            }
+
+            .qr-thumbnail:hover {
+                transform: scale(1.05);
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            }
+        </style>
         <script>
-            window.onload = () => {
-                const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
-                errorModal.show();
-            };
+            function showQrModal(imageSrc) {
+                document.getElementById('modalQrImage').src = imageSrc;
+                var modal = new bootstrap.Modal(document.getElementById('qrModal'));
+                modal.show();
+            }
         </script>
     @endif
 

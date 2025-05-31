@@ -30,7 +30,7 @@
                         <div class="col-12 col-md-6">
                             <h1 class="fw-bold">Hi, {{ Auth::user()->name }}</h1>
                             <p class="text-muted fs-5">Ready to monitor and manage your Laboratory Assistants efficiently?</p>
-                            <a href="{{ route('pendaftar') }}" class="btn btn-primary rounded-pill px-4 py-2 hover-effect">
+                            <a href="{{ route('jadwal') }}" class="btn btn-primary rounded-pill px-4 py-2 hover-effect">
                                 Lihat Asisten Lab Anda
                             </a>
                         </div>

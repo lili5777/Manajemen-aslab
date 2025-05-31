@@ -18,9 +18,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Smalot\PdfParser\Parser;
 use Carbon\Carbon;
+use Illuminate\Process\Exceptions\ProcessFailedException;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdminController extends Controller
 {
@@ -1255,15 +1257,21 @@ class AdminController extends Controller
     // update absensi
     public function absensi2(){
         $user=Auth::user();
-        $asdos=Asdos::where('id_user',$user->id)->first();
-        $periode=Periode::where('status','aktif')->first();
+        $periode = Periode::where('status', 'aktif')->first();
+        $asdos=Asdos::where('id_user',$user->id)->where('periode', $periode->id)->first();
+
+        if(!$asdos) {
+            $data = true;
+            return view('admin.absensi.index', compact('data'))->with('error', 'Tidak ada data absensi yang ditemukan.');
+        }
         $jadwal= Jadwal::where('id_periode', $periode->id)
             ->where(function ($query) use ($asdos) {
                 $query->where('asdos1', $asdos->nama)
                     ->orWhere('asdos2', $asdos->nama);
             })
             ->get();
-        return view('admin.absensi.index',compact('jadwal'));
+        $data = false;
+        return view('admin.absensi.index',compact('jadwal','data'));
         
     }
     public function detailabsensi2($id){
@@ -1345,9 +1353,18 @@ class AdminController extends Controller
     // financial
     public function financial(){
         $user = Auth::user();
-        $asdos = Asdos::where('id_user', $user->id)->first();
-        $periode=Periode::where('status','aktif')->first();
+        $periode = Periode::where('status', 'aktif')->first();
+        $asdos = Asdos::where('id_user', $user->id)
+            ->where('periode', $periode->id)
+            ->first();
+        if (!$asdos) {
+            $data = true;
+            return view('admin.financial.index', compact('data'))->with('error', 'Tidak ada data absensi yang ditemukan.');
+        }
+        
         $absen=Absen::where('id_asdos',$asdos->id)->where('periode',$periode->id)->where('verifikasi','terima')->get();
+        
+        
         $pendapatan=[
             'kehadiran'=>$absen->count(),
             'gajipokok'=>15000,
@@ -1355,7 +1372,8 @@ class AdminController extends Controller
             'pajak'=> (15000 * $absen->count()) * 0.05,
             'hasilbersih'=> (15000 * $absen->count()) * (1 - 0.05)
         ];
-        return view('admin.financial.index',compact('asdos','pendapatan'));   
+        $data = false;
+        return view('admin.financial.index',compact('asdos','pendapatan','data'));   
     }
     public function rekapfinancial(){
         $periodeAktif = Periode::where('status', 'aktif')->first();
@@ -1393,7 +1411,19 @@ class AdminController extends Controller
         $user = Auth::user();
         
         $periode = Periode::where('status', 'aktif')->first();
+        $asdos = Asdos::where('id_user', $user->id)
+            ->where('periode', $periode->id)
+            ->first();
+        // dd($asdos);
 
+        if ($user->role == "mahasiswa") {
+            if (!$asdos) {
+                $ada = true;
+                return view('admin.sertifikat.index', compact('ada'));
+            }
+        }
+        $ada = false;
+        
         // Ambil semua jadwal untuk periode aktif
         $jadwals = Jadwal::where('id_periode', $periode->id)->get();
         
@@ -1420,6 +1450,7 @@ class AdminController extends Controller
             if ($asdos) {
                 // Ambil sertifikat berdasarkan id_asdos
                 $sertifikat = Sertifikat::where('id_asdos', $asdos->id)->first();
+                // dd($sertifikat);
                 if ($sertifikat) {
                     // Jika sertifikat ditemukan, set data hanya satu sertifikat
                     $jumlahHadir = Absen::where('id_asdos', $asdos->id)
@@ -1437,14 +1468,12 @@ class AdminController extends Controller
                         'qr_code' => $sertifikat->qr_code,
                         'file_path' => $sertifikat->file_path
                     ]];
+                }else{
+                    $data = [];
                 }
             }
         }
-        // dd($data);
-
-        return view('admin.sertifikat.index', compact('data'));
-
-        
+        return view('admin.sertifikat.index', compact('data','ada'));
     }
 
     private function prosesAsdos($asdos, $jadwal, $periode, &$data)
