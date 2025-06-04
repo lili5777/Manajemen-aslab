@@ -1070,6 +1070,10 @@ class AdminController extends Controller
         if ($pendaftar->isEmpty()) {
             return redirect()->back()->with('error', 'Tidak ada pendaftar untuk periode ini.');
         }
+        $dataasdos = Asdos::where('periode', $periode->id)->get();
+        if($dataasdos){
+            return redirect()->back()->with('error', 'Anda Sudah Mengverifikasi Pendaftar Di periode ini');
+        }
 
         $ranking = [];
 

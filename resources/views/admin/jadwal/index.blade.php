@@ -157,7 +157,7 @@
                                                     Belum ada
                                                 @else
                                                     @if ($asdos)
-                                                        <a href="{{route('ambilkelas2', $a->id)}}"
+                                                        <a href="{{route('ambilkelas', $a->id)}}"
                                                             class="btn btn-primary text-white btn-sm">Ambil Kelas</a>
                                                     @else
                                                         Belum bisa ambil kelas
