@@ -517,7 +517,7 @@ class AdminController extends Controller
         if ($request->id) {
             $user = Dosen::findOrFail($request->id);
             $user->id_akun = $request->id_akun;
-            $user->email = $request->email;
+            $user->email = User::where('id', $request->id_akun)->first()->email;
             $user->nama = $request->nama;
             $user->nidn = $request->nidn;
             $user->no_wa = $request->no_wa;
@@ -536,11 +536,12 @@ class AdminController extends Controller
         // proses tambah akun
         $user = new Dosen();
         $user->id_akun = $request->id_akun;
-        $user->email = $request->email;
+        $user->email = User::where('id', $request->id_akun)->first()->email;
         $user->nama = $request->nama;
         $user->nidn = $request->nidn;
         $user->no_wa = $request->no_wa;
         $user->foto = $namaFoto;
+        // dd($user);
         $user->save();
 
         return redirect()->route('dosen')->with('success', 'Matkul berhasil dibuat');

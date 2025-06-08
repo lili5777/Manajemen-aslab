@@ -15,7 +15,7 @@
                         @csrf
                         <input type="hidden" name="id" value="{{ isset($dosen) ? $dosen->id : '' }}">
                         <div class="row">
-                            <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Akun</label>
                             
@@ -39,12 +39,12 @@
                                     <input type="text" name="nama" value="{{ isset($dosen) ? $dosen->nama : '' }}">
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-sm-6 col-12">
+                            {{-- <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Email</label>
                                     <input type="text" name="email" value="{{ isset($dosen) ? $dosen->email : '' }}">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>NIDN</label>
