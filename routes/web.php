@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VerifikasiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -119,8 +120,8 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     // verifikasi
-    Route::get('admin/verifikasi', [AdminController::class, 'verifikasi'])->name('verifikasi');
-    Route::post('admin/verifikasi/post', [AdminController::class, 'postverifikasi'])->name('postverifikasi');
+    Route::get('admin/verifikasi', [VerifikasiController::class, 'verifikasi'])->name('verifikasi');
+    Route::post('admin/verifikasi/post', [VerifikasiController::class, 'postverifikasi'])->name('postverifikasi');
 
 
     // absensi

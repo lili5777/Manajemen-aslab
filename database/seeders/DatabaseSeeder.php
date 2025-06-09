@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             AkunSeeder::class,
             MatkulSeeder::class,
             PeriodeSeeder::class,
+            Setting::class,
+            Kriteria::class,
         ]);
     }
 }
