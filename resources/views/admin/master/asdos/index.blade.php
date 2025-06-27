@@ -150,17 +150,15 @@
                                         <td>{{ $p->rank }}</td>
                                         <td>{{$periode->where('id', $p->periode)->first()->semester}} <br>{{ $periode->where('id', $p->periode)->first()->tahun }}</td>
                                         <td>
-                                            <a class="me-3" href="{{ route('detailasdos', $p->id) }}">
+                                            {{-- <a class="me-3" href="{{ route('detailasdos', $p->id) }}">
                                                 <img src="{{ asset('img/icons/eye.svg') }}" alt="img">
-                                            </a>
+                                            </a> --}}
                                             @if (auth()->user()->role == 'admin')
-                                            <a class="me-3" href="{{ route('editpendaftar', $p->id) }}">
-                                                <img src="{{ asset('img/icons/edit.svg') }}" alt="img">
-                                            </a>
-                                            <a class="confirm-text" href="javascript:void(0);"
-                                                data-url="{{ route('hapusasdos', $p->id) }}">
-                                                <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
-                                            </a>
+                                                <a href="{{ route('idcard.show', $p->id) }}"><img src="{{ asset('img/icons/download.svg') }}" alt="img"></a>
+                                                <a class="confirm-text" href="javascript:void(0);"
+                                                    data-url="{{ route('hapusasdos', $p->id) }}">
+                                                    <img src="{{ asset('img/icons/delete.svg') }}" alt="img">
+                                                </a>
                                             @endif
                                         </td>
                                     </tr>

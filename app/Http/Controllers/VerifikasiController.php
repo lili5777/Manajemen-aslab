@@ -125,7 +125,7 @@ class VerifikasiController extends Controller
             return $b['skor'] <=> $a['skor'];
         });
 
-        dd($ranking);
+        // dd($ranking);
         // Mengambil jumlah pendaftar yang lulus berdasarkan batasan asdos
         $jumlah_lulus = ceil(Jadwal::count() / Setting::first()->batasan_asdos);
 

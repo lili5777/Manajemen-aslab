@@ -95,7 +95,7 @@
                             alt="img"><span>
                             Settings</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="">Kriteria</a></li>
+                        <li><a href="{{route('setting.kriteria')}}">Bobot Kriteria</a></li>
                         <li><a href="">Batasan Asisten Lab</a></li>
                         <li><a href="">Atur Sertiikat</a></li>
                     </ul>

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\IdcardController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\VerifikasiController;
 use Illuminate\Support\Facades\Route;
 
@@ -150,7 +152,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('admin/sertifikat', [AdminController::class, 'sertifikat'])->name('sertifikat');
     Route::post('admin/absen/tambah', [AdminController::class, 'postabsensi2'])->name('postkehadiran');
     Route::post('admin/sertifikat/upload/{name}', [AdminController::class, 'uploadSertifikat'])->name('uploadSertifikat');
- 
+
     // Route::post('admin/akun/tambah', [AdminController::class, 'postakun'])->name('postakun');
     // Route::get('admin/akun/edit/{id}', [AdminController::class, 'editakun'])->name('editakun');
     // Route::delete('admin/akun/hapus/{id}', [AdminController::class, 'hapusakun'])->name('hapusakun');
@@ -159,6 +161,12 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     // });
+
+    Route::get('id-card/{id}', [IdcardController::class, 'show'])->name('idcard.show');
+
+    // setting
+    Route::get('admin/setting/kriteria', [SettingController::class, 'kriteria'])->name('setting.kriteria');
+    Route::put('admin/setting/kriteria/update/', [SettingController::class, 'kriteriaUpdate'])->name('setting.kriteriaUpdate');
 });
 
 
