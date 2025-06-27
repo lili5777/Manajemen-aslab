@@ -36,9 +36,11 @@ class VerifikasiController extends Controller
         }
 
         $dataasdos = Asdos::where('periode', $periode->id)->get();
-        if ($dataasdos) {
+        
+        if ($dataasdos->isNotEmpty()) {
             return redirect()->back()->with('error', 'Anda Sudah Mengverifikasi Pendaftar Di periode ini');
         }
+        // dd($dataasdos);
 
         $ranking = [];
 
@@ -123,6 +125,7 @@ class VerifikasiController extends Controller
             return $b['skor'] <=> $a['skor'];
         });
 
+        dd($ranking);
         // Mengambil jumlah pendaftar yang lulus berdasarkan batasan asdos
         $jumlah_lulus = ceil(Jadwal::count() / Setting::first()->batasan_asdos);
 
