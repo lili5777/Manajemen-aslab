@@ -194,7 +194,7 @@
                     <input type="hidden" name="setting_type" value="certificate">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="certValue" class="form-label fw-bold">Minimal Sertifikat</label>
+                            <label for="certValue" class="form-label fw-bold sss">Minimal Sertifikat</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light-success border-success">
                                     <i class="fas fa-award text-success"></i>
