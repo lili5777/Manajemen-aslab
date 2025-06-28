@@ -82,17 +82,17 @@
                         <div class="wordset">
                             <ul>
                                 <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
+                                    <a href="{{ route('rekap.financial.pdf') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
                                             src="{{ asset('img/icons/pdf.svg') }}" alt="img"></a>
                                 </li>
                                 <li>
                                     <a href="{{ route('keuangan.exportExcel') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Export Excel">
                                         <img src="{{ asset('img/icons/excel.svg') }}" alt="excel">                              </a>
                                 </li>
-                                <li>
+                                {{-- <li>
                                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
                                             src="{{ asset('img/icons/printer.svg') }}" alt="img"></a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                     </div>

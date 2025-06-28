@@ -38,6 +38,24 @@
                 </div>
             @endif
 
+            @if (auth()->user()->role == 'admin')
+                <div class="content bg-light rounded-3 shadow-sm p-4 pb-1 text-center text-md-start mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-6 mb-4 mb-md-0">
+                            <img src="{{ asset('home/assets/img/7712733_3714960-Photoroom.png') }}" alt="Illustration" class="img-fluid"
+                                style="max-width: 75%; height: auto;">
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <h1 class="fw-bold">Hi, {{ Auth::user()->name }}</h1>
+                            <p class="text-muted fs-5">Ready to monitor and manage your Laboratory Assistants efficiently?</p>
+                            <a href="{{ route('asdos') }}" class="btn btn-primary rounded-pill px-4 py-2 hover-effect">
+                                Lihat Asisten Lab Anda
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Statistics Cards -->
             <div class="row">
                 <div class="col-lg-3 col-sm-6 col-12 d-flex">
@@ -87,82 +105,7 @@
             </div>
 
             <!-- Charts Section -->
-            <div class="row mt-4">
-                @if (auth()->user()->role == 'admin')
-                    <!-- Admin Charts -->
-                    <div class="col-lg-6 col-md-12">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0">Statistik Pendaftar per Bulan</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="registrationsChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="col-lg-6 col-md-12">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0">Distribusi Asisten per Laboratorium</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="labDistributionChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                {{-- @if (auth()->user()->role == 'dosen')
-                    <!-- Dosen Charts -->
-                    <div class="col-lg-6 col-md-12">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0">Status Asisten Anda</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="assistantStatusChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 col-md-12">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0">Jadwal Praktek Minggu Ini</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="practiceScheduleChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-
-                @if (auth()->user()->role == 'mahasiswa')
-                    <!-- Mahasiswa Charts -->
-                    <div class="col-lg-6 col-md-12">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0">Progres Pendaftaran Anda</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="applicationProgressChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-6 col-md-12">
-                        <div class="card shadow-sm">
-                            <div class="card-header bg-white">
-                                <h5 class="card-title mb-0">Statistik Penerimaan Asisten</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="acceptanceRateChart" height="250"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                @endif --}}
-            </div>
 
 
         </div>

@@ -174,8 +174,11 @@ Route::group(['middleware' => ['auth']], function () {
 
     // excel
     // routes/web.php
-    Route::get('admin/keuangan/export-excel', [ExportController::class, 'excelpendapatan'])
-        ->name('keuangan.exportExcel');
+    Route::get('admin/keuangan/export-excel', [ExportController::class, 'excelpendapatan'])->name('keuangan.exportExcel');
+
+    // pdf
+    // routes/web.php
+    Route::get('/admin/rekap-financial/pdf', [ExportController::class, 'pdfpendapatan'])->name('rekap.financial.pdf');
 });
 
 
