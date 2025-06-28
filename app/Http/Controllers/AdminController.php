@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asdos;
+use App\Models\Setting;
 use App\Models\Sertifikat;
 use App\Models\Absen;
 use App\Models\Dosen;
@@ -36,36 +37,36 @@ class AdminController extends Controller
             ->where('asdos.periode', $periode->id)
             ->count();
 
-        $currentYear = date('Y');
-        $pendaftarPerBulan = Pendaftar::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
-            ->where('periode', $periode->id)
-            ->whereYear('created_at', $currentYear)
-            ->groupBy('bulan')
-            ->orderBy('bulan')
-            ->get();
+        // $currentYear = date('Y');
+        // $pendaftarPerBulan = Pendaftar::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+        //     ->where('periode', $periode->id)
+        //     ->whereYear('created_at', $currentYear)
+        //     ->groupBy('bulan')
+        //     ->orderBy('bulan')
+        //     ->get();
 
-        // Format data untuk chart (isi bulan yang kosong dengan 0)
-        $chartPendaftar = array_fill(1, 12, 0);
-        foreach ($pendaftarPerBulan as $item) {
-            $chartPendaftar[$item->bulan] = $item->total;
-        }
+        // // Format data untuk chart (isi bulan yang kosong dengan 0)
+        // $chartPendaftar = array_fill(1, 12, 0);
+        // foreach ($pendaftarPerBulan as $item) {
+        //     $chartPendaftar[$item->bulan] = $item->total;
+        // }
 
-        // Data distribusi asdos per jurusan
-        $asdosPerJurusan = Asdos::select('jurusan', \DB::raw('COUNT(*) as total'))
-            ->where('periode', $periode->id)
-            ->groupBy('jurusan')
-            ->orderBy('total', 'desc')
-            ->get();
+        // // Data distribusi asdos per jurusan
+        // $asdosPerJurusan = Asdos::select('jurusan', \DB::raw('COUNT(*) as total'))
+        //     ->where('periode', $periode->id)
+        //     ->groupBy('jurusan')
+        //     ->orderBy('total', 'desc')
+        //     ->get();
 
-        // dd($asdosPerJurusan);
+        // // dd($asdosPerJurusan);
 
         return view('admin.dashboard.index', compact(
             'pendaftar',
             'asdos',
             'jadwal',
             'sertifikat',
-            'chartPendaftar',
-            'asdosPerJurusan',
+            // 'chartPendaftar',
+            // 'asdosPerJurusan',
             'periode'
         ));
     }
@@ -937,259 +938,6 @@ class AdminController extends Controller
     }
 
 
-    public function verifikasi()
-    {
-        return view('admin.verifikasi.index');
-    }
-
-    // public function postverifikasi()
-    // {
-    //     $bobot = [
-    //         'ipk' => 0.4, // 40%
-    //         'nilai_matkul' => 0.3, // 30%
-    //         'rekomendasi' => 0.2, // 20%
-    //         'pernyataan' => 0.1, // 10%
-    //     ];
-    //     $periode = Periode::where('status', 'aktif')->first();
-    //     $pendaftar = Pendaftar::where('periode', $periode->id)->get();
-    //     $ranking = [];
-    //     $n = [];
-    //     foreach ($pendaftar as $p) {
-    //         $pilmatkul = InputNilai::where('id_pendaftar', $p->id)->get();
-    //         // Array untuk menyimpan bobot nilai
-    //         $nilai = PilihMatkul::where('id_pendaftar', $p->id)->get();
-    //         foreach ($pilmatkul as $m) {
-    //             foreach ($nilai as $ni) {
-    //                 $relasi = Matkul::where('nama', $ni->matkul)->first();
-    //                 // dd($relasi);
-    //                 // dd($m->kode);
-    //                 if ($relasi->kode == $m->kode) {
-    //                     // Cek nilai dan tambahkan bobot sesuai
-    //                     if ($m->nilai == 'A') {
-    //                         $n[] = 4.0;
-    //                     } elseif ($m->nilai == 'A-') {
-    //                         $n[] = 3.75;
-    //                     } elseif ($m->nilai == 'B+') {
-    //                         $n[] = 3.50;
-    //                     } elseif ($m->nilai == 'B') {
-    //                         $n[] = 3.00;
-    //                     } elseif ($m->nilai == 'B-') {
-    //                         $n[] = 2.75;
-    //                     } elseif ($m->nilai == 'C+') {
-    //                         $n[] = 2.50;
-    //                     } elseif ($m->nilai == 'C') {
-    //                         $n[] = 2.00;
-    //                     } elseif ($m->nilai == 'D') {
-    //                         $n[] = 1.00;
-    //                     } elseif ($m->nilai == 'E') {
-    //                         $n[] = 0;
-    //                     }
-
-    //                 }
-    //             }
-    //         }
-
-
-    //         $sp = $p->surat_pernyataan ? 1 : 0; // Cek surat pernyataan
-    //         $sr = $p->surat_rekomendasi ? 1 : 0; // Cek surat rekomendasi
-    //         $ip = ($p->ipk / 4.0) * $bobot['ipk'];
-    //         $pm = (array_sum($n) / (count($n) * 4)) * $bobot['nilai_matkul'];
-    //         $sup = $sp * $bobot['pernyataan'];
-    //         $sur = $sr * $bobot['rekomendasi'];
-    //         $skor =  $ip + $pm + $sur + $sup;
-    //         $ranking[] = [
-    //             'id_user' => $p->id_user,
-    //             'id_pendaftar' => $p->id,
-    //             'nama' => $p->nama,
-    //             'stb' => $p->stb,
-    //             'jurusan' => $p->jurusan,
-    //             'no_wa' => $p->no_wa,
-    //             'foto' => $p->foto,
-    //             'skor' => $skor,
-    //             'ip' => $ip,
-    //             'pm' => $pm,
-    //             'sup' => $sup,
-    //             'sur' => $sur,
-
-
-    //         ];
-    //     }
-
-    //     usort($ranking, function ($a, $b) {
-    //         return $b['skor'] <=> $a['skor'];
-    //     });
-    //     // dd(vars: $ranking);
-    //     $jmlulus = Jadwal::count() / 2;
-    //     foreach ($ranking as $index => $asdos) {
-    //         $status = $index < $jmlulus ? 'lulus' : 'tidak';
-
-    //         if ($index < $jmlulus) {
-    //             Asdos::Create(
-    //                 [
-    //                     'rank' => $index + 1,
-    //                     'id_user' => $asdos['id_user'],
-    //                     'id_pendaftar' => $asdos['id_pendaftar'],
-    //                     'nama' => $asdos['nama'],
-    //                     'stb' => $asdos['stb'],
-    //                     'jurusan' => $asdos['jurusan'],
-    //                     'no_wa' => $asdos['no_wa'],
-    //                     'foto' => $asdos['foto'],
-    //                     'skor' => $asdos['skor'],
-    //                     'periode' => $periode->id
-    //                 ]
-    //             );
-    //             $pen = Pendaftar::findOrFail($asdos['id_pendaftar']);
-    //             $pen->status = $status;
-    //             $pen->save();
-    //         } else {
-    //             $pen = Pendaftar::findOrFail($asdos['id_pendaftar']);
-    //             $pen->status = $status;
-    //             $pen->save();
-    //         }
-    //     }
-
-
-    //     return redirect()->route('asdos')->with('success', 'asdos berhasil diverifikasi.');
-    // }
-
-
-    public function postverifikasi()
-    {
-        $bobot = [
-            'ipk' => 0.4,
-            'nilai_matkul' => 0.3,
-            'rekomendasi' => 0.2,
-            'pernyataan' => 0.1,
-        ];
-
-        $periode = Periode::where('status', 'aktif')->first();
-        if (!$periode) {
-            return redirect()->back()->with('error', 'Periode aktif tidak ditemukan.');
-        }
-
-        $pendaftar = Pendaftar::where('periode', $periode->id)->get();
-        if ($pendaftar->isEmpty()) {
-            return redirect()->back()->with('error', 'Tidak ada pendaftar untuk periode ini.');
-        }
-        $dataasdos = Asdos::where('periode', $periode->id)->get();
-        if($dataasdos){
-            return redirect()->back()->with('error', 'Anda Sudah Mengverifikasi Pendaftar Di periode ini');
-        }
-
-        $ranking = [];
-
-        foreach ($pendaftar as $p) {
-            $n = []; // pindahkan ke dalam loop agar tidak menumpuk nilai antar pendaftar
-
-            $pilmatkul = InputNilai::where('id_pendaftar', $p->id)->get();
-            $nilai = PilihMatkul::where('id_pendaftar', $p->id)->get();
-
-            foreach ($pilmatkul as $m) {
-                foreach ($nilai as $ni) {
-                    $relasi = Matkul::where('nama', $ni->matkul)->first();
-                    if ($relasi && $relasi->kode == $m->kode) {
-                        switch ($m->nilai) {
-                            case 'A':
-                                $n[] = 4.0;
-                                break;
-                            case 'A-':
-                                $n[] = 3.75;
-                                break;
-                            case 'B+':
-                                $n[] = 3.50;
-                                break;
-                            case 'B':
-                                $n[] = 3.00;
-                                break;
-                            case 'B-':
-                                $n[] = 2.75;
-                                break;
-                            case 'C+':
-                                $n[] = 2.50;
-                                break;
-                            case 'C':
-                                $n[] = 2.00;
-                                break;
-                            case 'D':
-                                $n[] = 1.00;
-                                break;
-                            case 'E':
-                                $n[] = 0;
-                                break;
-                        }
-                    }
-                }
-            }
-
-            $sp = $p->surat_pernyataan ? 1 : 0;
-            $sr = $p->surat_rekomendasi ? 1 : 0;
-            $ip = ($p->ipk / 4.0) * $bobot['ipk'];
-
-            // Jika tidak ada nilai, set pm = 0 agar tidak error
-            $pm = count($n) > 0 ? (array_sum($n) / (count($n) * 4)) * $bobot['nilai_matkul'] : 0;
-
-            $sup = $sp * $bobot['pernyataan'];
-            $sur = $sr * $bobot['rekomendasi'];
-            $skor =  $ip + $pm + $sur + $sup;
-
-            $ranking[] = [
-                'id_user' => $p->id_user,
-                'id_pendaftar' => $p->id,
-                'nama' => $p->nama,
-                'stb' => $p->stb,
-                'jurusan' => $p->jurusan,
-                'no_wa' => $p->no_wa,
-                'foto' => $p->foto,
-                'skor' => $skor,
-                'ip' => $ip,
-                'pm' => $pm,
-                'sup' => $sup,
-                'sur' => $sur,
-            ];
-        }
-
-        if (empty($ranking)) {
-            return redirect()->back()->with('error', 'Data tidak cukup untuk melakukan verifikasi.');
-        }
-
-        usort($ranking, function ($a, $b) {
-            return $b['skor'] <=> $a['skor'];
-        });
-
-        $jmlulus = ceil(Jadwal::count() / 2);
-
-        foreach ($ranking as $index => $asdos) {
-            $status = $index < $jmlulus ? 'lulus' : 'tidak';
-
-            $pen = Pendaftar::find($asdos['id_pendaftar']);
-            if (!$pen) continue;
-
-            if ($status === 'lulus') {
-                Asdos::create([
-                    'rank' => $index + 1,
-                    'id_user' => $asdos['id_user'],
-                    'id_pendaftar' => $asdos['id_pendaftar'],
-                    'nama' => $asdos['nama'],
-                    'stb' => $asdos['stb'],
-                    'jurusan' => $asdos['jurusan'],
-                    'no_wa' => $asdos['no_wa'],
-                    'foto' => $asdos['foto'],
-                    'skor' => $asdos['skor'],
-                    'periode' => $periode->id
-                ]);
-            }
-
-            $pen->status = $status;
-            $pen->save();
-        }
-
-        return redirect()->route('asdos')->with([
-            'success' => 'Verifikasi berhasil dilakukan.',
-            'jumlah_lulus' => $jmlulus
-        ]);
-    }
-
-
 
     public function login()
     {
@@ -1492,7 +1240,8 @@ class AdminController extends Controller
             ->count();
 
         // Jika memenuhi syarat (minimal 2x hadir)
-        if ($jumlahHadir >= 2) {
+        $batas=Setting::first()->minimal_sertifikat;
+        if ($jumlahHadir >= $batas) {
             $sertifikat = Sertifikat::firstOrNew(['id_asdos' => $asdos->id]);
 
             $filePath = null;

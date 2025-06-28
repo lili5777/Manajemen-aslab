@@ -63,7 +63,7 @@
                         <a href="javascript:void(0);"><img src="{{ asset('img/icons/purchase1.svg') }}"
                                 alt="img"><span> Sertifikat</span> <span class="menu-arrow"></span></a>
                         <ul>
-                            <li><a href="{{route('sertifikat')}}">Data Sertifikat</a></li>
+                            <li><a href="{{route('sertifikat')}}" class="{{ Request::routeIs('sertifikat') ? 'active' : '' }}">Data Sertifikat</a></li>
                             {{-- <li><a href="addpurchase.html">Add Purchase</a></li>
                             <li><a href="importpurchase.html">Import Purchase</a></li> --}}
                         </ul>
@@ -74,9 +74,9 @@
                                 Finansial</span> <span class="menu-arrow"></span></a>
                         <ul>
                             @if (auth()->user()->role == 'mahasiswa')
-                            <li><a href="{{route('financial')}}">Data Fincial</a></li>
+                                <li><a href="{{route('financial')}}" class="{{ Request::routeIs('financial') ? 'active' : '' }}">Data Fincial</a></li>
                             @else
-                            <li><a href="{{route('rekapfinancial')}}">Rekap Fincial</a></li>
+                            <li><a href="{{route('rekapfinancial')}}" class="{{ Request::routeIs('rekapfinancial') ? 'active' : '' }}">Rekap Fincial</a></li>
                             @endif
                         </ul>
                     </li>
@@ -90,16 +90,17 @@
                         <li><a href="userlists.html">Users List</a></li>
                     </ul>
                 </li> --}}
+                @if (auth()->user()->role == 'admin')
                 <li class="submenu">
                     <a href="javascript:void(0);"><img src="{{ asset('img/icons/settings.svg') }}"
                             alt="img"><span>
                             Settings</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{route('setting.kriteria')}}">Bobot Kriteria</a></li>
-                        <li><a href="">Batasan Asisten Lab</a></li>
-                        <li><a href="">Atur Sertiikat</a></li>
+                        <li><a href="{{route('setting.kriteria')}}" class="{{ Request::routeIs('setting.kriteria') ? 'active' : '' }}">Bobot Kriteria</a></li>
+                        <li><a href="{{route('setting.batasan')}}" class="{{ Request::routeIs('setting.batasan') ? 'active' : '' }}">Batasan Asisten Lab</a></li>
                     </ul>
                 </li>
+                @endif
             </ul>
         </div>
     </div>

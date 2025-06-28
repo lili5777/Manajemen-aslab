@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\IdcardController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\VerifikasiController;
@@ -167,6 +168,14 @@ Route::group(['middleware' => ['auth']], function () {
     // setting
     Route::get('admin/setting/kriteria', [SettingController::class, 'kriteria'])->name('setting.kriteria');
     Route::put('admin/setting/kriteria/update/', [SettingController::class, 'kriteriaUpdate'])->name('setting.kriteriaUpdate');
+    Route::get('admin/setting/batasan', [SettingController::class, 'batasan'])->name('setting.batasan');
+    Route::put('admin/setting/batasan/update', [SettingController::class, 'batasanUpdate'])->name('setting.batasan.update');
+
+
+    // excel
+    // routes/web.php
+    Route::get('admin/keuangan/export-excel', [ExportController::class, 'excelpendapatan'])
+        ->name('keuangan.exportExcel');
 });
 
 

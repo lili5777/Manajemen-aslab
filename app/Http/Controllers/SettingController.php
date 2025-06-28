@@ -109,4 +109,44 @@ class SettingController extends Controller
         return back()->with('success', 'Bobot berhasil diperbarui');
     }
 
+    public function batasan()
+    {
+        $setting = Setting::first();
+        if (!$setting) {
+            $setting = new Setting();
+            $setting->batasan_asdos = 0;
+            $setting->minimal_sertifikat = 0;
+            $setting->save();
+        }
+        return view('admin.setting.batasan.index', compact('setting'));
+    }
+
+    public function batasanUpdate(Request $request)
+    {
+        $request->validate([
+            'setting_type' => 'required|in:schedule,certificate',
+            'batasan_asdos' => 'required_if:setting_type,schedule|integer|min:1|max:20',
+            'minimal_sertifikat' => 'required_if:setting_type,certificate|integer|min:0|max:10'
+        ]);
+        // dd($request->all());
+
+        try {
+            $setting = Setting::firstOrFail();
+
+            if ($request->setting_type == 'schedule') {
+                $setting->batasan_asdos = $request->batasan_asdos;
+                $message = 'Batas jadwal berhasil diperbarui menjadi ' . $request->batasan_asdos;
+            } else {
+                $setting->minimal_sertifikat = $request->minimal_sertifikat;
+                $message = 'Batas sertifikat berhasil diperbarui menjadi ' . $request->minimal_sertifikat;
+            }
+
+            $setting->save();
+
+            return redirect()->route('setting.batasan')->with('success', $message);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui pengaturan: ' . $e->getMessage());
+        }
+    }
+    
 }

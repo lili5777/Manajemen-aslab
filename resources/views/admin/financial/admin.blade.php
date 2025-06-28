@@ -86,8 +86,8 @@
                                             src="{{ asset('img/icons/pdf.svg') }}" alt="img"></a>
                                 </li>
                                 <li>
-                                    <a data-bs-toggle="tooltip" data-bs-placement="top" title="excel"><img
-                                            src="{{ asset('img/icons/excel.svg') }}" alt="img"></a>
+                                    <a href="{{ route('keuangan.exportExcel') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Export Excel">
+                                        <img src="{{ asset('img/icons/excel.svg') }}" alt="excel">                              </a>
                                 </li>
                                 <li>
                                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="print"><img
