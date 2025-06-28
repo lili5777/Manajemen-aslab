@@ -76,7 +76,8 @@
                             @if (auth()->user()->role == 'mahasiswa')
                                 <li><a href="{{route('financial')}}" class="{{ Request::routeIs('financial') ? 'active' : '' }}">Data Fincial</a></li>
                             @else
-                            <li><a href="{{route('rekapfinancial')}}" class="{{ Request::routeIs('rekapfinancial') ? 'active' : '' }}">Rekap Fincial</a></li>
+                                <li><a href="{{route('rekapfinancial')}}" class="{{ Request::routeIs('rekapfinancial') ? 'active' : '' }}">Rekap Fincial</a></li>
+                                <li><a href="{{route('pajak')}}" class="{{ Request::routeIs('pajak') ? 'active' : '' }}">Pajak</a></li>
                             @endif
                         </ul>
                     </li>

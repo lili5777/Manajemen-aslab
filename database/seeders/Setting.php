@@ -17,6 +17,7 @@ class Setting extends Seeder
         ModelsSetting::create([
             'batasan_asdos' => 3,
             'minimal_sertifikat' => 7,
+            'pajak' => 5, // Pajak 5%
         ]);
     }
 }

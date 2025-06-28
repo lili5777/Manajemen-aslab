@@ -10,6 +10,7 @@ class Setting extends Model
     use HasFactory;
     protected $fillable = [
         'batasan_asdos',
-        'minimal_sertifikat'
+        'minimal_sertifikat',
+        'pajak',
     ];
 }

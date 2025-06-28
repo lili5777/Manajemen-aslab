@@ -29,7 +29,7 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $periode=Periode::where('status','aktif')->first();
+        $periode = Periode::where('status', 'aktif')->first();
         $pendaftar = Pendaftar::where('periode', $periode->id)->count();
         $asdos = Asdos::where('periode', $periode->id)->count();
         $jadwal = Jadwal::where('id_periode', $periode->id)->count();
@@ -430,7 +430,7 @@ class AdminController extends Controller
     public function asdos()
     {
         $periode = Periode::all();
-        $periodee = Periode::where('status','aktif')->first();
+        $periodee = Periode::where('status', 'aktif')->first();
         $asdos = Asdos::where('periode', $periodee->id)->get();
 
         return view('admin.master.asdos.index', compact('asdos', 'periode'));
@@ -739,7 +739,7 @@ class AdminController extends Controller
     {
         $user = Auth::user();
         $periode = Periode::where('status', 'aktif')->first();
-        $asdos = null; 
+        $asdos = null;
 
         // Hanya cari data asdos jika user adalah mahasiswa
         if ($user->role == 'mahasiswa') {
@@ -760,7 +760,7 @@ class AdminController extends Controller
                 $pilmatkul = PilihMatkul::where('id_pendaftar', $pen->id)->pluck('matkul')->toArray();
                 $jadwal = Jadwal::whereIn('nama_matkul', $pilmatkul)->where('id_periode', $periode->id)->get();
             } else {
-                $jadwal = collect(); 
+                $jadwal = collect();
             }
         } else {
             $dosen = Dosen::where('id_akun', $user->id)->first();
@@ -768,7 +768,7 @@ class AdminController extends Controller
         }
 
 
-        return view('admin.jadwal.index', compact('jadwal','asdos'));
+        return view('admin.jadwal.index', compact('jadwal', 'asdos'));
     }
 
     public function tambahjadwal()
@@ -1008,30 +1008,31 @@ class AdminController extends Controller
 
 
     // update absensi
-    public function absensi2(){
-        $user=Auth::user();
+    public function absensi2()
+    {
+        $user = Auth::user();
         $periode = Periode::where('status', 'aktif')->first();
-        $asdos=Asdos::where('id_user',$user->id)->where('periode', $periode->id)->first();
+        $asdos = Asdos::where('id_user', $user->id)->where('periode', $periode->id)->first();
 
-        if(!$asdos) {
+        if (!$asdos) {
             $data = true;
             return view('admin.absensi.index', compact('data'))->with('error', 'Tidak ada data absensi yang ditemukan.');
         }
-        $jadwal= Jadwal::where('id_periode', $periode->id)
+        $jadwal = Jadwal::where('id_periode', $periode->id)
             ->where(function ($query) use ($asdos) {
                 $query->where('asdos1', $asdos->nama)
                     ->orWhere('asdos2', $asdos->nama);
             })
             ->get();
         $data = false;
-        return view('admin.absensi.index',compact('jadwal','data'));
-        
+        return view('admin.absensi.index', compact('jadwal', 'data'));
     }
-    public function detailabsensi2($id){
+    public function detailabsensi2($id)
+    {
         $user = Auth::user();
         $asdos = Asdos::where('id_user', $user->id)->first();
-        $jadwal=Jadwal::find($id);
-        $absensi=Absen::where('id_asdos',$asdos->id)->where('id_jadwal',$jadwal->id)->get();
+        $jadwal = Jadwal::find($id);
+        $absensi = Absen::where('id_asdos', $asdos->id)->where('id_jadwal', $jadwal->id)->get();
         // dd($absensi);
         $summary = [
             'total' => $absensi->where('verifikasi', 'terima')->count(),
@@ -1040,10 +1041,11 @@ class AdminController extends Controller
             'alpa' => $absensi->where('status', 'alpa')->where('verifikasi', 'terima')->count(),
             'terima' => $absensi->where('verifikasi', 'terima')->count(),
         ];
-        return view('admin.absensi.absen',compact('absensi','summary','jadwal'));
+        return view('admin.absensi.absen', compact('absensi', 'summary', 'jadwal'));
     }
 
-    public function postabsensi2(Request $request){
+    public function postabsensi2(Request $request)
+    {
         $request->validate([
             'pertemuan' => 'required',
             'status' => 'required',
@@ -1053,39 +1055,41 @@ class AdminController extends Controller
         $user = Auth::user();
         $asdos = Asdos::where('id_user', $user->id)->first();
         $jadwal = Jadwal::find($request->id_jadwal);
-        $periode=Periode::where('status','aktif')->first();
+        $periode = Periode::where('status', 'aktif')->first();
 
-        $absen=new Absen();
-        $absen->id_asdos=$asdos->id;
-        $absen->id_jadwal=$jadwal->id;
-        $absen->status=$request->status;
-        $absen->periode=$periode->id;
-        $absen->pertemuan=$request->pertemuan;
-        $absen->verifikasi='pending';
+        $absen = new Absen();
+        $absen->id_asdos = $asdos->id;
+        $absen->id_jadwal = $jadwal->id;
+        $absen->status = $request->status;
+        $absen->periode = $periode->id;
+        $absen->pertemuan = $request->pertemuan;
+        $absen->verifikasi = 'pending';
         $absen->save();
 
         return redirect()->back();
     }
 
-    public function kelolaabsensi(){
+    public function kelolaabsensi()
+    {
         $user = Auth::user();
-        if($user->role=='admin'){
+        if ($user->role == 'admin') {
             $periode = Periode::where('status', 'aktif')->first();
             $jadwal = Jadwal::where('id_periode', $periode->id)->get();
             // dd($jadwal);
-            return view('admin.absensi.dosen.index',compact('jadwal'));
-        }else{
+            return view('admin.absensi.dosen.index', compact('jadwal'));
+        } else {
             $dosen = Dosen::where('id_akun', $user->id)->first();
             $periode = Periode::where('status', 'aktif')->first();
-            $jadwal = Jadwal::where('id_periode', $periode->id)->where('nama_dosen',$dosen->nama)->get();
+            $jadwal = Jadwal::where('id_periode', $periode->id)->where('nama_dosen', $dosen->nama)->get();
             return view('admin.absensi.dosen.index', compact('jadwal'));
         }
     }
-    public function verifikasiabsensi($id){
-        
+    public function verifikasiabsensi($id)
+    {
+
         $absensi = Absen::where('id_jadwal', $id)->get();
-        $periode=Periode::where('status','aktif')->first();
-        $asdos=Asdos::where('periode',$periode->id)->get();
+        $periode = Periode::where('status', 'aktif')->first();
+        $asdos = Asdos::where('periode', $periode->id)->get();
         $summary = [
             'total' => $absensi->where('verifikasi', 'terima')->count(),
             'hadir' => $absensi->where('status', 'hadir')->where('verifikasi', 'terima')->count(),
@@ -1093,18 +1097,19 @@ class AdminController extends Controller
             'alpa' => $absensi->where('status', 'alpa')->where('verifikasi', 'terima')->count(),
             'terima' => $absensi->where('verifikasi', 'terima')->count(),
         ];
-        return view('admin.absensi.dosen.verifikasi',compact('absensi','summary','asdos'));
+        return view('admin.absensi.dosen.verifikasi', compact('absensi', 'summary', 'asdos'));
     }
-    public function terima_absensi($id){
+    public function terima_absensi($id)
+    {
         $absensi = Absen::find($id);
-        $absensi->verifikasi='terima';
+        $absensi->verifikasi = 'terima';
         $absensi->save();
         return redirect()->back();
-
     }
 
     // financial
-    public function financial(){
+    public function financial()
+    {
         $user = Auth::user();
         $periode = Periode::where('status', 'aktif')->first();
         $asdos = Asdos::where('id_user', $user->id)
@@ -1114,21 +1119,22 @@ class AdminController extends Controller
             $data = true;
             return view('admin.financial.index', compact('data'))->with('error', 'Tidak ada data absensi yang ditemukan.');
         }
-        
-        $absen=Absen::where('id_asdos',$asdos->id)->where('periode',$periode->id)->where('verifikasi','terima')->get();
-        
-        
-        $pendapatan=[
-            'kehadiran'=>$absen->count(),
-            'gajipokok'=>15000,
-            'pendapatan'=>15000*$absen->count(),
-            'pajak'=> (15000 * $absen->count()) * 0.05,
-            'hasilbersih'=> (15000 * $absen->count()) * (1 - 0.05)
+
+        $absen = Absen::where('id_asdos', $asdos->id)->where('periode', $periode->id)->where('verifikasi', 'terima')->get();
+
+
+        $pendapatan = [
+            'kehadiran' => $absen->count(),
+            'gajipokok' => 15000,
+            'pendapatan' => 15000 * $absen->count(),
+            'pajak' => (15000 * $absen->count()) * 0.05,
+            'hasilbersih' => (15000 * $absen->count()) * (1 - 0.05)
         ];
         $data = false;
-        return view('admin.financial.index',compact('asdos','pendapatan','data'));   
+        return view('admin.financial.index', compact('asdos', 'pendapatan', 'data'));
     }
-    public function rekapfinancial(){
+    public function rekapfinancial()
+    {
         $periodeAktif = Periode::where('status', 'aktif')->first();
 
         if (!$periodeAktif) {
@@ -1138,10 +1144,12 @@ class AdminController extends Controller
         $asdosList = Asdos::where('periode', $periodeAktif->id)->get();
 
         $absenList = Absen::where('periode', $periodeAktif->id)->get();
+        $datapajak = Setting::first();
+        $pajak = $datapajak->pajak / 100;
 
-        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList) {
+        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList, $pajak) {
             $jumlahKehadiran = $absenList->where('id_asdos', $asdos->id)->count();
-            $pendapatan = ($jumlahKehadiran * 15000)*0.95; // Rp 15.000 per meeting
+            $pendapatan = ($jumlahKehadiran * 15000) * (1 - $pajak); // Rp 15.000 per meeting
 
             $asdos->kehadiran = $jumlahKehadiran;
             $asdos->pendapatan = $pendapatan;
@@ -1160,9 +1168,10 @@ class AdminController extends Controller
 
 
     // sertifikat
-    public function sertifikat(){
+    public function sertifikat()
+    {
         $user = Auth::user();
-        
+
         $periode = Periode::where('status', 'aktif')->first();
         $asdos = Asdos::where('id_user', $user->id)
             ->where('periode', $periode->id)
@@ -1176,16 +1185,16 @@ class AdminController extends Controller
             }
         }
         $ada = false;
-        
+
         // Ambil semua jadwal untuk periode aktif
         $jadwals = Jadwal::where('id_periode', $periode->id)->get();
-        
+
         $data = [];
 
         foreach ($jadwals as $jadwal) {
             // Cek asdos1
-            $asdos1 = Asdos::where('nama',$jadwal->asdos1)->first();
-            
+            $asdos1 = Asdos::where('nama', $jadwal->asdos1)->first();
+
             if ($asdos1) {
                 $this->prosesAsdos($asdos1, $jadwal, $periode, $data);
             }
@@ -1221,12 +1230,12 @@ class AdminController extends Controller
                         'qr_code' => $sertifikat->qr_code,
                         'file_path' => $sertifikat->file_path
                     ]];
-                }else{
+                } else {
                     $data = [];
                 }
             }
         }
-        return view('admin.sertifikat.index', compact('data','ada'));
+        return view('admin.sertifikat.index', compact('data', 'ada'));
     }
 
     private function prosesAsdos($asdos, $jadwal, $periode, &$data)
@@ -1240,7 +1249,7 @@ class AdminController extends Controller
             ->count();
 
         // Jika memenuhi syarat (minimal 2x hadir)
-        $batas=Setting::first()->minimal_sertifikat;
+        $batas = Setting::first()->minimal_sertifikat;
         if ($jumlahHadir >= $batas) {
             $sertifikat = Sertifikat::firstOrNew(['id_asdos' => $asdos->id]);
 
@@ -1289,7 +1298,7 @@ class AdminController extends Controller
 
             // Tambahkan ke data output
             $data[] = [
-                'id'=> $sertifikat->id,
+                'id' => $sertifikat->id,
                 'asdos' => $asdos,
                 'jadwal' => $jadwal,
                 'jumlah_hadir' => $jumlahHadir,
@@ -1306,11 +1315,11 @@ class AdminController extends Controller
         $request->validate([
             'sertifikat_pdf' => 'required|mimes:pdf|max:20000' // ~20MB
         ]);
-        
+
 
         $sertifikat = Sertifikat::where('qr_code', $name)->firstOrFail();
         // dd($name);
-        
+
         // Hapus file lama jika ada
         if ($sertifikat->file_path) {
             $oldFilePath = str_replace('sertifikat/', 'public/sertifikat/', $sertifikat->file_path);
@@ -1332,7 +1341,7 @@ class AdminController extends Controller
         // Simpan path relatif ke database
         $publicPath = 'sertifikat/' . $fileName;
 
-        $sertifikat->file_path= $publicPath;
+        $sertifikat->file_path = $publicPath;
         $sertifikat->update();
         // dd($sertifikat);
 

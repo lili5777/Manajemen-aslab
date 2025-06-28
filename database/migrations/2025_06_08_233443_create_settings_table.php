@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('batasan_asdos')->default(0);
             $table->integer('minimal_sertifikat')->default(0);
+            $table->integer('pajak')->default(0);
             $table->timestamps();
         });
     }

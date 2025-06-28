@@ -7,8 +7,10 @@ use App\Exports\PendapatanAsdosExport;
 use App\Models\Absen;
 use App\Models\Asdos;
 use App\Models\Periode;
+use App\Models\Setting;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Hamcrest\Core\Set;
 
 class ExportController extends Controller
 {
@@ -35,13 +37,15 @@ class ExportController extends Controller
         $asdosList = Asdos::where('periode', $periodeAktif->id)->get();
         $absenList = Absen::where('periode', $periodeAktif->id)->get();
 
-        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList) {
+        $datapajak=Setting::first();
+        $pajak=$datapajak->pajak/100;
+        // dd($pajak);
+        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList, $pajak) {
             $jumlahKehadiran = $absenList->where('id_asdos', $asdos->id)->count();
-            $pendapatan = ($jumlahKehadiran * 15000) * 0.95;
+            $pendapatan = ($jumlahKehadiran * 15000) * (1 - $pajak);
 
             $asdos->kehadiran = $jumlahKehadiran;
             $asdos->pendapatan = $pendapatan;
-
             return $asdos;
         });
 

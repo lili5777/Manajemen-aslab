@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\{Asdos, Absen, Periode};
+use App\Models\{Asdos, Absen, Periode, Setting};
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\{
     FromCollection,
@@ -37,10 +37,12 @@ class PendapatanAsdosExport implements
     {
         $asdos = Asdos::where('periode', $this->periodeId)->get();
         $absen = Absen::where('periode', $this->periodeId)->get();
+        $datapajak = Setting::first();
+        $pajak = $datapajak->pajak / 100;
 
-        return $asdos->map(function ($a) use ($absen) {
+        return $asdos->map(function ($a) use ($absen, $pajak) {
             $hadir      = $absen->where('id_asdos', $a->id)->count();
-            $pendapatan = ($hadir * 15_000) * 0.95;
+            $pendapatan = ($hadir * 15_000) * (1 - $pajak);
 
             $this->totalKehadiran  += $hadir;
             $this->totalPendapatan += $pendapatan;
@@ -68,7 +70,7 @@ class PendapatanAsdosExport implements
     public function map($row): array
     {
         static $no = 1;
-        $duit=(string) ($row['pendapatan'] ?? 0);
+        $duit = (string) ($row['pendapatan'] ?? 0);
         return [
             $no++,
             $row['nama'],
@@ -124,14 +126,14 @@ class PendapatanAsdosExport implements
 
                 $s       = $e->sheet;
                 $rowData = 6;                                 // data mulai baris-6
-                $last    = $s->getHighestRow();   
-                $periode = Periode::where('status','aktif')->first();            // setelah mapping
+                $last    = $s->getHighestRow();
+                $periode = Periode::where('status', 'aktif')->first();            // setelah mapping
 
                 // judul 3 baris
                 $titles = [
                     1 => ['txt' => 'UNIVERSITAS DIPA (UNDIPA) MAKASSAR', 'size' => 14],
                     2 => ['txt' => 'DAFTAR PENGAMBILAN HONOR ASISTEN DOSEN LABORATORIUM', 'size' => 12],
-                    3 => ['txt' => 'SEMESTER '. strtoupper($periode->semester).' T.A. '.$periode->tahun, 'size' => 12],
+                    3 => ['txt' => 'SEMESTER ' . strtoupper($periode->semester) . ' T.A. ' . $periode->tahun, 'size' => 12],
                 ];
                 foreach ($titles as $r => $v) {
                     $s->mergeCells("B{$r}:E{$r}")
@@ -162,7 +164,6 @@ class PendapatanAsdosExport implements
                         ->setHorizontal(Alignment::HORIZONTAL_LEFT)
                         ->setVertical(Alignment::VERTICAL_CENTER);
                     $s->getRowDimension($r)->setRowHeight(30);
-
                 }
 
                 /* -------- total -------- */

@@ -148,5 +148,33 @@ class SettingController extends Controller
             return redirect()->back()->with('error', 'Gagal memperbarui pengaturan: ' . $e->getMessage());
         }
     }
+
+    public function pajak()
+    {
+        $pajak = Setting::first();
+        if (!$pajak) {
+            $pajak = new Setting();
+            $pajak->pajak = 0; // Default pajak 0%
+            $pajak->save();
+        }
+        return view('admin.financial.pajak', compact('pajak'));
+    }
+
+    public function updatePajak(Request $request)
+    {
+        $request->validate([
+            'tax_percentage' => 'required|numeric|min:0|max:100'
+        ]);
+
+        try {
+            $pajak = Setting::firstOrFail();
+            $pajak->pajak = $request->tax_percentage;
+            $pajak->save();
+
+            return redirect()->back()->with('success', 'Pengaturan pajak berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui pengaturan pajak: ' . $e->getMessage());
+        }
+    }
     
 }
