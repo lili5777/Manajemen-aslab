@@ -172,6 +172,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('admin/setting/batasan/update', [SettingController::class, 'batasanUpdate'])->name('setting.batasan.update');
     Route::get('admin/pajak', [SettingController::class, 'pajak'])->name('pajak');
     Route::put('admin/pajak/update', [SettingController::class, 'updatePajak'])->name('pajak.update');
+    Route::put('admin/honor/update', [SettingController::class, 'updateHonor'])->name('honor.update');
 
 
     // excel

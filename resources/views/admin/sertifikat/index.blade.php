@@ -46,7 +46,7 @@
                                             alt="img"></a>
                                 </div>
                             </div>
-                            <div class="wordset">
+                            {{-- <div class="wordset">
                                 <ul>
                                     <li>
                                         <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
@@ -61,7 +61,7 @@
                                                 src="{{ asset('img/icons/printer.svg') }}" alt="img"></a>
                                     </li>
                                 </ul>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="card mb-0" id="filter_inputs">
@@ -178,7 +178,7 @@
                                                     @endif
                                                 @else
                                                     @if($item['file_path'])
-                                                        <a href="{{ $item['url'] }}" target="_blank"
+                                                        <a href="{{ $item['url'] }}" target="_blank" type="application/pdf"
                                                             class="badge bg-primary border-0 text-white">
                                                             Lihat Sertifikat
                                                         </a>

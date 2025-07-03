@@ -25,7 +25,7 @@
                                         alt="img"></a>
                             </div>
                         </div>
-                        <div class="wordset">
+                        {{-- <div class="wordset">
                             <ul>
                                 <li>
                                     <a data-bs-toggle="tooltip" data-bs-placement="top" title="pdf"><img
@@ -40,7 +40,7 @@
                                             src="{{ asset('img/icons/printer.svg') }}" alt="img"></a>
                                 </li>
                             </ul>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="card mb-0" id="filter_inputs">

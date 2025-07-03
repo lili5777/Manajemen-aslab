@@ -40,9 +40,9 @@ class ExportController extends Controller
         $datapajak=Setting::first();
         $pajak=$datapajak->pajak/100;
         // dd($pajak);
-        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList, $pajak) {
+        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList, $pajak, $datapajak) {
             $jumlahKehadiran = $absenList->where('id_asdos', $asdos->id)->count();
-            $pendapatan = ($jumlahKehadiran * 15000) * (1 - $pajak);
+            $pendapatan = ($jumlahKehadiran * $datapajak->honor) * (1 - $pajak);
 
             $asdos->kehadiran = $jumlahKehadiran;
             $asdos->pendapatan = $pendapatan;

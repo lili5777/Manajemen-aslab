@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             PeriodeSeeder::class,
             Setting::class,
             Kriteria::class,
+            DosenSeeder::class,
         ]);
     }
 }

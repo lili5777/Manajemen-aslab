@@ -109,7 +109,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <span class="text-muted">Pajak (5%)</span>
+                                        <span class="text-muted">Pajak ({{$datapajak->pajak}}%)</span>
                                         <h2 class="mt-2 mb-0 fw-bold text-danger fs-5">- Rp{{$pendapatan['pajak']}}</h2>
                                     </div>
                                     <div class="bg-danger bg-opacity-10 p-2 rounded">

@@ -12,5 +12,6 @@ class Setting extends Model
         'batasan_asdos',
         'minimal_sertifikat',
         'pajak',
+        'honor',
     ];
 }

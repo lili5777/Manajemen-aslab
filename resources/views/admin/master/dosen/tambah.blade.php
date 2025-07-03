@@ -18,13 +18,14 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Akun</label>
-                            
-                                    <select name="id_akun" class="select2" required>
-                                        {{-- <option value="">Pilih Akun</option> --}}
+                                    <select name="id_akun" id="id_akun" class="select2" required onchange="fillDataFromAccount()">
                                         <option value="">Pilih Akun</option>
                                         @foreach ($user as $a)
-                                            <option value="{{ $a->id }}" {{ isset($dosen) && $dosen->id_akun == $a->id ? 'selected' : '' }}>
-                                                {{ $a->name }}
+                                            <option value="{{ $a->id }}" 
+                                                data-name="{{ $a->name }}"
+                                                data-stb="{{ $a->stb }}"
+                                                {{ isset($dosen) && $dosen->id_akun == $a->id ? 'selected' : '' }}>
+                                                {{ Str::limit($a->name, 20) }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -36,19 +37,13 @@
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>Nama</label>
-                                    <input type="text" name="nama" value="{{ isset($dosen) ? $dosen->nama : '' }}">
+                                    <input type="text" name="nama" id="nama" value="{{ isset($dosen) ? $dosen->nama : '' }}" readonly>
                                 </div>
                             </div>
-                            {{-- <div class="col-lg-3 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="text" name="email" value="{{ isset($dosen) ? $dosen->email : '' }}">
-                                </div>
-                            </div> --}}
                             <div class="col-lg-3 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label>NIDN</label>
-                                    <input type="text" name="nidn" value="{{ isset($dosen) ? $dosen->nidn : '' }}">
+                                    <input type="text" name="nidn" id="nidn" value="{{ isset($dosen) ? $dosen->nidn : '' }}" readonly>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-sm-6 col-12">
@@ -77,7 +72,28 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
+
+    <script>
+        function fillDataFromAccount() {
+            const selectElement = document.getElementById('id_akun');
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            
+            if (selectedOption.value !== "") {
+                document.getElementById('nama').value = selectedOption.getAttribute('data-name');
+                document.getElementById('nidn').value = selectedOption.getAttribute('data-stb');
+            } else {
+                document.getElementById('nama').value = "";
+                document.getElementById('nidn').value = "";
+            }
+        }
+
+        // Jalankan fungsi saat pertama kali load halaman (untuk kasus edit)
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(isset($dosen))
+                fillDataFromAccount();
+            @endif
+        });
+    </script>
 @endsection

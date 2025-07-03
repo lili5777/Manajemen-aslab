@@ -96,172 +96,177 @@ class AdminController extends Controller
         $p = Pendaftar::findOrFail($id);
         return view('admin.master.pendaftar.detail', compact('p'));
     }
-    public function postpendaftar(Request $request)
+     public function postpendaftar(Request $request)
     {
-        // Validasi input
-        $rules = [
-            'id_user' => 'required|exists:users,id',
-            'stb' => 'required|string|unique:pendaftars,stb,' . ($request->id ?? 'NULL') . ',id',
-            'nama' => 'required|string|max:255',
-            'alamat' => 'required|string',
-            'jurusan' => 'required|string|max:255',
-            'ttl' => 'required|date',
-            'tempat_lahir' => 'required|string|max:255',
-            'no_wa' => 'required|string|max:15',
-            'foto' => 'nullable|image|max:10240',
-            'transkip' => 'nullable|file|max:10240',
-            'surat_pernyataan' => 'nullable|file|max:10240',
-            'surat_rekomendasi' => 'nullable|file|max:10240',
-        ];
+        try {
+            // Validasi input
+            $rules = [
+                'id_user' => 'required|exists:users,id',
+                'stb' => 'required|string|unique:pendaftars,stb,' . ($request->id ?? 'NULL') . ',id',
+                'nama' => 'required|string|max:255',
+                'alamat' => 'required|string',
+                'jurusan' => 'required|string|max:255',
+                'ttl' => 'required|date',
+                'tempat_lahir' => 'required|string|max:255',
+                'no_wa' => 'required|string|max:15',
+                'foto' => 'required|image|max:10240',
+                'transkip' => 'required|file|max:10240',
+                'surat_pernyataan' => 'required|file|max:10240',
+                'surat_rekomendasi' => 'required|file|max:10240',
+            ];
 
-        // Only require files if we are creating a new pendaftar (not updating)
-        if (!$request->has('id')) {
-            $rules['transkip'] = 'required|file|max:10240';
-            $rules['surat_pernyataan'] = 'required|file|max:10240';
-            $rules['surat_rekomendasi'] = 'required|file|max:10240';
-        }
-
-        // Custom validation messages
-        $customMessages = [
-            'id_user.required' => 'Akun wajib dipilih.',
-            'id_user.exists' => 'Akun yang dipilih tidak valid.',
-            'stb.required' => 'Stambuk wajib diisi.',
-            'stb.string' => 'Stambuk harus berupa teks.',
-            'stb.unique' => 'Stambuk sudah terdaftar.',
-            'nama.required' => 'Nama wajib diisi.',
-            'nama.string' => 'Nama harus berupa teks.',
-            'nama.max' => 'Nama tidak boleh lebih dari 255 karakter.',
-            'alamat.required' => 'Alamat wajib diisi.',
-            'alamat.string' => 'Alamat harus berupa teks.',
-            'jurusan.required' => 'Jurusan wajib diisi.',
-            'jurusan.string' => 'Jurusan harus berupa teks.',
-            'jurusan.max' => 'Jurusan tidak boleh lebih dari 255 karakter.',
-            'ttl.required' => 'Tanggal lahir wajib diisi.',
-            'ttl.date' => 'Tanggal lahir harus berupa tanggal yang valid.',
-            'tempat_lahir.required' => 'Tempat lahir wajib diisi.',
-            'tempat_lahir.string' => 'Tempat lahir harus berupa teks.',
-            'tempat_lahir.max' => 'Tempat lahir tidak boleh lebih dari 255 karakter.',
-            'no_wa.required' => 'Nomor WhatsApp wajib diisi.',
-            'no_wa.string' => 'Nomor WhatsApp harus berupa teks.',
-            'no_wa.max' => 'Nomor WhatsApp tidak boleh lebih dari 15 karakter.',
-            'foto.image' => 'Foto harus berupa file gambar.',
-            'foto.max' => 'Ukuran foto tidak boleh lebih dari 10MB.',
-            'transkip.required' => 'Transkip wajib diunggah.',
-            'transkip.file' => 'Transkip harus berupa file.',
-            'transkip.max' => 'Ukuran file transkip tidak boleh lebih dari 10MB.',
-            'surat_pernyataan.required' => 'Surat Pernyataan wajib diunggah.',
-            'surat_pernyataan.file' => 'Surat Pernyataan harus berupa file.',
-            'surat_pernyataan.max' => 'Ukuran file Surat Pernyataan tidak boleh lebih dari 10MB.',
-            'surat_rekomendasi.required' => 'Surat Rekomendasi wajib diunggah.',
-            'surat_rekomendasi.file' => 'Surat Rekomendasi harus berupa file.',
-            'surat_rekomendasi.max' => 'Ukuran file Surat Rekomendasi tidak boleh lebih dari 10MB.',
-        ];
-
-        // Validate the input with custom messages
-        $request->validate($rules, $customMessages);
-
-
-        // Ambil periode aktif
-        $periode = Periode::where('status', 'aktif')->first();
-        if (!$periode) {
-            return redirect()->back()->withErrors(['periode' => 'Tidak ada periode aktif yang ditemukan']);
-        }
-
-        // Inisialisasi nama file
-        $namaFoto = null;
-        $namaTranskip = null;
-        $namaPernyataan = null;
-        $namaRekomendasi = null;
-
-        // Jika proses edit, ambil data pendaftar
-        $pendaftar = $request->id ? Pendaftar::findOrFail($request->id) : new Pendaftar();
-
-        // Proses upload file baru dan hapus file lama jika ada
-        if ($request->hasFile('foto')) {
-            if ($pendaftar->foto && file_exists(public_path('img/asdos/' . $pendaftar->foto))) {
-                unlink(public_path('img/asdos/' . $pendaftar->foto));
-            }
-            $namaFoto = 'foto_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->foto->getClientOriginalExtension();
-            $request->foto->move(public_path('img/asdos'), $namaFoto);
-            $pendaftar->foto = $namaFoto;
-        }
-
-        if ($request->hasFile('transkip')) {
-            if ($pendaftar->transkip && file_exists(public_path('file/transkip/' . $pendaftar->transkip))) {
-                unlink(public_path('file/transkip/' . $pendaftar->transkip));
-            }
-            $namaTranskip = 'transkip_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->transkip->getClientOriginalExtension();
-            $request->transkip->move(public_path('file/transkip'), $namaTranskip);
-            $pendaftar->transkip = $namaTranskip;
-        }
-
-        if ($request->hasFile('surat_pernyataan')) {
-            if ($pendaftar->surat_pernyataan && file_exists(public_path('file/surat_pernyataan/' . $pendaftar->surat_pernyataan))) {
-                unlink(public_path('file/surat_pernyataan/' . $pendaftar->surat_pernyataan));
-            }
-            $namaPernyataan = 'surat_pernyataan_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->surat_pernyataan->getClientOriginalExtension();
-            $request->surat_pernyataan->move(public_path('file/surat_pernyataan'), $namaPernyataan);
-            $pendaftar->surat_pernyataan = $namaPernyataan;
-        }
-
-        if ($request->hasFile('surat_rekomendasi')) {
-            if ($pendaftar->surat_rekomendasi && file_exists(public_path('file/surat_rekomendasi/' . $pendaftar->surat_rekomendasi))) {
-                unlink(public_path('file/surat_rekomendasi/' . $pendaftar->surat_rekomendasi));
-            }
-            $namaRekomendasi = 'surat_rekomendasi_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->surat_rekomendasi->getClientOriginalExtension();
-            $request->surat_rekomendasi->move(public_path('file/surat_rekomendasi'), $namaRekomendasi);
-            $pendaftar->surat_rekomendasi = $namaRekomendasi;
-        }
-
-        // Simpan data pendaftar
-        $pendaftar->id_user = $request->id_user;
-        $pendaftar->stb = $request->stb;
-        $pendaftar->nama = $request->nama;
-        $pendaftar->alamat = $request->alamat;
-        $pendaftar->jurusan = $request->jurusan;
-        $pendaftar->ttl = $request->ttl;
-        $pendaftar->tempat_lahir = $request->tempat_lahir;
-        $pendaftar->no_wa = $request->no_wa;
-        $pendaftar->periode = $periode->id;
-        $pendaftar->status = "belum diseleksi";
-        $pendaftar->save();
-
-        // Proses parsing transkip untuk mendapatkan IPK dan nilai
-        if ($namaTranskip) {
-            $transkipPath = public_path('file/transkip/' . $namaTranskip);
-            $pdfParser = new Parser();
-            $pdf = $pdfParser->parseFile($transkipPath);
-            $text = $pdf->getText();
-
-            // Ambil IPK
-            preg_match('/Indeks Prestasi Komulatif\s+([\d.]+)/', $text, $matches);
-            if (!empty($matches[1])) {
-                $pendaftar->ipk = $matches[1];
-                $pendaftar->save();
+            // Jika proses edit, ubah validasi file menjadi nullable
+            if ($request->has('id') && $request->id) {
+                $rules['foto'] = 'nullable|image|max:10240';
+                $rules['transkip'] = 'nullable|file|max:10240';
+                $rules['surat_pernyataan'] = 'nullable|file|max:10240';
+                $rules['surat_rekomendasi'] = 'nullable|file|max:10240';
             }
 
-            // Hapus nilai lama sebelum menambah nilai baru
-            InputNilai::where('id_pendaftar', $pendaftar->id)->delete();
+            // Custom validation messages
+            $customMessages = [
+                'id_user.required' => 'Akun wajib dipilih.',
+                'id_user.exists' => 'Akun yang dipilih tidak valid.',
+                'stb.required' => 'Stambuk wajib diisi.',
+                'stb.string' => 'Stambuk harus berupa teks.',
+                'stb.unique' => 'Stambuk sudah terdaftar.',
+                'nama.required' => 'Nama wajib diisi.',
+                'nama.string' => 'Nama harus berupa teks.',
+                'nama.max' => 'Nama tidak boleh lebih dari 255 karakter.',
+                'alamat.required' => 'Alamat wajib diisi.',
+                'alamat.string' => 'Alamat harus berupa teks.',
+                'jurusan.required' => 'Jurusan wajib diisi.',
+                'jurusan.string' => 'Jurusan harus berupa teks.',
+                'jurusan.max' => 'Jurusan tidak boleh lebih dari 255 karakter.',
+                'ttl.required' => 'Tanggal lahir wajib diisi.',
+                'ttl.date' => 'Tanggal lahir harus berupa tanggal yang valid.',
+                'tempat_lahir.required' => 'Tempat lahir wajib diisi.',
+                'tempat_lahir.string' => 'Tempat lahir harus berupa teks.',
+                'tempat_lahir.max' => 'Tempat lahir tidak boleh lebih dari 255 karakter.',
+                'no_wa.required' => 'Nomor WhatsApp wajib diisi.',
+                'no_wa.string' => 'Nomor WhatsApp harus berupa teks.',
+                'no_wa.max' => 'Nomor WhatsApp tidak boleh lebih dari 15 karakter.',
+                'foto.required' => 'Foto wajib diunggah.',
+                'foto.image' => 'Foto harus berupa file gambar.',
+                'foto.max' => 'Ukuran foto tidak boleh lebih dari 10MB.',
+                'transkip.required' => 'Transkip wajib diunggah.',
+                'transkip.file' => 'Transkip harus berupa file.',
+                'transkip.max' => 'Ukuran file transkip tidak boleh lebih dari 10MB.',
+                'surat_pernyataan.required' => 'Surat Pernyataan wajib diunggah.',
+                'surat_pernyataan.file' => 'Surat Pernyataan harus berupa file.',
+                'surat_pernyataan.max' => 'Ukuran file Surat Pernyataan tidak boleh lebih dari 10MB.',
+                'surat_rekomendasi.required' => 'Surat Rekomendasi wajib diunggah.',
+                'surat_rekomendasi.file' => 'Surat Rekomendasi harus berupa file.',
+                'surat_rekomendasi.max' => 'Ukuran file Surat Rekomendasi tidak boleh lebih dari 10MB.',
+            ];
 
-            // Ambil nilai matkul
-            preg_match_all('/(\d+)\s+([A-Z0-9-]+)\s+([^0-9\n]+)\s+(\d+)\s+([A-Z+-]+)/', $text, $matches, PREG_SET_ORDER);
-            foreach ($matches as $match) {
-                if (strpos($match[3], 'Jumlah SKS') === false && strpos($match[3], 'Indeks Prestasi') === false) {
-                    InputNilai::create([
-                        'id_pendaftar' => $pendaftar->id,
-                        'kode' => $match[2],
-                        'nama_matkul' => trim($match[3]),
-                        'sks' => $match[4],
-                        'nilai' => $match[5],
-                    ]);
+            // Validate the input with custom messages
+            $request->validate($rules, $customMessages);
+
+            // Ambil periode aktif
+            $periode = Periode::where('status', 'aktif')->first();
+            if (!$periode) {
+                return redirect()->back()->withErrors(['periode' => 'Tidak ada periode aktif yang ditemukan']);
+            }
+
+            // Jika proses edit, ambil data pendaftar
+            $pendaftar = $request->id ? Pendaftar::findOrFail($request->id) : new Pendaftar();
+
+            // Proses upload file baru dan hapus file lama jika ada
+            if ($request->hasFile('foto')) {
+                if ($pendaftar->foto && file_exists(public_path('img/asdos/' . $pendaftar->foto))) {
+                    unlink(public_path('img/asdos/' . $pendaftar->foto));
+                }
+                $namaFoto = 'foto_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->foto->getClientOriginalExtension();
+                $request->foto->move(public_path('img/asdos'), $namaFoto);
+                $pendaftar->foto = $namaFoto;
+            }
+
+            if ($request->hasFile('transkip')) {
+                if ($pendaftar->transkip && file_exists(public_path('file/transkip/' . $pendaftar->transkip))) {
+                    unlink(public_path('file/transkip/' . $pendaftar->transkip));
+                }
+                $namaTranskip = 'transkip_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->transkip->getClientOriginalExtension();
+                $request->transkip->move(public_path('file/transkip'), $namaTranskip);
+                $pendaftar->transkip = $namaTranskip;
+            }
+
+            if ($request->hasFile('surat_pernyataan')) {
+                if ($pendaftar->surat_pernyataan && file_exists(public_path('file/surat_pernyataan/' . $pendaftar->surat_pernyataan))) {
+                    unlink(public_path('file/surat_pernyataan/' . $pendaftar->surat_pernyataan));
+                }
+                $namaPernyataan = 'surat_pernyataan_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->surat_pernyataan->getClientOriginalExtension();
+                $request->surat_pernyataan->move(public_path('file/surat_pernyataan'), $namaPernyataan);
+                $pendaftar->surat_pernyataan = $namaPernyataan;
+            }
+
+            if ($request->hasFile('surat_rekomendasi')) {
+                if ($pendaftar->surat_rekomendasi && file_exists(public_path('file/surat_rekomendasi/' . $pendaftar->surat_rekomendasi))) {
+                    unlink(public_path('file/surat_rekomendasi/' . $pendaftar->surat_rekomendasi));
+                }
+                $namaRekomendasi = 'surat_rekomendasi_asdos_' . str_replace(' ', '_', strtolower($request->nama)) . '.' . $request->surat_rekomendasi->getClientOriginalExtension();
+                $request->surat_rekomendasi->move(public_path('file/surat_rekomendasi'), $namaRekomendasi);
+                $pendaftar->surat_rekomendasi = $namaRekomendasi;
+            }
+
+            // Simpan data pendaftar
+            $pendaftar->id_user = $request->id_user;
+            $pendaftar->stb = $request->stb;
+            $pendaftar->nama = $request->nama;
+            $pendaftar->alamat = $request->alamat;
+            $pendaftar->jurusan = $request->jurusan;
+            $pendaftar->ttl = $request->ttl;
+            $pendaftar->tempat_lahir = $request->tempat_lahir;
+            $pendaftar->no_wa = $request->no_wa;
+            $pendaftar->periode = $periode->id;
+            $pendaftar->status = "belum diseleksi";
+            $pendaftar->save();
+
+            // Proses parsing transkip untuk mendapatkan IPK dan nilai
+            if ($request->hasFile('transkip')) {
+                $transkipPath = public_path('file/transkip/' . $pendaftar->transkip);
+                $pdfParser = new Parser();
+                $pdf = $pdfParser->parseFile($transkipPath);
+                $text = $pdf->getText();
+
+                // Ambil IPK
+                preg_match('/Indeks Prestasi Komulatif\s+([\d.]+)/', $text, $matches);
+                if (!empty($matches[1])) {
+                    $pendaftar->ipk = $matches[1];
+                    $pendaftar->save();
+                }
+
+                // Hapus nilai lama sebelum menambah nilai baru
+                InputNilai::where('id_pendaftar', $pendaftar->id)->delete();
+
+                // Ambil nilai matkul
+                preg_match_all('/(\d+)\s+([A-Z0-9-]+)\s+([^0-9\n]+)\s+(\d+)\s+([A-Z+-]+)/', $text, $matches, PREG_SET_ORDER);
+                foreach ($matches as $match) {
+                    if (strpos($match[3], 'Jumlah SKS') === false && strpos($match[3], 'Indeks Prestasi') === false) {
+                        InputNilai::create([
+                            'id_pendaftar' => $pendaftar->id,
+                            'kode' => $match[2],
+                            'nama_matkul' => trim($match[3]),
+                            'sks' => $match[4],
+                            'nilai' => $match[5],
+                        ]);
+                    }
                 }
             }
-        }
-        $u = Auth::user();
-        if ($u->role == 'admin') {
-            return redirect()->route('pendaftar')->with('success', $request->id ? 'Pendaftar berhasil diupdate.' : 'Pendaftar berhasil ditambahkan.');
-        } else {
-            return redirect()->route('zpendaftar')->with('success', $request->id ? 'Pendaftar berhasil diupdate.' : 'Pendaftar berhasil ditambahkan.');
+
+            $u = Auth::user();
+            if ($u->role == 'admin') {
+                return redirect()->route('pendaftar')->with('success', $request->id ? 'Pendaftar berhasil diupdate.' : 'Pendaftar berhasil ditambahkan.');
+            } else {
+                return redirect()->route('zpendaftar')->with('success', $request->id ? 'Pendaftar berhasil diupdate.' : 'Pendaftar berhasil ditambahkan.');
+            }
+        } catch (ValidationException $e) {
+            // Error validasi
+            return redirect()->back()->withErrors($e->validator->errors())->withInput();
+        } catch (Exception $e) {
+            // Error lainnya
+            Log::error('Error in postpendaftar: ' . $e->getMessage());
+            return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()])->withInput();
         }
     }
 
@@ -383,46 +388,112 @@ class AdminController extends Controller
     }
     public function postakun(Request $request)
     {
-        $request->validate([
-            'stb' => 'required',
-            'name' => 'required',
-            'email' => 'required',
-            'role' => 'required',
-            'password' => $request->id ? 'nullable' : 'required'
-        ]);
+        try {
+            $request->validate([
+                'stb' => 'required',
+                'name' => 'required',
+                'email' => 'required|email',
+                'role' => 'required',
+                'password' => $request->id ? 'nullable' : 'required'
+            ]);
 
-        // Pengecekan apakah STB/NIDN sudah ada di database
-        $cekstb = User::where('stb', $request->stb)->first();
-        if ($cekstb && !$request->id) {
-            return redirect()->back()->withErrors([
-                'stb' => 'STB/NIDN sudah terdaftar'
-            ])->withInput();
-        }
+            // Pengecekan apakah STB/NIDN sudah ada di database
+            $cekstb = User::where('stb', $request->stb);
+            if ($request->id) {
+                $cekstb = $cekstb->where('id', '!=', $request->id);
+            }
+            $cekstb = $cekstb->first();
 
-        // proses edit
-        if ($request->id) {
-            $user = User::findOrFail($request->id);
+            if ($cekstb) {
+                return redirect()->back()->withErrors([
+                    'stb' => 'STB/NIDN sudah terdaftar'
+                ])->withInput();
+            }
+
+            // Pengecekan apakah email sudah ada di database
+            $cekemail = User::where('email', $request->email);
+            if ($request->id) {
+                $cekemail = $cekemail->where('id', '!=', $request->id);
+            }
+            $cekemail = $cekemail->first();
+
+            if ($cekemail) {
+                return redirect()->back()->withErrors([
+                    'email' => 'Email sudah terdaftar'
+                ])->withInput();
+            }
+
+            // Pengecekan apakah nama sudah ada di database
+            $cekname = User::where('name', $request->name);
+            if ($request->id) {
+                $cekname = $cekname->where('id', '!=', $request->id);
+            }
+            $cekname = $cekname->first();
+
+            if ($cekname) {
+                return redirect()->back()->withErrors([
+                    'name' => 'Nama sudah terdaftar'
+                ])->withInput();
+            }
+
+            // proses edit
+            if ($request->id) {
+                $user = User::findOrFail($request->id);
+                $user->stb = $request->stb;
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->role = $request->role;
+                if ($request->filled('password')) {
+                    $user->password = Hash::make($request->password);
+                }
+                $user->save();
+                return redirect()->route('akun')->with('success', 'Akun berhasil diperbaharui');
+            }
+
+            // proses tambah akun
+            $user = new User();
             $user->stb = $request->stb;
             $user->name = $request->name;
             $user->email = $request->email;
             $user->role = $request->role;
-            if ($request->filled('password')) {
-                $user->password = Hash::make($request->password);
-            }
+            $user->password = Hash::make($request->password);
             $user->save();
-            return redirect()->route('akun')->with('success', 'Akun berhasil diperbaharui');
+
+            return redirect()->route('akun')->with('success', 'Akun berhasil dibuat');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Illuminate\Database\QueryException $e) {
+            // Menangani error database constraint violation
+            if ($e->errorInfo[1] == 1062) { // Duplicate entry error
+                $errorMessage = $e->getMessage();
+
+                if (strpos($errorMessage, 'users_email_unique') !== false) {
+                    return redirect()->back()->withErrors([
+                        'email' => 'Email sudah terdaftar di sistem'
+                    ])->withInput();
+                } elseif (strpos($errorMessage, 'users_stb_unique') !== false) {
+                    return redirect()->back()->withErrors([
+                        'stb' => 'STB/NIDN sudah terdaftar di sistem'
+                    ])->withInput();
+                } elseif (strpos($errorMessage, 'users_name_unique') !== false) {
+                    return redirect()->back()->withErrors([
+                        'name' => 'Nama sudah terdaftar di sistem'
+                    ])->withInput();
+                } else {
+                    return redirect()->back()->withErrors([
+                        'error' => 'Data sudah ada di sistem'
+                    ])->withInput();
+                }
+            }
+
+            return redirect()->back()->withErrors([
+                'error' => 'Terjadi kesalahan pada database'
+            ])->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors([
+                'error' => 'Terjadi kesalahan sistem. Silakan coba lagi.'
+            ])->withInput();
         }
-
-        // proses tambah akun
-        $user = new User();
-        $user->stb = $request->stb;
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->role = $request->role;
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        return redirect()->route('akun')->with('success', 'Akun berhasil dibuat');
     }
 
 
@@ -466,7 +537,14 @@ class AdminController extends Controller
     }
     public function tambahdosen()
     {
-        $user = User::where('role', 'dosen')->get();
+        // Ambil semua id_akun yang sudah terdaftar di tabel dosen
+        $dosenTerdaftar = Dosen::pluck('id_akun')->toArray();
+
+        // Ambil user dengan role 'dosen' yang id-nya tidak ada di array $dosenTerdaftar
+        $user = User::where('role', 'dosen')
+            ->whereNotIn('id', $dosenTerdaftar)
+            ->get();
+        
         return view('admin.master.dosen.tambah', compact('user'));
     }
     public function editdosen($id)
@@ -1112,6 +1190,7 @@ class AdminController extends Controller
     {
         $user = Auth::user();
         $periode = Periode::where('status', 'aktif')->first();
+        $datapajak = Setting::first();
         $asdos = Asdos::where('id_user', $user->id)
             ->where('periode', $periode->id)
             ->first();
@@ -1125,17 +1204,19 @@ class AdminController extends Controller
 
         $pendapatan = [
             'kehadiran' => $absen->count(),
-            'gajipokok' => 15000,
-            'pendapatan' => 15000 * $absen->count(),
-            'pajak' => (15000 * $absen->count()) * 0.05,
-            'hasilbersih' => (15000 * $absen->count()) * (1 - 0.05)
+            'gajipokok' => $datapajak->honor,
+            'pendapatan' => $datapajak->honor * $absen->count(),
+            'pajak' => ($datapajak->honor * $absen->count()) * 0.05,
+            'hasilbersih' => ($datapajak->honor * $absen->count()) * (1 - 0.05)
         ];
         $data = false;
-        return view('admin.financial.index', compact('asdos', 'pendapatan', 'data'));
+        return view('admin.financial.index', compact('asdos', 'pendapatan', 'data','datapajak'));
     }
+    
     public function rekapfinancial()
     {
         $periodeAktif = Periode::where('status', 'aktif')->first();
+        $datapajak = Setting::first();
 
         if (!$periodeAktif) {
             return redirect()->back()->with('error', 'Tidak ada periode aktif yang ditemukan');
@@ -1147,12 +1228,14 @@ class AdminController extends Controller
         $datapajak = Setting::first();
         $pajak = $datapajak->pajak / 100;
 
-        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList, $pajak) {
+        $asdosWithEarnings = $asdosList->map(function ($asdos) use ($absenList, $pajak, $datapajak) {
             $jumlahKehadiran = $absenList->where('id_asdos', $asdos->id)->count();
-            $pendapatan = ($jumlahKehadiran * 15000) * (1 - $pajak); // Rp 15.000 per meeting
+            $pendapatan = ($jumlahKehadiran * $datapajak->honor) * (1 - $pajak); // Rp 15.000 per meeting
 
             $asdos->kehadiran = $jumlahKehadiran;
             $asdos->pendapatan = $pendapatan;
+            $asdos->pajak = ($jumlahKehadiran * $datapajak->honor) * $pajak;
+            $asdos->hasilbersih = $jumlahKehadiran * $datapajak->honor;
 
             return $asdos;
         });
@@ -1162,7 +1245,9 @@ class AdminController extends Controller
         return view('admin.financial.admin', [
             'asdos' => $asdosWithEarnings,
             'pengeluaran' => $totalPengeluaran,
-            'absen' => $absenList
+            'absen' => $absenList,
+            'pajak'=> ($datapajak->honor * $absenList->count()) * $pajak,
+            'pendapatan_kotor' => $datapajak->honor * $absenList->count(),
         ]);
     }
 
@@ -1263,7 +1348,7 @@ class AdminController extends Controller
             // Jika sertifikat baru dibuat
             if (!$sertifikat->exists) {
                 $timestamp = Carbon::now()->format('Ymd_His');
-                $url = url("/storage/sertifikat/{$asdos->nama}_{$periode->id}_{$timestamp}.pdf");
+                $url = url("/sertifikat/{$asdos->nama}_{$periode->id}_{$timestamp}.pdf");
 
                 // Buat direktori QR code jika belum ada
                 $qrDirectory = public_path('qrcode');
@@ -1277,7 +1362,7 @@ class AdminController extends Controller
                 // Generate QR Code
                 try {
                     $process = new Process([
-                        'C:\\Users\\Admin\\AppData\\Local\\Programs\\Python\\Python313\\python.exe',
+                        'python',
                         base_path('app/Python/generate_qr.py'),
                         $url,
                         $qrPath
@@ -1309,42 +1394,76 @@ class AdminController extends Controller
             ];
         }
     }
-
+    
     public function uploadSertifikat(Request $request, $name)
     {
         $request->validate([
             'sertifikat_pdf' => 'required|mimes:pdf|max:20000' // ~20MB
         ]);
-
-
+    
         $sertifikat = Sertifikat::where('qr_code', $name)->firstOrFail();
-        // dd($name);
-
+    
         // Hapus file lama jika ada
         if ($sertifikat->file_path) {
-            $oldFilePath = str_replace('sertifikat/', 'public/sertifikat/', $sertifikat->file_path);
-            if (Storage::exists($oldFilePath)) {
-                Storage::delete($oldFilePath);
+            $oldFilePath = public_path('sertifikat/' . basename($sertifikat->file_path));
+            if (file_exists($oldFilePath)) {
+                unlink($oldFilePath); // Hapus file langsung dari public/sertifikat
             }
         }
-
+    
         // Generate nama file (hilangkan .png dari qr_code)
         $fileName = str_replace('.png', '.pdf', $name);
-        // dd($fileName);
-
-        // Simpan file baru
-        $path = $request->file('sertifikat_pdf')->storeAs(
-            'public/sertifikat',
+    
+        // Simpan file baru ke public/sertifikat
+        $request->file('sertifikat_pdf')->move(
+            public_path('sertifikat'), // Simpan langsung ke folder public/sertifikat
             $fileName
         );
-
-        // Simpan path relatif ke database
+    
+        // Simpan path relatif ke database (tanpa 'public/')
         $publicPath = 'sertifikat/' . $fileName;
-
+    
         $sertifikat->file_path = $publicPath;
         $sertifikat->update();
-        // dd($sertifikat);
-
+    
         return redirect()->back()->with('success', 'Sertifikat berhasil diupload');
     }
+
+    // public function uploadSertifikat(Request $request, $name)
+    // {
+    //     $request->validate([
+    //         'sertifikat_pdf' => 'required|mimes:pdf|max:20000' // ~20MB
+    //     ]);
+
+
+    //     $sertifikat = Sertifikat::where('qr_code', $name)->firstOrFail();
+    //     // dd($sertifikat);
+
+    //     // Hapus file lama jika ada
+    //     if ($sertifikat->file_path) {
+    //         $oldFilePath = str_replace('sertifikat/', 'public/sertifikat/', $sertifikat->file_path);
+    //         if (Storage::exists($oldFilePath)) {
+    //             Storage::delete($oldFilePath);
+    //         }
+    //     }
+
+    //     // Generate nama file (hilangkan .png dari qr_code)
+    //     $fileName = str_replace('.png', '.pdf', $name);
+    //     // dd($fileName);
+
+    //     // Simpan file baru
+    //     $path = $request->file('sertifikat_pdf')->storeAs(
+    //         'public/sertifikat',
+    //         $fileName
+    //     );
+
+    //     // Simpan path relatif ke database
+    //     $publicPath = 'sertifikat/' . $fileName;
+
+    //     $sertifikat->file_path = $publicPath;
+    //     $sertifikat->update();
+    //     // dd($sertifikat);
+
+    //     return redirect()->back()->with('success', 'Sertifikat berhasil diupload');
+    // }
 }

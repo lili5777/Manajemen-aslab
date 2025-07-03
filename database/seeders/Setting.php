@@ -18,6 +18,7 @@ class Setting extends Seeder
             'batasan_asdos' => 3,
             'minimal_sertifikat' => 7,
             'pajak' => 5, // Pajak 5%
+            'honor' => 15000,
         ]);
     }
 }

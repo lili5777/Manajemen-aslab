@@ -13,56 +13,98 @@
             </div>
 
             <div class="row g-4 mb-4">
-                <!-- Attendance Card -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100 hover-scale">
+                <!-- First Row - 2 Cards -->
+                <div class="col-md-6">
+                    <!-- Total Asdos Card -->
+                    <div class="card border-0 h-100 hover-scale"
+                        style="background: linear-gradient(135deg, #f5f7fa 0%, #e4eff8 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-radius: 12px;">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <span class="text-muted">Total Asdos</span>
-                                    <h2 class="mt-2 mb-0 fw-bold fs-5">{{$asdos->count()}}</h2>
+                                    <span class="text-muted small">TOTAL ASISTEN DOSEN</span>
+                                    <h2 class="mt-1 mb-0 fw-bold fs-4">{{$asdos->count()}}</h2>
                                 </div>
-                                <div class="bg-primary bg-opacity-10 p-2 rounded">
-                                    <i class="fas fa-calendar-check text-primary fs-4"></i>
+                                <div class="bg-white p-3 rounded-circle" style="box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                    <i class="fas fa-users text-primary fs-4"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Gross Income Card -->
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100 hover-scale">
+                <div class="col-md-6">
+                    <!-- Total Kehadiran Card -->
+                    <div class="card border-0 h-100 hover-scale"
+                        style="background: linear-gradient(135deg, #f0f9f0 0%, #e0f3e8 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-radius: 12px;">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <span class="text-muted">Total Kehadiran</span>
-                                    <h2 class="mt-2 mb-0 fw-bold fs-5">{{$absen->count()}}</h2>
+                                    <span class="text-muted small">TOTAL KEHADIRAN</span>
+                                    <h2 class="mt-1 mb-0 fw-bold fs-4">{{$absen->count()}}</h2>
                                 </div>
-                                <div class="bg-success bg-opacity-10 p-2 rounded">
-                                    <i class="fas fa-wallet text-success fs-4"></i>
+                                <div class="bg-white p-3 rounded-circle" style="box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                    <i class="fas fa-clipboard-check text-success fs-4"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Net Income Card -->
+                <!-- Second Row - 3 Cards -->
                 <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm h-100 hover-scale">
+                    <!-- Pendapatan Kotor Card -->
+                    <div class="card border-0 h-100 hover-scale"
+                        style="background: linear-gradient(135deg, #f0f5ff 0%, #e6edfd 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-radius: 12px;">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <span class="text-muted">Pengeluaran</span>
-                                    <h2 class="mt-2 mb-0 fw-bold text-success fs-5">Rp.{{$pengeluaran}}</h2>
+                                    <span class="text-muted small">PENDAPATAN KOTOR</span>
+                                    <h2 class="mt-1 mb-0 fw-bold fs-4">Rp.{{$pendapatan_kotor}}</h2>
                                 </div>
-                                <div class="bg-info bg-opacity-10 p-2 rounded">
-                                    <i class="fas fa-hand-holding-usd text-info fs-4"></i>
+                                <div class="bg-white p-3 rounded-circle" style="box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                    <i class="fas fa-money-bill-wave text-primary fs-4"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <!-- Pajak Card -->
+                    <div class="card border-0 h-100 hover-scale"
+                        style="background: linear-gradient(135deg, #fff5f5 0%, #ffebeb 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-radius: 12px;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="text-muted small">PAJAK</span>
+                                    <h2 class="mt-1 mb-0 fw-bold fs-4">Rp.{{$pajak}}</h2>
+                                </div>
+                                <div class="bg-white p-3 rounded-circle" style="box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                    <i class="fas fa-file-invoice-dollar text-danger fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <!-- Pengeluaran Card -->
+                    <div class="card border-0 h-100 hover-scale"
+                        style="background: linear-gradient(135deg, #fff9e6 0%, #fff2cc 100%); box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-radius: 12px;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <span class="text-muted small">PENGELUARAN</span>
+                                    <h2 class="mt-1 mb-0 fw-bold fs-4">Rp.{{$pengeluaran}}</h2>
+                                    
+                                </div>
+                                <div class="bg-white p-3 rounded-circle" style="box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                                    <i class="fas fa-receipt text-warning fs-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>      
             </div>
 
             <div class="card">
@@ -170,6 +212,8 @@
                                     <th>Nama</th>
                                     <th>Jurusan</th>
                                     <th>Kehadiran</th>
+                                    <th>pendapatan kotor</th>
+                                    <th>Pajak</th>
                                     <th>Pendapatan</th>
                                 </tr>
                             </thead>
@@ -185,6 +229,8 @@
                                     <td>{{$a->nama}}</td>
                                     <td>{{$a->jurusan}}</td>
                                     <td>{{$a->kehadiran}}</td>
+                                    <td>Rp.{{$a->hasilbersih}}</td>
+                                    <td>Rp.{{$a->pajak}}</td>
                                     <td>Rp.{{$a->pendapatan}}</td>
                                     </tr>
                                 @empty

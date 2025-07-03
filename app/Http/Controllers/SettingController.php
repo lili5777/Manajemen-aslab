@@ -155,6 +155,7 @@ class SettingController extends Controller
         if (!$pajak) {
             $pajak = new Setting();
             $pajak->pajak = 0; // Default pajak 0%
+            $pajak->honor = 0; // Default batasan asdos
             $pajak->save();
         }
         return view('admin.financial.pajak', compact('pajak'));
@@ -174,6 +175,23 @@ class SettingController extends Controller
             return redirect()->back()->with('success', 'Pengaturan pajak berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal memperbarui pengaturan pajak: ' . $e->getMessage());
+        }
+    }
+
+    public function updateHonor(Request $request)
+    {
+        $request->validate([
+            'honor' => 'required|numeric|min:0'
+        ]);
+
+        try {
+            $pajak = Setting::firstOrFail();
+            $pajak->honor = $request->honor;
+            $pajak->save();
+
+            return redirect()->back()->with('success', 'Pengaturan honor berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui pengaturan honor: ' . $e->getMessage());
         }
     }
     
