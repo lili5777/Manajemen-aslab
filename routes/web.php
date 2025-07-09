@@ -113,6 +113,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('admin/jadwal/hapus/{id}', [AdminController::class, 'hapusjadwal'])->name('hapusjadwal');
     Route::get('admin/jadwal/edit/{id}', [AdminController::class, 'editjadwal'])->name('editjadwal');
 
+    // hapusjadwalasdos
+    Route::get('admin/jadwal/hapusjadwalasdos1/{id}', [AdminController::class, 'hapusjadwalasdos1'])->name('hapusjadwalasdos1');
+    Route::get('admin/jadwal/hapusjadwalasdos2/{id}', [AdminController::class, 'hapusjadwalasdos2'])->name('hapusjadwalasdos2');
+
 
     // pilihan matkul prakter
     Route::get('admin/pilmatkul/{id}', [AdminController::class, 'pilmatkul'])->name('pilmatkul');

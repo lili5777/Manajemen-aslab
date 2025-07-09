@@ -96,7 +96,7 @@ class AdminController extends Controller
         $p = Pendaftar::findOrFail($id);
         return view('admin.master.pendaftar.detail', compact('p'));
     }
-     public function postpendaftar(Request $request)
+    public function postpendaftar(Request $request)
     {
         try {
             // Validasi input
@@ -544,7 +544,7 @@ class AdminController extends Controller
         $user = User::where('role', 'dosen')
             ->whereNotIn('id', $dosenTerdaftar)
             ->get();
-        
+
         return view('admin.master.dosen.tambah', compact('user'));
     }
     public function editdosen($id)
@@ -846,7 +846,10 @@ class AdminController extends Controller
         }
 
 
-        return view('admin.jadwal.index', compact('jadwal', 'asdos'));
+        $akunasdos = Asdos::where('id_user', $user->id)->first();
+
+
+        return view('admin.jadwal.index', compact('jadwal', 'asdos', 'akunasdos'));
     }
 
     public function tambahjadwal()
@@ -855,6 +858,7 @@ class AdminController extends Controller
         $dosen = Dosen::all();
         $periode = Periode::where('status', 'aktif')->first();
         $asdos = Asdos::where('periode', $periode->id)->get();
+
         // dd($asdos);
         return view('admin.jadwal.tambah', compact('matkul', 'dosen', 'asdos'));
     }
@@ -940,6 +944,23 @@ class AdminController extends Controller
         }
         // Jika data tidak ditemukan
         return response()->json(['message' => 'User not found.'], 404);
+    }
+
+
+    // hapus asdos di jadwal
+    public function hapusjadwalasdos1($id)
+    {
+        $jadwal = Jadwal::find($id);
+        $jadwal->asdos1 = '';
+        $jadwal->save();
+        return redirect()->route('jadwal')->with('success', 'Kamu tidak terdaftar lagi di jadwal ini');
+    }
+    public function hapusjadwalasdos2($id)
+    {
+        $jadwal = Jadwal::find($id);
+        $jadwal->asdos2 = '';
+        $jadwal->save();
+        return redirect()->route('jadwal')->with('success', 'Kamu tidak terdaftar lagi di jadwal ini');
     }
 
 
@@ -1053,9 +1074,19 @@ class AdminController extends Controller
         $periode = Periode::where('status', 'aktif')->first();
         $asdos = Asdos::where('id_user', $user->id)->where('periode', $periode->id)->first();
         $jadwal = Jadwal::find($id);
+        $existingJadwal = Jadwal::where(function ($query) use ($asdos) {
+            $query->where('asdos1', $asdos->nama)
+                ->orWhere('asdos2', $asdos->nama);
+        })
+            ->where('hari', $jadwal->hari)
+            ->where('pukul', $jadwal->pukul)
+            ->exists();
+
 
         if ($jadwal->asdos2 == $asdos->nama) {
             return redirect()->route('jadwal')->with('error', 'Kamu Telah Terdaftar di kelas ini');
+        } elseif ($existingJadwal) {
+            return redirect()->route('jadwal')->with('error', 'Anda sudah memiliki jadwal di hari dan waktu yang sama');
         } else {
             $jadwal->asdos1 = $asdos->nama;
             $jadwal->save();
@@ -1072,8 +1103,20 @@ class AdminController extends Controller
         $periode = Periode::where('status', 'aktif')->first();
         $asdos = Asdos::where('id_user', $user->id)->where('periode', $periode->id)->first();
         $jadwal = Jadwal::find($id);
+
+        $existingJadwal = Jadwal::where(function ($query) use ($asdos) {
+            $query->where('asdos1', $asdos->nama)
+                ->orWhere('asdos2', $asdos->nama);
+        })
+            ->where('hari', $jadwal->hari)
+            ->where('pukul', $jadwal->pukul)
+            ->exists();
+
+
         if ($jadwal->asdos1 == $asdos->nama) {
             return redirect()->route('jadwal')->with('error', 'Kamu Telah Terdaftar di kelas ini');
+        } elseif ($existingJadwal) {
+            return redirect()->route('jadwal')->with('error', 'Anda sudah memiliki jadwal di hari dan waktu yang sama');
         } else {
             $jadwal->asdos2 = $asdos->nama;
             $jadwal->save();
@@ -1210,9 +1253,9 @@ class AdminController extends Controller
             'hasilbersih' => ($datapajak->honor * $absen->count()) * (1 - 0.05)
         ];
         $data = false;
-        return view('admin.financial.index', compact('asdos', 'pendapatan', 'data','datapajak'));
+        return view('admin.financial.index', compact('asdos', 'pendapatan', 'data', 'datapajak'));
     }
-    
+
     public function rekapfinancial()
     {
         $periodeAktif = Periode::where('status', 'aktif')->first();
@@ -1246,7 +1289,7 @@ class AdminController extends Controller
             'asdos' => $asdosWithEarnings,
             'pengeluaran' => $totalPengeluaran,
             'absen' => $absenList,
-            'pajak'=> ($datapajak->honor * $absenList->count()) * $pajak,
+            'pajak' => ($datapajak->honor * $absenList->count()) * $pajak,
             'pendapatan_kotor' => $datapajak->honor * $absenList->count(),
         ]);
     }
@@ -1394,15 +1437,15 @@ class AdminController extends Controller
             ];
         }
     }
-    
+
     public function uploadSertifikat(Request $request, $name)
     {
         $request->validate([
             'sertifikat_pdf' => 'required|mimes:pdf|max:20000' // ~20MB
         ]);
-    
+
         $sertifikat = Sertifikat::where('qr_code', $name)->firstOrFail();
-    
+
         // Hapus file lama jika ada
         if ($sertifikat->file_path) {
             $oldFilePath = public_path('sertifikat/' . basename($sertifikat->file_path));
@@ -1410,22 +1453,22 @@ class AdminController extends Controller
                 unlink($oldFilePath); // Hapus file langsung dari public/sertifikat
             }
         }
-    
+
         // Generate nama file (hilangkan .png dari qr_code)
         $fileName = str_replace('.png', '.pdf', $name);
-    
+
         // Simpan file baru ke public/sertifikat
         $request->file('sertifikat_pdf')->move(
             public_path('sertifikat'), // Simpan langsung ke folder public/sertifikat
             $fileName
         );
-    
+
         // Simpan path relatif ke database (tanpa 'public/')
         $publicPath = 'sertifikat/' . $fileName;
-    
+
         $sertifikat->file_path = $publicPath;
         $sertifikat->update();
-    
+
         return redirect()->back()->with('success', 'Sertifikat berhasil diupload');
     }
 

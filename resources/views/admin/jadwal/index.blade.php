@@ -151,7 +151,17 @@
                                         <td>{{ $a->nama_dosen }}</td>
                                         <td>
                                             @if ($a->asdos1)
-                                                {{ $a->asdos1 }}
+                                                @if ($a->asdos1 == $akunasdos->nama)
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span>{{ $a->asdos1 }}</span>
+                                                        <a href="{{ route('hapusjadwalasdos1', $a->id) }}" class="text-danger"
+                                                            >
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </a>
+                                                    </div>
+                                                @else
+                                                    {{ $a->asdos1 }}
+                                                @endif
                                             @else
                                                 @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dosen')
                                                     Belum ada
@@ -168,7 +178,17 @@
                                         </td>
                                         <td>
                                             @if ($a->asdos2)
-                                                {{ $a->asdos2 }}
+                                                @if ($a->asdos2 == $akunasdos->nama)
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span>{{ $a->asdos2 }}</span>
+                                                        <a href="{{ route('hapusjadwalasdos2', $a->id) }}" class="text-danger"
+                                                            >
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </a>
+                                                    </div>
+                                                @else
+                                                    {{ $a->asdos2 }}
+                                                @endif
                                             @else
                                                 @if (auth()->user()->role == 'admin' || auth()->user()->role == 'dosen')
                                                     Belum ada
