@@ -167,7 +167,7 @@
                                 <div class="form-group">
                                     <label>Surat Pernyataan</label>
                                     <input type="file" name="surat_pernyataan" class="form-control"
-                                        value="{{ old('surat_pernyataan', isset($pendaftar) ? $pendaftar->surat_pernyataan : '') }}" accept=".pdf>
+                                        value="{{ old('surat_pernyataan', isset($pendaftar) ? $pendaftar->surat_pernyataan : '') }}" accept=".pdf">
                                     @if (isset($pendaftar) && $pendaftar->surat_pernyataan)
                                         <p class="mt-2">Surat Pernyataan saat ini: <a
                                                 href="{{ asset('file/surat_pernyataan/' . $pendaftar->surat_pernyataan) }}"
@@ -182,7 +182,7 @@
                             <div class="col-lg-6 col-sm-12 col-12">
                                 <div class="form-group">
                                     <label>Surat Rekomendasi</label>
-                                    <input type="file" name="surat_rekomendasi" class="form-control" accept=".pdf
+                                    <input type="file" name="surat_rekomendasi" class="form-control" accept=".pdf"
                                         value="{{ old('surat_rekomendasi', isset($pendaftar) ? $pendaftar->surat_rekomendasi : '') }}">
                                     @if (isset($pendaftar) && $pendaftar->surat_rekomendasi)
                                         <p class="mt-2">Surat Rekomendasi saat ini: <a

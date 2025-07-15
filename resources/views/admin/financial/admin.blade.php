@@ -58,7 +58,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div>
-                                    <span class="text-muted small">PENDAPATAN KOTOR</span>
+                                    <span class="text-muted small">PENGELUARAN KOTOR</span>
                                     <h2 class="mt-1 mb-0 fw-bold fs-4">Rp.{{$pendapatan_kotor}}</h2>
                                 </div>
                                 <div class="bg-white p-3 rounded-circle" style="box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
